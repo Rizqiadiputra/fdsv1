@@ -383,10 +383,10 @@ const merchants = [
 
 export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) => {
   const r = seeded(i + 1100);
+  const score = Math.floor(10 + r * 90);
   // Most live tx are micro/normal; only fraud-flagged tx skew higher
   const baseAmount = idrAmounts[Math.floor(r * idrAmounts.length)];
   const amount = r > 0.9 && score >= 85 ? Math.floor(5_000_000 + r * 12_000_000) : baseAmount;
-  const score = Math.floor(10 + r * 90);
   const decision: LiveTx["decision"] =
     score >= 85 ? "Rejected" : score >= 70 ? "Hold" : score >= 50 ? "Review" : "Approved";
   return {

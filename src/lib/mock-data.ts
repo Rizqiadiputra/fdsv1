@@ -129,7 +129,7 @@ export const cases = Array.from({ length: 22 }).map((_, i) => {
     id: `CASE-${(20890 + i).toString()}`,
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
     type: fraudTypeList[i % fraudTypeList.length],
-    amount: Math.floor(100_000 + r * 75_000_000),
+    amount: ewalletAmount(r, statuses[i % statuses.length] === "Fraud Confirmed"),
     status: statuses[i % statuses.length],
     assignee: ["Andini P.", "Budi S.", "Citra L.", "Dharma W.", "Eka R."][i % 5],
     age: Math.floor(r * 30) + 1,

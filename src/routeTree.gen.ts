@@ -9,8 +9,110 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsersRouteImport } from './routes/users'
+import { Route as ScoringRouteImport } from './routes/scoring'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as RiskManagementRouteImport } from './routes/risk-management'
+import { Route as RegulatoryRouteImport } from './routes/regulatory'
+import { Route as OperationalRiskRouteImport } from './routes/operational-risk'
+import { Route as NetworkRouteImport } from './routes/network'
+import { Route as MlAnalyticsRouteImport } from './routes/ml-analytics'
+import { Route as FraudOperationsRouteImport } from './routes/fraud-operations'
+import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as CyberSecurityRouteImport } from './routes/cyber-security'
+import { Route as ConsumerProtectionRouteImport } from './routes/consumer-protection'
+import { Route as CasesRouteImport } from './routes/cases'
+import { Route as BlacklistRouteImport } from './routes/blacklist'
+import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 
+const UsersRoute = UsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScoringRoute = ScoringRouteImport.update({
+  id: '/scoring',
+  path: '/scoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiskManagementRoute = RiskManagementRouteImport.update({
+  id: '/risk-management',
+  path: '/risk-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegulatoryRoute = RegulatoryRouteImport.update({
+  id: '/regulatory',
+  path: '/regulatory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OperationalRiskRoute = OperationalRiskRouteImport.update({
+  id: '/operational-risk',
+  path: '/operational-risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NetworkRoute = NetworkRouteImport.update({
+  id: '/network',
+  path: '/network',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MlAnalyticsRoute = MlAnalyticsRouteImport.update({
+  id: '/ml-analytics',
+  path: '/ml-analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FraudOperationsRoute = FraudOperationsRouteImport.update({
+  id: '/fraud-operations',
+  path: '/fraud-operations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevicesRoute = DevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CyberSecurityRoute = CyberSecurityRouteImport.update({
+  id: '/cyber-security',
+  path: '/cyber-security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsumerProtectionRoute = ConsumerProtectionRouteImport.update({
+  id: '/consumer-protection',
+  path: '/consumer-protection',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasesRoute = CasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlacklistRoute = BlacklistRouteImport.update({
+  id: '/blacklist',
+  path: '/blacklist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdministrationRoute = AdministrationRouteImport.update({
+  id: '/administration',
+  path: '/administration',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +121,270 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/administration': typeof AdministrationRoute
+  '/analytics': typeof AnalyticsRoute
+  '/audit': typeof AuditRoute
+  '/blacklist': typeof BlacklistRoute
+  '/cases': typeof CasesRoute
+  '/consumer-protection': typeof ConsumerProtectionRoute
+  '/cyber-security': typeof CyberSecurityRoute
+  '/devices': typeof DevicesRoute
+  '/fraud-operations': typeof FraudOperationsRoute
+  '/ml-analytics': typeof MlAnalyticsRoute
+  '/network': typeof NetworkRoute
+  '/operational-risk': typeof OperationalRiskRoute
+  '/regulatory': typeof RegulatoryRoute
+  '/risk-management': typeof RiskManagementRoute
+  '/rules': typeof RulesRoute
+  '/scoring': typeof ScoringRoute
+  '/users': typeof UsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/administration': typeof AdministrationRoute
+  '/analytics': typeof AnalyticsRoute
+  '/audit': typeof AuditRoute
+  '/blacklist': typeof BlacklistRoute
+  '/cases': typeof CasesRoute
+  '/consumer-protection': typeof ConsumerProtectionRoute
+  '/cyber-security': typeof CyberSecurityRoute
+  '/devices': typeof DevicesRoute
+  '/fraud-operations': typeof FraudOperationsRoute
+  '/ml-analytics': typeof MlAnalyticsRoute
+  '/network': typeof NetworkRoute
+  '/operational-risk': typeof OperationalRiskRoute
+  '/regulatory': typeof RegulatoryRoute
+  '/risk-management': typeof RiskManagementRoute
+  '/rules': typeof RulesRoute
+  '/scoring': typeof ScoringRoute
+  '/users': typeof UsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/administration': typeof AdministrationRoute
+  '/analytics': typeof AnalyticsRoute
+  '/audit': typeof AuditRoute
+  '/blacklist': typeof BlacklistRoute
+  '/cases': typeof CasesRoute
+  '/consumer-protection': typeof ConsumerProtectionRoute
+  '/cyber-security': typeof CyberSecurityRoute
+  '/devices': typeof DevicesRoute
+  '/fraud-operations': typeof FraudOperationsRoute
+  '/ml-analytics': typeof MlAnalyticsRoute
+  '/network': typeof NetworkRoute
+  '/operational-risk': typeof OperationalRiskRoute
+  '/regulatory': typeof RegulatoryRoute
+  '/risk-management': typeof RiskManagementRoute
+  '/rules': typeof RulesRoute
+  '/scoring': typeof ScoringRoute
+  '/users': typeof UsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/administration'
+    | '/analytics'
+    | '/audit'
+    | '/blacklist'
+    | '/cases'
+    | '/consumer-protection'
+    | '/cyber-security'
+    | '/devices'
+    | '/fraud-operations'
+    | '/ml-analytics'
+    | '/network'
+    | '/operational-risk'
+    | '/regulatory'
+    | '/risk-management'
+    | '/rules'
+    | '/scoring'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/administration'
+    | '/analytics'
+    | '/audit'
+    | '/blacklist'
+    | '/cases'
+    | '/consumer-protection'
+    | '/cyber-security'
+    | '/devices'
+    | '/fraud-operations'
+    | '/ml-analytics'
+    | '/network'
+    | '/operational-risk'
+    | '/regulatory'
+    | '/risk-management'
+    | '/rules'
+    | '/scoring'
+    | '/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/administration'
+    | '/analytics'
+    | '/audit'
+    | '/blacklist'
+    | '/cases'
+    | '/consumer-protection'
+    | '/cyber-security'
+    | '/devices'
+    | '/fraud-operations'
+    | '/ml-analytics'
+    | '/network'
+    | '/operational-risk'
+    | '/regulatory'
+    | '/risk-management'
+    | '/rules'
+    | '/scoring'
+    | '/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdministrationRoute: typeof AdministrationRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AuditRoute: typeof AuditRoute
+  BlacklistRoute: typeof BlacklistRoute
+  CasesRoute: typeof CasesRoute
+  ConsumerProtectionRoute: typeof ConsumerProtectionRoute
+  CyberSecurityRoute: typeof CyberSecurityRoute
+  DevicesRoute: typeof DevicesRoute
+  FraudOperationsRoute: typeof FraudOperationsRoute
+  MlAnalyticsRoute: typeof MlAnalyticsRoute
+  NetworkRoute: typeof NetworkRoute
+  OperationalRiskRoute: typeof OperationalRiskRoute
+  RegulatoryRoute: typeof RegulatoryRoute
+  RiskManagementRoute: typeof RiskManagementRoute
+  RulesRoute: typeof RulesRoute
+  ScoringRoute: typeof ScoringRoute
+  UsersRoute: typeof UsersRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scoring': {
+      id: '/scoring'
+      path: '/scoring'
+      fullPath: '/scoring'
+      preLoaderRoute: typeof ScoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/risk-management': {
+      id: '/risk-management'
+      path: '/risk-management'
+      fullPath: '/risk-management'
+      preLoaderRoute: typeof RiskManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regulatory': {
+      id: '/regulatory'
+      path: '/regulatory'
+      fullPath: '/regulatory'
+      preLoaderRoute: typeof RegulatoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/operational-risk': {
+      id: '/operational-risk'
+      path: '/operational-risk'
+      fullPath: '/operational-risk'
+      preLoaderRoute: typeof OperationalRiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/network': {
+      id: '/network'
+      path: '/network'
+      fullPath: '/network'
+      preLoaderRoute: typeof NetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ml-analytics': {
+      id: '/ml-analytics'
+      path: '/ml-analytics'
+      fullPath: '/ml-analytics'
+      preLoaderRoute: typeof MlAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fraud-operations': {
+      id: '/fraud-operations'
+      path: '/fraud-operations'
+      fullPath: '/fraud-operations'
+      preLoaderRoute: typeof FraudOperationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devices': {
+      id: '/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cyber-security': {
+      id: '/cyber-security'
+      path: '/cyber-security'
+      fullPath: '/cyber-security'
+      preLoaderRoute: typeof CyberSecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consumer-protection': {
+      id: '/consumer-protection'
+      path: '/consumer-protection'
+      fullPath: '/consumer-protection'
+      preLoaderRoute: typeof ConsumerProtectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cases': {
+      id: '/cases'
+      path: '/cases'
+      fullPath: '/cases'
+      preLoaderRoute: typeof CasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blacklist': {
+      id: '/blacklist'
+      path: '/blacklist'
+      fullPath: '/blacklist'
+      preLoaderRoute: typeof BlacklistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/administration': {
+      id: '/administration'
+      path: '/administration'
+      fullPath: '/administration'
+      preLoaderRoute: typeof AdministrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +397,24 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdministrationRoute: AdministrationRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AuditRoute: AuditRoute,
+  BlacklistRoute: BlacklistRoute,
+  CasesRoute: CasesRoute,
+  ConsumerProtectionRoute: ConsumerProtectionRoute,
+  CyberSecurityRoute: CyberSecurityRoute,
+  DevicesRoute: DevicesRoute,
+  FraudOperationsRoute: FraudOperationsRoute,
+  MlAnalyticsRoute: MlAnalyticsRoute,
+  NetworkRoute: NetworkRoute,
+  OperationalRiskRoute: OperationalRiskRoute,
+  RegulatoryRoute: RegulatoryRoute,
+  RiskManagementRoute: RiskManagementRoute,
+  RulesRoute: RulesRoute,
+  ScoringRoute: ScoringRoute,
+  UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

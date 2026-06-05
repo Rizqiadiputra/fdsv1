@@ -340,3 +340,151 @@ export function fmtIDR(n: number) {
 export function fmtNum(n: number) {
   return new Intl.NumberFormat("en-US").format(n);
 }
+
+// ============ Indonesian E-Wallet specific data ============
+
+export const ewalletProviders = ["GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"];
+
+export const idrAmounts = [50_000, 100_000, 250_000, 500_000, 1_000_000, 5_000_000, 10_000_000];
+
+export interface LiveTx {
+  id: string;
+  ts: string;
+  user: string;
+  channel: string;
+  wallet: string;
+  amount: number;
+  merchant?: string;
+  score: number;
+  decision: "Approved" | "Review" | "Hold" | "Rejected";
+  fraudType?: string;
+}
+
+const channels = ["QRIS Payment", "P2P Transfer", "TopUp", "Bill Payment", "Merchant Payout", "Cash Out"];
+const merchants = [
+  "Indomaret #4521", "Alfamart #8812", "Tokopedia Seller", "Shopee Mall",
+  "Warung Bu Tini", "Grab Driver", "Gojek Driver", "Starbucks Senayan",
+  "SPBU Pertamina", "PLN Prabayar", "Telkomsel Pulsa",
+];
+
+export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) => {
+  const r = seeded(i + 1100);
+  const amount = idrAmounts[Math.floor(r * idrAmounts.length)];
+  const score = Math.floor(10 + r * 90);
+  const decision: LiveTx["decision"] =
+    score >= 85 ? "Rejected" : score >= 70 ? "Hold" : score >= 50 ? "Review" : "Approved";
+  return {
+    id: `TX-${(900012 + i * 7).toString()}`,
+    ts: new Date(Date.now() - i * 1000 * 11).toISOString().replace("T", " ").slice(11, 19),
+    user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
+    channel: channels[i % channels.length],
+    wallet: ewalletProviders[i % ewalletProviders.length],
+    amount,
+    merchant: i % 3 === 0 ? merchants[i % merchants.length] : undefined,
+    score,
+    decision,
+    fraudType: score >= 70 ? fraudTypeList[i % fraudTypeList.length] : undefined,
+  };
+});
+
+export const merchantsList = Array.from({ length: 14 }).map((_, i) => {
+  const r = seeded(i + 1200);
+  return {
+    id: `MCH-${(33012 + i).toString()}`,
+    name: merchants[i % merchants.length],
+    mcc: ["5411", "5812", "5732", "4900", "4814", "5541"][i % 6],
+    category: ["Convenience", "F&B", "Electronics", "Utility", "Telco", "Fuel"][i % 6],
+    risk: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
+    tx30d: Math.floor(200 + r * 9500),
+    gmv30d: Math.floor(50_000_000 + r * 9_500_000_000),
+    chargebackRate: (r * 4.5).toFixed(2),
+    refundRate: (r * 6.2).toFixed(2),
+    qrisStatic: r > 0.5,
+    flag: r > 0.8 ? "Refund Abuse" : r > 0.6 ? "Velocity Spike" : "—",
+  };
+});
+
+export const ekycCases = Array.from({ length: 14 }).map((_, i) => {
+  const r = seeded(i + 1300);
+  return {
+    id: `KYC-${(70012 + i).toString()}`,
+    name: ["Ahmad W.", "Siti R.", "Budi S.", "Dewi L.", "Eko P.", "Fitri H."][i % 6],
+    nik: `32${Math.floor(7300000000 + r * 999999999).toString().slice(0, 14)}`,
+    selfieMatch: (60 + r * 39).toFixed(1),
+    liveness: r > 0.3 ? "Pass" : "Fail",
+    dukcapil: r > 0.2 ? "Matched" : "Mismatch",
+    deviceReuse: Math.floor(r * 6),
+    blacklistHit: r > 0.85,
+    risk: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
+    status: ["Pending", "Approved", "Rejected", "Manual Review"][i % 4],
+  };
+});
+
+export const behaviorMetrics = [
+  { hour: "00", txn: 120, anomaly: 4 },
+  { hour: "03", txn: 78, anomaly: 8 },
+  { hour: "06", txn: 245, anomaly: 6 },
+  { hour: "09", txn: 612, anomaly: 12 },
+  { hour: "12", txn: 845, anomaly: 18 },
+  { hour: "15", txn: 720, anomaly: 14 },
+  { hour: "18", txn: 980, anomaly: 22 },
+  { hour: "21", txn: 540, anomaly: 11 },
+];
+
+export const threatIntel = Array.from({ length: 10 }).map((_, i) => {
+  const r = seeded(i + 1400);
+  return {
+    id: `TI-${(20012 + i).toString()}`,
+    type: ["Phishing Kit", "Stolen Credentials", "Mule-as-a-Service", "Fake App", "SIM Swap Ring", "OTP Bot"][i % 6],
+    source: ["Telegram", "Dark Web", "WhatsApp", "Forum", "Honeypot"][i % 5],
+    target: ewalletProviders[i % ewalletProviders.length],
+    confidence: r > 0.66 ? "High" : r > 0.33 ? "Medium" : "Low",
+    severity: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
+    seen: new Date(Date.now() - i * 3600_000 * 7).toISOString().slice(0, 16).replace("T", " "),
+  };
+});
+
+export const fraudParameters = [
+  { key: "MAX_DAILY_TX_AMOUNT", label: "Max Daily Tx (Tier 1)", value: "Rp 2.000.000", category: "Limit", owner: "Risk" },
+  { key: "MAX_DAILY_TX_AMOUNT_T2", label: "Max Daily Tx (Tier 2)", value: "Rp 20.000.000", category: "Limit", owner: "Risk" },
+  { key: "MAX_DAILY_TX_AMOUNT_T3", label: "Max Daily Tx (Tier 3)", value: "Rp 100.000.000", category: "Limit", owner: "Risk" },
+  { key: "VELOCITY_WINDOW_MIN", label: "Velocity Window (min)", value: "10", category: "Velocity", owner: "Fraud" },
+  { key: "VELOCITY_MAX_COUNT", label: "Velocity Max Count", value: "8", category: "Velocity", owner: "Fraud" },
+  { key: "NEW_DEVICE_COOLDOWN_H", label: "New Device Cooldown (h)", value: "24", category: "Device", owner: "Fraud" },
+  { key: "QRIS_MAX_SINGLE_TX", label: "QRIS Max Single Tx", value: "Rp 10.000.000", category: "QRIS", owner: "Risk" },
+  { key: "STEP_UP_SCORE", label: "Step-up Auth Score", value: "65", category: "Auth", owner: "Fraud" },
+  { key: "AUTO_HOLD_SCORE", label: "Auto Hold Score", value: "80", category: "Auth", owner: "Fraud" },
+  { key: "MULE_REL_DEPTH", label: "Mule Network Depth", value: "3", category: "Network", owner: "Fraud" },
+  { key: "PROMO_MAX_CLAIM_DAY", label: "Promo Max Claim / Day", value: "3", category: "Promo", owner: "Marketing" },
+  { key: "COMPLAINT_SLA_HOURS", label: "Complaint SLA (h)", value: "48", category: "Consumer", owner: "Compliance" },
+];
+
+export const lossRatioTrend = [
+  { m: "Jan", gmv: 14200, loss: 1.42, target: 2.0 },
+  { m: "Feb", gmv: 15100, loss: 1.65, target: 2.0 },
+  { m: "Mar", gmv: 15800, loss: 1.88, target: 2.0 },
+  { m: "Apr", gmv: 15400, loss: 1.74, target: 2.0 },
+  { m: "May", gmv: 16700, loss: 2.10, target: 2.0 },
+  { m: "Jun", gmv: 17900, loss: 1.96, target: 2.0 },
+  { m: "Jul", gmv: 18200, loss: 1.82, target: 2.0 },
+  { m: "Aug", gmv: 18900, loss: 1.71, target: 2.0 },
+  { m: "Sep", gmv: 19400, loss: 1.65, target: 2.0 },
+  { m: "Oct", gmv: 20100, loss: 1.58, target: 2.0 },
+  { m: "Nov", gmv: 21200, loss: 1.49, target: 2.0 },
+  { m: "Dec", gmv: 22400, loss: 1.42, target: 2.0 },
+];
+
+export const complaintRatioTrend = [
+  { m: "Jan", tx: 38, complaints: 0.038, target: 0.05 },
+  { m: "Feb", tx: 39, complaints: 0.041, target: 0.05 },
+  { m: "Mar", tx: 41, complaints: 0.046, target: 0.05 },
+  { m: "Apr", tx: 40, complaints: 0.044, target: 0.05 },
+  { m: "May", tx: 43, complaints: 0.051, target: 0.05 },
+  { m: "Jun", tx: 45, complaints: 0.048, target: 0.05 },
+  { m: "Jul", tx: 46, complaints: 0.045, target: 0.05 },
+  { m: "Aug", tx: 47, complaints: 0.043, target: 0.05 },
+  { m: "Sep", tx: 48, complaints: 0.042, target: 0.05 },
+  { m: "Oct", tx: 49, complaints: 0.040, target: 0.05 },
+  { m: "Nov", tx: 50, complaints: 0.039, target: 0.05 },
+  { m: "Dec", tx: 52, complaints: 0.037, target: 0.05 },
+];

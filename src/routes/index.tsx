@@ -81,12 +81,12 @@ function ExecutiveDashboard() {
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         <KpiCard label="Total Transactions" value={fmtNum(48923741)} delta={4.2} hint="vs prev. period" icon={<Receipt className="h-4 w-4" />} />
-        <KpiCard label="Transaction Value" value="Rp 184.6 T" delta={6.1} icon={<CircleDollarSign className="h-4 w-4" />} tone="info" />
+        <KpiCard label="Transaction Value" value="Rp 14.2 T" delta={6.1} hint="this month" icon={<CircleDollarSign className="h-4 w-4" />} tone="info" />
         <KpiCard label="Active Alerts" value="2,418" delta={12.4} hint="open queue" icon={<ShieldAlert className="h-4 w-4" />} tone="warning" invertDelta />
         <KpiCard label="Active Cases" value="312" delta={-3.8} icon={<Folder className="h-4 w-4" />} tone="info" invertDelta />
         <KpiCard label="Confirmed Fraud" value="148" delta={-8.5} icon={<AlertTriangle className="h-4 w-4" />} tone="destructive" invertDelta />
-        <KpiCard label="Fraud Loss" value="Rp 12.4 B" delta={-14.2} icon={<Banknote className="h-4 w-4" />} tone="destructive" invertDelta />
-        <KpiCard label="Recovered" value="Rp 6.8 B" delta={9.6} hint="54.8% recovery" icon={<TrendingUp className="h-4 w-4" />} tone="success" />
+        <KpiCard label="Fraud Loss" value="Rp 2.4 B" delta={-14.2} icon={<Banknote className="h-4 w-4" />} tone="destructive" invertDelta />
+        <KpiCard label="Recovered" value="Rp 1.1 B" delta={9.6} hint="45.8% recovery" icon={<TrendingUp className="h-4 w-4" />} tone="success" />
         <KpiCard label="Fraud Rate" value="0.018%" delta={-2.1} icon={<TrendingDown className="h-4 w-4" />} tone="success" invertDelta />
         <KpiCard label="Complaint Ratio" value="0.042%" delta={1.4} icon={<Users className="h-4 w-4" />} tone="warning" invertDelta />
         <KpiCard label="Cyber Incidents" value="34" delta={18.0} icon={<Cpu className="h-4 w-4" />} tone="destructive" invertDelta />

@@ -20,9 +20,9 @@ export const fraudTypes = [
   { name: "Money Mule", value: 248, color: "var(--color-chart-2)" },
   { name: "QRIS Fraud", value: 196, color: "var(--color-chart-3)" },
   { name: "Promo Abuse", value: 168, color: "var(--color-chart-4)" },
-  { name: "Merchant Fraud", value: 142, color: "var(--color-chart-5)" },
-  { name: "Synthetic Identity", value: 98, color: "var(--color-info)" },
-  { name: "Insider Fraud", value: 42, color: "var(--color-warning)" },
+  { name: "Wallet Transfer Burst", value: 142, color: "var(--color-chart-5)" },
+  { name: "SIM Swap", value: 98, color: "var(--color-info)" },
+  { name: "Synthetic Identity", value: 64, color: "var(--color-warning)" },
 ];
 
 export const incidentTrend = [
@@ -56,20 +56,33 @@ const fraudTypeList = [
   "Money Mule",
   "QRIS Fraud",
   "Promo Abuse",
-  "Merchant Fraud",
+  "Wallet Transfer Burst",
+  "SIM Swap",
   "Synthetic Identity",
 ];
 const rules = [
-  "R-1042 Velocity High Risk",
-  "R-2007 New Device + High Value",
-  "R-3015 VPN + Cash Out",
-  "R-4002 Mule Pattern",
+  "R-1042 New Device + Cash Out",
+  "R-2007 Multiple QRIS Payments",
+  "R-3015 Wallet Transfer Burst",
+  "R-4002 Money Mule Pattern",
   "R-5031 Promo Abuse Burst",
-  "R-6018 Merchant Refund Anomaly",
+  "R-6018 SIM Swap Indicator",
+  "R-7022 Account Takeover Signal",
 ];
 
 function seeded(i: number) {
   return Math.abs(Math.sin(i * 9301 + 49297) * 233280) % 1;
+}
+
+// E-wallet tiered amount picker. Most tx are micro/normal; only flagged fraud
+// can exceed the Rp 20.000.000 ceiling.
+function ewalletAmount(r: number, fraudFlag = false): number {
+  if (fraudFlag && r > 0.92) return Math.floor(20_000_000 + r * 80_000_000); // abnormal fraud
+  if (r > 0.95) return Math.floor(5_000_000 + r * 15_000_000);  // critical 5-20M
+  if (r > 0.85) return Math.floor(2_000_000 + r * 3_000_000);   // high 2-5M
+  if (r > 0.65) return Math.floor(500_000 + r * 1_500_000);     // medium 0.5-2M
+  if (r > 0.35) return Math.floor(100_000 + r * 400_000);       // normal 100K-500K
+  return Math.floor(10_000 + r * 90_000);                       // micro 10K-100K
 }
 
 export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
@@ -83,7 +96,7 @@ export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
     id: `ALR-${(100245 + i).toString()}`,
     ts: d.toISOString().replace("T", " ").slice(0, 19),
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
-    amount: Math.floor(50_000 + r * 95_000_000),
+    amount: ewalletAmount(r, sev === "Critical"),
     score: Math.floor(20 + r * 80),
     rule: rules[i % rules.length],
     severity: sev,
@@ -116,7 +129,7 @@ export const cases = Array.from({ length: 22 }).map((_, i) => {
     id: `CASE-${(20890 + i).toString()}`,
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
     type: fraudTypeList[i % fraudTypeList.length],
-    amount: Math.floor(100_000 + r * 75_000_000),
+    amount: ewalletAmount(r, statuses[i % statuses.length] === "Fraud Confirmed"),
     status: statuses[i % statuses.length],
     assignee: ["Andini P.", "Budi S.", "Citra L.", "Dharma W.", "Eka R."][i % 5],
     age: Math.floor(r * 30) + 1,
@@ -345,7 +358,8 @@ export function fmtNum(n: number) {
 
 export const ewalletProviders = ["GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"];
 
-export const idrAmounts = [50_000, 100_000, 250_000, 500_000, 1_000_000, 5_000_000, 10_000_000];
+// Realistic e-wallet single-tx tiers (in IDR)
+export const idrAmounts = [10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1_000_000, 2_000_000, 5_000_000];
 
 export interface LiveTx {
   id: string;
@@ -369,8 +383,10 @@ const merchants = [
 
 export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) => {
   const r = seeded(i + 1100);
-  const amount = idrAmounts[Math.floor(r * idrAmounts.length)];
   const score = Math.floor(10 + r * 90);
+  // Most live tx are micro/normal; only fraud-flagged tx skew higher
+  const baseAmount = idrAmounts[Math.floor(r * idrAmounts.length)];
+  const amount = r > 0.9 && score >= 85 ? Math.floor(5_000_000 + r * 12_000_000) : baseAmount;
   const decision: LiveTx["decision"] =
     score >= 85 ? "Rejected" : score >= 70 ? "Hold" : score >= 50 ? "Review" : "Approved";
   return {
@@ -396,7 +412,7 @@ export const merchantsList = Array.from({ length: 14 }).map((_, i) => {
     category: ["Convenience", "F&B", "Electronics", "Utility", "Telco", "Fuel"][i % 6],
     risk: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
     tx30d: Math.floor(200 + r * 9500),
-    gmv30d: Math.floor(50_000_000 + r * 9_500_000_000),
+    gmv30d: Math.floor(20_000_000 + r * 1_500_000_000),
     chargebackRate: (r * 4.5).toFixed(2),
     refundRate: (r * 6.2).toFixed(2),
     qrisStatic: r > 0.5,

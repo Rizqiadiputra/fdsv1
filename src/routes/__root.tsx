@@ -77,16 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sentinel EFRMP — Enterprise Fraud Risk Management" },
+      { title: "FDSV1— Enterprise Fraud Risk Management" },
       {
         name: "description",
         content:
           "Enterprise Fraud Risk Management Platform for E-Wallet, Digital Banking, and Payment Service Providers — aligned with Bank Indonesia and OJK.",
       },
       { name: "author", content: "Sentinel" },
-      { property: "og:title", content: "Sentinel EFRMP" },
-      { property: "og:description", content: "Enterprise Fraud Risk Management Platform." },
+      { property: "og:title", content: "FDSV1— Enterprise Fraud Risk Management" },
+      { property: "og:description", content: "Guardian Platform is an enterprise fraud risk management solution for digital finance." },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "FDSV1— Enterprise Fraud Risk Management" },
+      { name: "description", content: "Guardian Platform is an enterprise fraud risk management solution for digital finance." },
+      { name: "twitter:description", content: "Guardian Platform is an enterprise fraud risk management solution for digital finance." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc0d1d05-fcaf-4fae-84a5-41cce6899eba/id-preview-c7f1ff5d--3cb8c00d-f53f-4e3e-badb-864bed63e3a9.lovable.app-1780633346821.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc0d1d05-fcaf-4fae-84a5-41cce6899eba/id-preview-c7f1ff5d--3cb8c00d-f53f-4e3e-badb-864bed63e3a9.lovable.app-1780633346821.png" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

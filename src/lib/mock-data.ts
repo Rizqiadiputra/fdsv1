@@ -358,7 +358,8 @@ export function fmtNum(n: number) {
 
 export const ewalletProviders = ["GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"];
 
-export const idrAmounts = [50_000, 100_000, 250_000, 500_000, 1_000_000, 5_000_000, 10_000_000];
+// Realistic e-wallet single-tx tiers (in IDR)
+export const idrAmounts = [10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1_000_000, 2_000_000, 5_000_000];
 
 export interface LiveTx {
   id: string;
@@ -382,7 +383,9 @@ const merchants = [
 
 export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) => {
   const r = seeded(i + 1100);
-  const amount = idrAmounts[Math.floor(r * idrAmounts.length)];
+  // Most live tx are micro/normal; only fraud-flagged tx skew higher
+  const baseAmount = idrAmounts[Math.floor(r * idrAmounts.length)];
+  const amount = r > 0.9 && score >= 85 ? Math.floor(5_000_000 + r * 12_000_000) : baseAmount;
   const score = Math.floor(10 + r * 90);
   const decision: LiveTx["decision"] =
     score >= 85 ? "Rejected" : score >= 70 ? "Hold" : score >= 50 ? "Review" : "Approved";

@@ -412,7 +412,7 @@ export const merchantsList = Array.from({ length: 14 }).map((_, i) => {
     category: ["Convenience", "F&B", "Electronics", "Utility", "Telco", "Fuel"][i % 6],
     risk: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
     tx30d: Math.floor(200 + r * 9500),
-    gmv30d: Math.floor(50_000_000 + r * 9_500_000_000),
+    gmv30d: Math.floor(20_000_000 + r * 1_500_000_000),
     chargebackRate: (r * 4.5).toFixed(2),
     refundRate: (r * 6.2).toFixed(2),
     qrisStatic: r > 0.5,

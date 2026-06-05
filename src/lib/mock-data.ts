@@ -56,20 +56,33 @@ const fraudTypeList = [
   "Money Mule",
   "QRIS Fraud",
   "Promo Abuse",
-  "Merchant Fraud",
+  "Wallet Transfer Burst",
+  "SIM Swap",
   "Synthetic Identity",
 ];
 const rules = [
-  "R-1042 Velocity High Risk",
-  "R-2007 New Device + High Value",
-  "R-3015 VPN + Cash Out",
-  "R-4002 Mule Pattern",
+  "R-1042 New Device + Cash Out",
+  "R-2007 Multiple QRIS Payments",
+  "R-3015 Wallet Transfer Burst",
+  "R-4002 Money Mule Pattern",
   "R-5031 Promo Abuse Burst",
-  "R-6018 Merchant Refund Anomaly",
+  "R-6018 SIM Swap Indicator",
+  "R-7022 Account Takeover Signal",
 ];
 
 function seeded(i: number) {
   return Math.abs(Math.sin(i * 9301 + 49297) * 233280) % 1;
+}
+
+// E-wallet tiered amount picker. Most tx are micro/normal; only flagged fraud
+// can exceed the Rp 20.000.000 ceiling.
+function ewalletAmount(r: number, fraudFlag = false): number {
+  if (fraudFlag && r > 0.92) return Math.floor(20_000_000 + r * 80_000_000); // abnormal fraud
+  if (r > 0.95) return Math.floor(5_000_000 + r * 15_000_000);  // critical 5-20M
+  if (r > 0.85) return Math.floor(2_000_000 + r * 3_000_000);   // high 2-5M
+  if (r > 0.65) return Math.floor(500_000 + r * 1_500_000);     // medium 0.5-2M
+  if (r > 0.35) return Math.floor(100_000 + r * 400_000);       // normal 100K-500K
+  return Math.floor(10_000 + r * 90_000);                       // micro 10K-100K
 }
 
 export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
@@ -83,7 +96,7 @@ export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
     id: `ALR-${(100245 + i).toString()}`,
     ts: d.toISOString().replace("T", " ").slice(0, 19),
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
-    amount: Math.floor(50_000 + r * 95_000_000),
+    amount: ewalletAmount(r, sev === "Critical"),
     score: Math.floor(20 + r * 80),
     rule: rules[i % rules.length],
     severity: sev,

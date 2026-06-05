@@ -58,7 +58,7 @@ function ExecutiveDashboard() {
     <div className="space-y-6">
       <PageHeader
         title="Executive Dashboard"
-        description="Enterprise-wide fraud, risk, and resilience indicators across E-Wallet, Digital Banking, and PSP channels."
+        description="Indonesian E-Wallet fraud, risk & resilience — aligned to Bank Indonesia PSP and OJK Consumer Protection requirements."
         actions={
           <>
             <Select defaultValue="30d">

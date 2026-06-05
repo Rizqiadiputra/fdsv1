@@ -20,9 +20,9 @@ export const fraudTypes = [
   { name: "Money Mule", value: 248, color: "var(--color-chart-2)" },
   { name: "QRIS Fraud", value: 196, color: "var(--color-chart-3)" },
   { name: "Promo Abuse", value: 168, color: "var(--color-chart-4)" },
-  { name: "Merchant Fraud", value: 142, color: "var(--color-chart-5)" },
-  { name: "Synthetic Identity", value: 98, color: "var(--color-info)" },
-  { name: "Insider Fraud", value: 42, color: "var(--color-warning)" },
+  { name: "Wallet Transfer Burst", value: 142, color: "var(--color-chart-5)" },
+  { name: "SIM Swap", value: 98, color: "var(--color-info)" },
+  { name: "Synthetic Identity", value: 64, color: "var(--color-warning)" },
 ];
 
 export const incidentTrend = [

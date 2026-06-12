@@ -365,12 +365,31 @@ export const blacklists = {
 };
 
 export const regulatoryReports = [
-  { id: "OJK-2025-Q2-001", name: "OJK Fraud Quarterly Report Q2 2025", regulator: "OJK", period: "Q2 2025", status: "Submitted", due: "2025-07-15" },
-  { id: "BI-2025-06-014", name: "BI Operational Incident June 2025", regulator: "Bank Indonesia", period: "Jun 2025", status: "Draft", due: "2025-07-05" },
-  { id: "OJK-2025-Q2-002", name: "Consumer Complaint Summary", regulator: "OJK", period: "Q2 2025", status: "Submitted", due: "2025-07-15" },
-  { id: "AUD-2025-H1", name: "Internal Audit Half-Year", regulator: "Internal", period: "H1 2025", status: "In Review", due: "2025-07-30" },
-  { id: "MGT-2025-06", name: "Management Risk Dashboard", regulator: "Internal", period: "Jun 2025", status: "Submitted", due: "2025-07-03" },
-  { id: "BI-2025-Q2-003", name: "BI Fraud Reporting Q2", regulator: "Bank Indonesia", period: "Q2 2025", status: "Pending", due: "2025-07-20" },
+  { id: "OJK-2025-S1-001", name: "OJK Fraud Semester I 2025", regulator: "OJK", period: "Semester I 2025", status: "Submitted", due: "2025-07-31", version: 2, revisionDate: "2025-08-12" },
+  { id: "BI-2025-06-014", name: "BI Operational Incident June 2025", regulator: "Bank Indonesia", period: "Jun 2025", status: "Draft", due: "2025-07-05", version: 1, revisionDate: "—" },
+  { id: "OJK-2025-Q2-002", name: "Consumer Complaint Summary", regulator: "OJK", period: "Q2 2025", status: "Submitted", due: "2025-07-15", version: 1, revisionDate: "—" },
+  { id: "AUD-2025-H1", name: "Internal Audit Half-Year", regulator: "Internal", period: "H1 2025", status: "In Review", due: "2025-07-30", version: 3, revisionDate: "2025-08-05" },
+  { id: "MGT-2025-06", name: "Management Risk Dashboard", regulator: "Internal", period: "Jun 2025", status: "Submitted", due: "2025-07-03", version: 1, revisionDate: "—" },
+  { id: "BI-2025-Q2-003", name: "BI Fraud Reporting Q2", regulator: "Bank Indonesia", period: "Q2 2025", status: "Pending", due: "2025-07-20", version: 1, revisionDate: "—" },
+  { id: "TIKMI-2025-S1", name: "TIKMI Self-Assessment / SBP / RBSP", regulator: "Bank Indonesia", period: "Semester I 2025", status: "In Review", due: "2025-08-15", version: 1, revisionDate: "—" },
+];
+
+// Executive dashboard absolute counts (companion to % in Real-Time Tx Monitoring)
+export const decisionCounts = {
+  approved: 47_823_412,
+  underReview: 654_215,
+  rejected: 117_336,
+};
+
+export const vaPentestTracker = [
+  { item: "DC", activity: "DC Operational Review", status: "Active", lastDate: "2025-04-22", nextDate: "2025-10-22", finding: "All systems nominal", remediation: "—", pic: "Infra Ops" },
+  { item: "DRC", activity: "DRC Sync Validation", status: "Active", lastDate: "2025-05-14", nextDate: "2025-11-14", finding: "Replication lag 2.4s — within SLA", remediation: "—", pic: "Infra Ops" },
+  { item: "DR Drill", activity: "Full DR Failover Drill", status: "Done", lastDate: "2025-03-08", nextDate: "2025-09-08", finding: "RTO 14m / RPO 1m — meet target", remediation: "Closed", pic: "BCM Team" },
+  { item: "VA", activity: "Vulnerability Assessment (Internal)", status: "Done", lastDate: "2025-04-30", nextDate: "2025-07-30", finding: "3 medium, 1 high (TLS config)", remediation: "In Progress", pic: "Cyber Security" },
+  { item: "VA", activity: "Vulnerability Assessment (External)", status: "Scheduled", lastDate: "2025-01-25", nextDate: "2025-07-25", finding: "—", remediation: "—", pic: "Cyber Security" },
+  { item: "Pentest", activity: "Pentest Mobile App (Black-box)", status: "Done", lastDate: "2025-05-20", nextDate: "2025-11-20", finding: "2 high, 4 medium (OWASP M4/M7)", remediation: "In Progress", pic: "AppSec" },
+  { item: "Pentest", activity: "Pentest API Gateway (Grey-box)", status: "Done", lastDate: "2025-06-02", nextDate: "2025-12-02", finding: "1 critical (auth bypass) — patched", remediation: "Closed", pic: "AppSec" },
+  { item: "Pentest", activity: "Pentest Internal Network", status: "Scheduled", lastDate: "2024-12-10", nextDate: "2025-07-10", finding: "—", remediation: "—", pic: "Cyber Security" },
 ];
 
 export const mlModels = [

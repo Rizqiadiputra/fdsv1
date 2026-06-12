@@ -121,8 +121,9 @@ function FraudOps() {
                   <TableHead>User</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead className="w-[120px]">Risk</TableHead>
-                  <TableHead>Rule</TableHead>
+                  <TableHead>Rules Triggered</TableHead>
                   <TableHead>Fraud Type</TableHead>
+                  <TableHead>Lokasi/Wilayah</TableHead>
                   <TableHead>Severity</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -137,13 +138,25 @@ function FraudOps() {
                   >
                     <TableCell className="font-mono text-xs">{a.id}</TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">{a.ts}</TableCell>
-                    <TableCell className="font-mono text-xs">{a.user}</TableCell>
+                    <TableCell className="text-xs">
+                      <div className="font-mono">{a.user}</div>
+                      <div className="text-[10px] text-muted-foreground">{a.userName}</div>
+                    </TableCell>
                     <TableCell className="text-right font-mono text-xs">{fmtIDR(a.amount)}</TableCell>
                     <TableCell>
                       <RiskBar score={a.score} />
                     </TableCell>
-                    <TableCell className="text-xs">{a.rule}</TableCell>
+                    <TableCell>
+                      <div className="flex max-w-[260px] flex-wrap gap-1">
+                        {a.rulesTriggered.map((r) => (
+                          <span key={r} className="rounded border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px]">
+                            {r.split(" ")[0]}
+                          </span>
+                        ))}
+                      </div>
+                    </TableCell>
                     <TableCell className="text-xs">{a.fraudType}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{a.location}</TableCell>
                     <TableCell><SeverityBadge value={a.severity} /></TableCell>
                     <TableCell><SeverityBadge value={a.status} /></TableCell>
                     <TableCell className="text-right">

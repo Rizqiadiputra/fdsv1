@@ -34,10 +34,10 @@ function SuspiciousPage() {
           ip: `103.${20 + (i % 80)}.${10 + i}.${5 + i}`,
           source: i % 3 === 0 ? "Sumsub" : "Internal",
           evaluatedRules: [
-            { name: "R-1042 New Device + Cash Out", result: i % 2 ? "Hit" : "Pass" },
-            { name: "R-2007 Multiple QRIS Payments", result: i % 3 ? "Hit" : "Pass" },
-            { name: "R-3015 Wallet Transfer Burst", result: "Hit" },
-            { name: "R-4002 Money Mule Pattern", result: i % 4 ? "Pass" : "Hit" },
+            { name: "R-1042 New Device + Cash Out", result: (i % 2 ? "Hit" : "Pass") as "Hit" | "Pass" },
+            { name: "R-2007 Multiple QRIS Payments", result: (i % 3 ? "Hit" : "Pass") as "Hit" | "Pass" },
+            { name: "R-3015 Wallet Transfer Burst", result: "Hit" as const },
+            { name: "R-4002 Money Mule Pattern", result: (i % 4 ? "Pass" : "Hit") as "Hit" | "Pass" },
           ],
           history: { tx: 40 + i * 11, alerts: (i % 5) + 1 },
         }))

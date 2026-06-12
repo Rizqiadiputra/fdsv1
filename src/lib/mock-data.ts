@@ -450,6 +450,8 @@ export interface LiveTx {
   score: number;
   decision: "Approved" | "Review" | "Hold" | "Rejected";
   fraudType?: string;
+  heldAmount: number; // Saldo Tertahan (Rp) — for Hold/Review
+  currency: string;   // currency code from PG, placeholder "-" if unavailable
 }
 
 const channels = ["QRIS Payment", "P2P Transfer", "TopUp", "Bill Payment", "Merchant Payout", "Cash Out"];

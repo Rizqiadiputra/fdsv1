@@ -56,11 +56,11 @@ const groups: {
   {
     label: "Intelligence",
     items: [
-      { title: "Account Behavior", url: "/behavior", icon: Fingerprint },
+      // { title: "Account Behavior", url: "/behavior", icon: Fingerprint },
       { title: "User Intelligence", url: "/users", icon: Users },
-      { title: "Device Intelligence", url: "/devices", icon: Smartphone },
+      // { title: "Device Intelligence", url: "/devices", icon: Smartphone },
       { title: "Merchant Intelligence", url: "/merchants", icon: Store },
-      { title: "Network Intelligence", url: "/network", icon: Network },
+      // { title: "Network Intelligence", url: "/network", icon: Network },
       { title: "e-KYC Fraud Monitor", url: "/ekyc", icon: UserCheck },
       { title: "Fraud Analytics", url: "/analytics", icon: BarChart3 },
     ],

@@ -82,7 +82,7 @@ const groups: {
       { title: "Risk Scoring Engine", url: "/scoring", icon: Calculator },
       { title: "Parameter Configurator", url: "/parameters", icon: Sliders },
       { title: "Blacklist Management", url: "/blacklist", icon: Ban },
-      { title: "ML Analytics", url: "/ml-analytics", icon: Brain },
+      // { title: "ML Analytics", url: "/ml-analytics", icon: Brain },
     ],
   },
   {

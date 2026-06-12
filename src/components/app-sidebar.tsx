@@ -65,12 +65,12 @@ const groups: {
       { title: "Fraud Analytics", url: "/analytics", icon: BarChart3 },
     ],
   },
-  {
+    {
     label: "Risk & Security",
     items: [
       { title: "Operational Risk", url: "/operational-risk", icon: Activity },
       { title: "Cyber Security", url: "/cyber-security", icon: Lock },
-      { title: "Threat Intelligence", url: "/threat-intel", icon: Radar },
+      // { title: "Threat Intelligence", url: "/threat-intel", icon: Radar },
       { title: "Consumer Protection", url: "/consumer-protection", icon: HeartHandshake },
       { title: "Risk Management", url: "/risk-management", icon: GaugeCircle },
     ],

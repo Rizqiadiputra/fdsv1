@@ -185,6 +185,8 @@ export const users = Array.from({ length: 18 }).map((_, i) => {
       "Gunawan H.",
       "Hesti Mulyani",
     ][i % 8],
+    nik: `32${(73010100000000 + Math.floor(r * 99999999999)).toString().slice(0, 14)}`,
+    internalFlag: i % 9 === 0 ? "Internal" : "Eksternal",
     phone: `+62 8${Math.floor(1000000000 + r * 8999999999)}`,
     email: `user${i + 1}@mail.id`,
     kyc: r > 0.7 ? "Tier 3" : r > 0.4 ? "Tier 2" : "Tier 1",

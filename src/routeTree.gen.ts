@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhistleblowingRouteImport } from './routes/whistleblowing'
 import { Route as UsersRouteImport } from './routes/users'
 import { Route as TransactionMonitoringRouteImport } from './routes/transaction-monitoring'
 import { Route as ThreatIntelRouteImport } from './routes/threat-intel'
+import { Route as SuspiciousRouteImport } from './routes/suspicious'
 import { Route as ScoringRouteImport } from './routes/scoring'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RiskManagementRouteImport } from './routes/risk-management'
@@ -22,10 +24,12 @@ import { Route as NetworkRouteImport } from './routes/network'
 import { Route as MlAnalyticsRouteImport } from './routes/ml-analytics'
 import { Route as MerchantsRouteImport } from './routes/merchants'
 import { Route as LossRatioRouteImport } from './routes/loss-ratio'
+import { Route as FraudRegisterRouteImport } from './routes/fraud-register'
 import { Route as FraudOperationsRouteImport } from './routes/fraud-operations'
 import { Route as EkycRouteImport } from './routes/ekyc'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as CyberSecurityRouteImport } from './routes/cyber-security'
+import { Route as CsIntakeRouteImport } from './routes/cs-intake'
 import { Route as ConsumerProtectionRouteImport } from './routes/consumer-protection'
 import { Route as ComplaintRatioRouteImport } from './routes/complaint-ratio'
 import { Route as CasesRouteImport } from './routes/cases'
@@ -36,6 +40,11 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WhistleblowingRoute = WhistleblowingRouteImport.update({
+  id: '/whistleblowing',
+  path: '/whistleblowing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UsersRoute = UsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -49,6 +58,11 @@ const TransactionMonitoringRoute = TransactionMonitoringRouteImport.update({
 const ThreatIntelRoute = ThreatIntelRouteImport.update({
   id: '/threat-intel',
   path: '/threat-intel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuspiciousRoute = SuspiciousRouteImport.update({
+  id: '/suspicious',
+  path: '/suspicious',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScoringRoute = ScoringRouteImport.update({
@@ -101,6 +115,11 @@ const LossRatioRoute = LossRatioRouteImport.update({
   path: '/loss-ratio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FraudRegisterRoute = FraudRegisterRouteImport.update({
+  id: '/fraud-register',
+  path: '/fraud-register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FraudOperationsRoute = FraudOperationsRouteImport.update({
   id: '/fraud-operations',
   path: '/fraud-operations',
@@ -119,6 +138,11 @@ const DevicesRoute = DevicesRouteImport.update({
 const CyberSecurityRoute = CyberSecurityRouteImport.update({
   id: '/cyber-security',
   path: '/cyber-security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CsIntakeRoute = CsIntakeRouteImport.update({
+  id: '/cs-intake',
+  path: '/cs-intake',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsumerProtectionRoute = ConsumerProtectionRouteImport.update({
@@ -177,10 +201,12 @@ export interface FileRoutesByFullPath {
   '/cases': typeof CasesRoute
   '/complaint-ratio': typeof ComplaintRatioRoute
   '/consumer-protection': typeof ConsumerProtectionRoute
+  '/cs-intake': typeof CsIntakeRoute
   '/cyber-security': typeof CyberSecurityRoute
   '/devices': typeof DevicesRoute
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
+  '/fraud-register': typeof FraudRegisterRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
@@ -191,9 +217,11 @@ export interface FileRoutesByFullPath {
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
   '/scoring': typeof ScoringRoute
+  '/suspicious': typeof SuspiciousRoute
   '/threat-intel': typeof ThreatIntelRoute
   '/transaction-monitoring': typeof TransactionMonitoringRoute
   '/users': typeof UsersRoute
+  '/whistleblowing': typeof WhistleblowingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -205,10 +233,12 @@ export interface FileRoutesByTo {
   '/cases': typeof CasesRoute
   '/complaint-ratio': typeof ComplaintRatioRoute
   '/consumer-protection': typeof ConsumerProtectionRoute
+  '/cs-intake': typeof CsIntakeRoute
   '/cyber-security': typeof CyberSecurityRoute
   '/devices': typeof DevicesRoute
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
+  '/fraud-register': typeof FraudRegisterRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
@@ -219,9 +249,11 @@ export interface FileRoutesByTo {
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
   '/scoring': typeof ScoringRoute
+  '/suspicious': typeof SuspiciousRoute
   '/threat-intel': typeof ThreatIntelRoute
   '/transaction-monitoring': typeof TransactionMonitoringRoute
   '/users': typeof UsersRoute
+  '/whistleblowing': typeof WhistleblowingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -234,10 +266,12 @@ export interface FileRoutesById {
   '/cases': typeof CasesRoute
   '/complaint-ratio': typeof ComplaintRatioRoute
   '/consumer-protection': typeof ConsumerProtectionRoute
+  '/cs-intake': typeof CsIntakeRoute
   '/cyber-security': typeof CyberSecurityRoute
   '/devices': typeof DevicesRoute
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
+  '/fraud-register': typeof FraudRegisterRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
@@ -248,9 +282,11 @@ export interface FileRoutesById {
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
   '/scoring': typeof ScoringRoute
+  '/suspicious': typeof SuspiciousRoute
   '/threat-intel': typeof ThreatIntelRoute
   '/transaction-monitoring': typeof TransactionMonitoringRoute
   '/users': typeof UsersRoute
+  '/whistleblowing': typeof WhistleblowingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -264,10 +300,12 @@ export interface FileRouteTypes {
     | '/cases'
     | '/complaint-ratio'
     | '/consumer-protection'
+    | '/cs-intake'
     | '/cyber-security'
     | '/devices'
     | '/ekyc'
     | '/fraud-operations'
+    | '/fraud-register'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
@@ -278,9 +316,11 @@ export interface FileRouteTypes {
     | '/risk-management'
     | '/rules'
     | '/scoring'
+    | '/suspicious'
     | '/threat-intel'
     | '/transaction-monitoring'
     | '/users'
+    | '/whistleblowing'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -292,10 +332,12 @@ export interface FileRouteTypes {
     | '/cases'
     | '/complaint-ratio'
     | '/consumer-protection'
+    | '/cs-intake'
     | '/cyber-security'
     | '/devices'
     | '/ekyc'
     | '/fraud-operations'
+    | '/fraud-register'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
@@ -306,9 +348,11 @@ export interface FileRouteTypes {
     | '/risk-management'
     | '/rules'
     | '/scoring'
+    | '/suspicious'
     | '/threat-intel'
     | '/transaction-monitoring'
     | '/users'
+    | '/whistleblowing'
   id:
     | '__root__'
     | '/'
@@ -320,10 +364,12 @@ export interface FileRouteTypes {
     | '/cases'
     | '/complaint-ratio'
     | '/consumer-protection'
+    | '/cs-intake'
     | '/cyber-security'
     | '/devices'
     | '/ekyc'
     | '/fraud-operations'
+    | '/fraud-register'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
@@ -334,9 +380,11 @@ export interface FileRouteTypes {
     | '/risk-management'
     | '/rules'
     | '/scoring'
+    | '/suspicious'
     | '/threat-intel'
     | '/transaction-monitoring'
     | '/users'
+    | '/whistleblowing'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -349,10 +397,12 @@ export interface RootRouteChildren {
   CasesRoute: typeof CasesRoute
   ComplaintRatioRoute: typeof ComplaintRatioRoute
   ConsumerProtectionRoute: typeof ConsumerProtectionRoute
+  CsIntakeRoute: typeof CsIntakeRoute
   CyberSecurityRoute: typeof CyberSecurityRoute
   DevicesRoute: typeof DevicesRoute
   EkycRoute: typeof EkycRoute
   FraudOperationsRoute: typeof FraudOperationsRoute
+  FraudRegisterRoute: typeof FraudRegisterRoute
   LossRatioRoute: typeof LossRatioRoute
   MerchantsRoute: typeof MerchantsRoute
   MlAnalyticsRoute: typeof MlAnalyticsRoute
@@ -363,13 +413,22 @@ export interface RootRouteChildren {
   RiskManagementRoute: typeof RiskManagementRoute
   RulesRoute: typeof RulesRoute
   ScoringRoute: typeof ScoringRoute
+  SuspiciousRoute: typeof SuspiciousRoute
   ThreatIntelRoute: typeof ThreatIntelRoute
   TransactionMonitoringRoute: typeof TransactionMonitoringRoute
   UsersRoute: typeof UsersRoute
+  WhistleblowingRoute: typeof WhistleblowingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/whistleblowing': {
+      id: '/whistleblowing'
+      path: '/whistleblowing'
+      fullPath: '/whistleblowing'
+      preLoaderRoute: typeof WhistleblowingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/users': {
       id: '/users'
       path: '/users'
@@ -389,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: '/threat-intel'
       fullPath: '/threat-intel'
       preLoaderRoute: typeof ThreatIntelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suspicious': {
+      id: '/suspicious'
+      path: '/suspicious'
+      fullPath: '/suspicious'
+      preLoaderRoute: typeof SuspiciousRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scoring': {
@@ -461,6 +527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LossRatioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fraud-register': {
+      id: '/fraud-register'
+      path: '/fraud-register'
+      fullPath: '/fraud-register'
+      preLoaderRoute: typeof FraudRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fraud-operations': {
       id: '/fraud-operations'
       path: '/fraud-operations'
@@ -487,6 +560,13 @@ declare module '@tanstack/react-router' {
       path: '/cyber-security'
       fullPath: '/cyber-security'
       preLoaderRoute: typeof CyberSecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cs-intake': {
+      id: '/cs-intake'
+      path: '/cs-intake'
+      fullPath: '/cs-intake'
+      preLoaderRoute: typeof CsIntakeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consumer-protection': {
@@ -565,10 +645,12 @@ const rootRouteChildren: RootRouteChildren = {
   CasesRoute: CasesRoute,
   ComplaintRatioRoute: ComplaintRatioRoute,
   ConsumerProtectionRoute: ConsumerProtectionRoute,
+  CsIntakeRoute: CsIntakeRoute,
   CyberSecurityRoute: CyberSecurityRoute,
   DevicesRoute: DevicesRoute,
   EkycRoute: EkycRoute,
   FraudOperationsRoute: FraudOperationsRoute,
+  FraudRegisterRoute: FraudRegisterRoute,
   LossRatioRoute: LossRatioRoute,
   MerchantsRoute: MerchantsRoute,
   MlAnalyticsRoute: MlAnalyticsRoute,
@@ -579,9 +661,11 @@ const rootRouteChildren: RootRouteChildren = {
   RiskManagementRoute: RiskManagementRoute,
   RulesRoute: RulesRoute,
   ScoringRoute: ScoringRoute,
+  SuspiciousRoute: SuspiciousRoute,
   ThreatIntelRoute: ThreatIntelRoute,
   TransactionMonitoringRoute: TransactionMonitoringRoute,
   UsersRoute: UsersRoute,
+  WhistleblowingRoute: WhistleblowingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

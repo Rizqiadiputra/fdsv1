@@ -26,6 +26,10 @@ import {
   Radar,
   TrendingDown,
   MessageSquareWarning,
+  ShieldQuestion,
+  BookCheck,
+  Megaphone,
+  Siren,
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,7 +54,9 @@ const groups: {
       { title: "Executive Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Real-Time Tx Monitoring", url: "/transaction-monitoring", icon: Zap },
       { title: "Fraud Operations", url: "/fraud-operations", icon: ShieldAlert },
+      { title: "Suspicious Transactions", url: "/suspicious", icon: ShieldQuestion },
       { title: "Case Management", url: "/cases", icon: Folder },
+      { title: "Confirmed Fraud Register", url: "/fraud-register", icon: BookCheck },
     ],
   },
   {
@@ -72,6 +78,8 @@ const groups: {
       { title: "Cyber Security", url: "/cyber-security", icon: Lock },
       // { title: "Threat Intelligence", url: "/threat-intel", icon: Radar },
       { title: "Consumer Protection", url: "/consumer-protection", icon: HeartHandshake },
+      { title: "Laporan Dugaan Fraud (CS)", url: "/cs-intake", icon: Megaphone },
+      { title: "Whistleblowing System", url: "/whistleblowing", icon: Siren },
       { title: "Risk Management", url: "/risk-management", icon: GaugeCircle },
     ],
   },

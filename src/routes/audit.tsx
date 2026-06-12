@@ -44,10 +44,23 @@ function AuditPage() {
                 <TableRow key={i} className="hover:bg-muted/40">
                   <TableCell className="font-mono text-xs text-muted-foreground">{a.ts}</TableCell>
                   <TableCell className="text-xs"><Badge variant="outline" className="font-mono text-[10px]">{a.user}</Badge></TableCell>
-                  <TableCell className="text-xs font-medium">{a.action}</TableCell>
+                  <TableCell className="text-xs font-medium">
+                    {a.action}
+                    {a.sensitive && (
+                      <Badge variant="outline" className="ml-1.5 border-warning/40 bg-warning/10 text-[9px] text-warning">sensitive</Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="font-mono text-xs">{a.object}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{a.before}</TableCell>
-                  <TableCell className="font-mono text-xs text-foreground">{a.after}</TableCell>
+                  {a.sensitive ? (
+                    <>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{a.before}</TableCell>
+                      <TableCell className="font-mono text-xs text-foreground">{a.after}</TableCell>
+                    </>
+                  ) : (
+                    <TableCell colSpan={2} className="text-xs italic text-muted-foreground">
+                      {a.summary} <span className="ml-1 text-[10px]">(snapshot tidak disimpan — bukan field teregulasi)</span>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

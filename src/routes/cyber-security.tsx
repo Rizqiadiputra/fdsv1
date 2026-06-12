@@ -5,8 +5,10 @@ import { PageHeader } from "@/components/page-header";
 import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { SeverityBadge } from "@/components/severity-badge";
-import { cyberIncidents } from "@/lib/mock-data";
+import { cyberIncidents, vaPentestTracker } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/cyber-security")({
   head: () => ({ meta: [{ title: "Cyber Security — Sentinel EFRMP" }] }),

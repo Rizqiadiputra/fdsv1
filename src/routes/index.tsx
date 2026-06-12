@@ -94,6 +94,12 @@ function ExecutiveDashboard() {
         <KpiCard label="Tx Success Rate" value="99.42%" delta={0.18} icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
       </div>
 
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <KpiCard label="Approved Count" value={fmtNum(decisionCounts.approved)} delta={4.1} hint="absolute count" icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
+        <KpiCard label="Under Review Count" value={fmtNum(decisionCounts.underReview)} delta={-1.6} hint="hold + review" icon={<Activity className="h-4 w-4" />} tone="warning" invertDelta />
+        <KpiCard label="Rejected Count" value={fmtNum(decisionCounts.rejected)} delta={-3.2} hint="auto + manual" icon={<ShieldAlert className="h-4 w-4" />} tone="destructive" invertDelta />
+      </div>
+
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">

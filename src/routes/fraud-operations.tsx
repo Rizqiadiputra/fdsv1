@@ -82,9 +82,9 @@ function FraudOps() {
         <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 pb-3">
           <div className="flex items-center gap-3">
             <CardTitle className="text-base">Live Alert Queue</CardTitle>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-xs text-success">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
-              streaming
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-info/30 bg-info/10 px-2 py-0.5 text-xs text-info">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-info" />
+              polling · last {lastPoll}
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-2">

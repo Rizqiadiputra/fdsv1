@@ -36,7 +36,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { fraudTrend, fraudTypes, incidentTrend, fmtNum } from "@/lib/mock-data";
+import { fraudTrend, fraudTypes, incidentTrend, fmtNum, decisionCounts } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/")({

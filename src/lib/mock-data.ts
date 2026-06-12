@@ -43,12 +43,15 @@ export interface Alert {
   id: string;
   ts: string;
   user: string;
+  userName: string;
   amount: number;
   score: number;
   rule: string;
+  rulesTriggered: string[];
   severity: Severity;
   fraudType: string;
   status: AlertStatus;
+  location: string;
 }
 
 const fraudTypeList = [

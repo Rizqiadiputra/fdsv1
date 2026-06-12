@@ -26,8 +26,11 @@ export const Route = createFileRoute("/transaction-monitoring")({
 function TxMonitoring() {
   const [items, setItems] = useState<LiveTx[]>(liveTransactions);
   const [tps, setTps] = useState(842);
+  const [lastPoll, setLastPoll] = useState<string>(new Date().toLocaleTimeString("id-ID"));
 
   useEffect(() => {
+    // Polling refresh — backend tetap mengukur SLA <500ms; UI hanya
+    // me-refresh tabel setiap 4 detik agar tidak membanjiri front-end.
     const t = setInterval(() => {
       setItems((prev) => {
         const next = [...prev];
@@ -44,7 +47,8 @@ function TxMonitoring() {
         return next;
       });
       setTps((v) => Math.max(600, Math.min(1200, v + Math.floor(Math.random() * 40 - 20))));
-    }, 2200);
+      setLastPoll(new Date().toLocaleTimeString("id-ID"));
+    }, 4000);
     return () => clearInterval(t);
   }, []);
 
@@ -84,10 +88,10 @@ function TxMonitoring() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-base">Live Decision Stream</CardTitle>
-              <CardDescription>Real-time scoring on every transaction</CardDescription>
+              <CardDescription>Polling tiap 4 detik · backend SLA &lt;500ms · last refresh {lastPoll}</CardDescription>
             </div>
-            <Badge variant="outline" className="border-success/40 bg-success/10 text-success">
-              <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-success" /> Live
+            <Badge variant="outline" className="border-info/40 bg-info/10 text-info">
+              <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-info" /> Polling
             </Badge>
           </div>
         </CardHeader>
@@ -103,8 +107,10 @@ function TxMonitoring() {
                   <TableHead>Channel</TableHead>
                   <TableHead>Merchant</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Mata Uang</TableHead>
                   <TableHead>Score</TableHead>
                   <TableHead>Decision</TableHead>
+                  <TableHead className="text-right">Saldo Tertahan</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -117,6 +123,7 @@ function TxMonitoring() {
                     <TableCell className="text-xs">{t.channel}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{t.merchant ?? "—"}</TableCell>
                     <TableCell className="text-right font-mono text-xs">{fmtIDR(t.amount)}</TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{t.currency}</TableCell>
                     <TableCell>
                       <span className={cn(
                         "rounded px-1.5 py-0.5 font-mono text-xs",
@@ -134,6 +141,9 @@ function TxMonitoring() {
                         t.decision === "Hold" && "border-warning/40 bg-warning/10 text-warning",
                         t.decision === "Rejected" && "border-destructive/40 bg-destructive/10 text-destructive",
                       )}>{t.decision}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-mono text-xs text-muted-foreground">
+                      {t.heldAmount > 0 ? fmtIDR(t.heldAmount) : "—"}
                     </TableCell>
                   </TableRow>
                 ))}

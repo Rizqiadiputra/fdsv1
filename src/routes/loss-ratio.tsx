@@ -23,10 +23,11 @@ function LossRatio() {
         title="Fraud Loss Ratio Monitoring"
         description="Loss in basis points (bps) against GMV — aligned to risk appetite communicated to BI & OJK."
       />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         <KpiCard label="YTD Loss" value="Rp 184.6 B" delta={-6.4} icon={<Banknote className="h-4 w-4" />} tone="success" invertDelta />
         <KpiCard label="Loss Ratio (bps)" value="1.42" delta={-0.12} hint="vs target 2.00" icon={<TrendingDown className="h-4 w-4" />} tone="success" invertDelta />
-        <KpiCard label="Recovered" value="Rp 78.4 B" delta={9.8} hint="42.4% recovery" icon={<TrendingUp className="h-4 w-4" />} tone="success" />
+        <KpiCard label="Recovered" value="Rp 78.4 B" delta={9.8} hint="YTD" icon={<TrendingUp className="h-4 w-4" />} tone="success" />
+        <KpiCard label="Recovery Rate (%)" value="42.5%" delta={3.4} hint="Recovered ÷ Loss (YTD)" icon={<TrendingUp className="h-4 w-4" />} tone="success" />
         <KpiCard label="Risk Appetite" value="≤ 2.00 bps" hint="approved by RMC" icon={<Target className="h-4 w-4" />} tone="info" />
       </div>
 

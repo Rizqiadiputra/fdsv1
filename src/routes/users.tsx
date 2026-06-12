@@ -45,6 +45,8 @@ function UsersPage() {
                 <TableRow className="bg-muted/40">
                   <TableHead>User ID</TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>NIK</TableHead>
+                  <TableHead>Flag</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>KYC</TableHead>
                   <TableHead className="w-[180px]">Risk Score</TableHead>
@@ -59,6 +61,15 @@ function UsersPage() {
                   <TableRow key={u.id} className="hover:bg-muted/40">
                     <TableCell className="font-mono text-xs">{u.id}</TableCell>
                     <TableCell className="text-xs">{u.name}</TableCell>
+                    <TableCell className="font-mono text-[11px] text-muted-foreground">{u.nik}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={cn(
+                        "text-[10px]",
+                        u.internalFlag === "Internal"
+                          ? "border-warning/40 bg-warning/10 text-warning"
+                          : "border-info/30 bg-info/10 text-info",
+                      )}>{u.internalFlag}</Badge>
+                    </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">{u.phone}</TableCell>
                     <TableCell><Badge variant="outline" className="text-xs">{u.kyc}</Badge></TableCell>
                     <TableCell><RiskMeter score={u.score} /></TableCell>

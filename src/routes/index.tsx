@@ -36,7 +36,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { fraudTrend, fraudTypes, incidentTrend, fmtNum } from "@/lib/mock-data";
+import { fraudTrend, fraudTypes, incidentTrend, fmtNum, decisionCounts } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/")({
@@ -92,6 +92,12 @@ function ExecutiveDashboard() {
         <KpiCard label="Cyber Incidents" value="34" delta={18.0} icon={<Cpu className="h-4 w-4" />} tone="destructive" invertDelta />
         <KpiCard label="System Availability" value="99.984%" delta={0.02} icon={<Activity className="h-4 w-4" />} tone="success" />
         <KpiCard label="Tx Success Rate" value="99.42%" delta={0.18} icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <KpiCard label="Approved Count" value={fmtNum(decisionCounts.approved)} delta={4.1} hint="absolute count" icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
+        <KpiCard label="Under Review Count" value={fmtNum(decisionCounts.underReview)} delta={-1.6} hint="hold + review" icon={<Activity className="h-4 w-4" />} tone="warning" invertDelta />
+        <KpiCard label="Rejected Count" value={fmtNum(decisionCounts.rejected)} delta={-3.2} hint="auto + manual" icon={<ShieldAlert className="h-4 w-4" />} tone="destructive" invertDelta />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">

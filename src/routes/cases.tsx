@@ -62,10 +62,15 @@ function CaseMgmt() {
                   <TableHead>Case ID</TableHead>
                   <TableHead>User</TableHead>
                   <TableHead>Fraud Type</TableHead>
-                  <TableHead className="text-right">Exposure</TableHead>
+                  <TableHead className="text-right">Loss</TableHead>
+                  <TableHead className="text-right">Recovered</TableHead>
+                  <TableHead>Lokasi</TableHead>
+                  <TableHead>Wallet/Rek. Pelaku</TableHead>
+                  <TableHead>Divisi/Unit</TableHead>
+                  <TableHead>Tindak Lanjut</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Assignee</TableHead>
-                  <TableHead className="text-center">Age (d)</TableHead>
+                  <TableHead className="text-center">Age</TableHead>
                   <TableHead>SLA</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
@@ -76,7 +81,12 @@ function CaseMgmt() {
                     <TableCell className="font-mono text-xs">{c.id}</TableCell>
                     <TableCell className="font-mono text-xs">{c.user}</TableCell>
                     <TableCell className="text-xs">{c.type}</TableCell>
-                    <TableCell className="text-right font-mono text-xs">{fmtIDR(c.amount)}</TableCell>
+                    <TableCell className="text-right font-mono text-xs text-destructive">{fmtIDR(c.lossAmount)}</TableCell>
+                    <TableCell className="text-right font-mono text-xs text-success">{c.recoveredAmount > 0 ? fmtIDR(c.recoveredAmount) : "—"}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{c.location}</TableCell>
+                    <TableCell className="font-mono text-[11px] text-muted-foreground">{c.perpetratorAccount}</TableCell>
+                    <TableCell className="text-xs">{c.division}</TableCell>
+                    <TableCell className="max-w-[260px] truncate text-xs text-muted-foreground" title={c.recommendation}>{c.recommendation}</TableCell>
                     <TableCell><SeverityBadge value={c.status} /></TableCell>
                     <TableCell className="text-xs">{c.assignee}</TableCell>
                     <TableCell className="text-center font-mono text-xs">{c.age}</TableCell>

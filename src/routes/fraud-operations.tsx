@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, ShieldAlert, Activity, Clock, Filter } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { KpiCard } from "@/components/kpi-card";
@@ -40,6 +40,17 @@ export const Route = createFileRoute("/fraud-operations")({
 function FraudOps() {
   const [tab, setTab] = useState("all");
   const [selected, setSelected] = useState<Alert | null>(null);
+  const [lastPoll, setLastPoll] = useState<string>(new Date().toLocaleTimeString("id-ID"));
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    // Polling refresh (bukan websocket) tiap 5 detik.
+    const t = setInterval(() => {
+      setTick((n) => n + 1);
+      setLastPoll(new Date().toLocaleTimeString("id-ID"));
+    }, 5000);
+    return () => clearInterval(t);
+  }, []);
 
   const filtered = alerts.filter((a) =>
     tab === "all" ? true : a.severity.toLowerCase() === tab,
@@ -71,9 +82,9 @@ function FraudOps() {
         <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 pb-3">
           <div className="flex items-center gap-3">
             <CardTitle className="text-base">Live Alert Queue</CardTitle>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-xs text-success">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
-              streaming
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-info/30 bg-info/10 px-2 py-0.5 text-xs text-info">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-info" />
+              polling · last {lastPoll}
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -110,8 +121,9 @@ function FraudOps() {
                   <TableHead>User</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead className="w-[120px]">Risk</TableHead>
-                  <TableHead>Rule</TableHead>
+                  <TableHead>Rules Triggered</TableHead>
                   <TableHead>Fraud Type</TableHead>
+                  <TableHead>Lokasi/Wilayah</TableHead>
                   <TableHead>Severity</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -126,13 +138,25 @@ function FraudOps() {
                   >
                     <TableCell className="font-mono text-xs">{a.id}</TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">{a.ts}</TableCell>
-                    <TableCell className="font-mono text-xs">{a.user}</TableCell>
+                    <TableCell className="text-xs">
+                      <div className="font-mono">{a.user}</div>
+                      <div className="text-[10px] text-muted-foreground">{a.userName}</div>
+                    </TableCell>
                     <TableCell className="text-right font-mono text-xs">{fmtIDR(a.amount)}</TableCell>
                     <TableCell>
                       <RiskBar score={a.score} />
                     </TableCell>
-                    <TableCell className="text-xs">{a.rule}</TableCell>
+                    <TableCell>
+                      <div className="flex max-w-[260px] flex-wrap gap-1">
+                        {a.rulesTriggered.map((r) => (
+                          <span key={r} className="rounded border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px]">
+                            {r.split(" ")[0]}
+                          </span>
+                        ))}
+                      </div>
+                    </TableCell>
                     <TableCell className="text-xs">{a.fraudType}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{a.location}</TableCell>
                     <TableCell><SeverityBadge value={a.severity} /></TableCell>
                     <TableCell><SeverityBadge value={a.status} /></TableCell>
                     <TableCell className="text-right">

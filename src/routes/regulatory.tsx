@@ -22,21 +22,22 @@ function RegulatoryPage() {
         actions={<Button size="sm"><FileText className="mr-1.5 h-3.5 w-3.5" /> Generate Report</Button>}
       />
 
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-5">
         {[
-          { name: "OJK Fraud", desc: "Quarterly", icon: "OJK", tone: "bg-info/15 text-info" },
+          { name: "OJK Fraud Semester", desc: "Semester (Jun & Des) — deadline 31 bln berikutnya", icon: "OJK", tone: "bg-info/15 text-info" },
           { name: "BI Incident", desc: "Monthly", icon: "BI", tone: "bg-primary/15 text-primary" },
+          { name: "TIKMI Self-Assessment / SBP / RBSP", desc: "BI — Semester", icon: "TIK", tone: "bg-chart-2/15 text-chart-2" },
           { name: "Internal Audit", desc: "Half-yearly", icon: "IA", tone: "bg-warning/15 text-warning" },
           { name: "Management", desc: "Monthly", icon: "MG", tone: "bg-success/15 text-success" },
         ].map((r) => (
           <Card key={r.name} className="p-4">
             <div className="flex items-center gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-lg font-mono text-xs font-bold ${r.tone}`}>
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold ${r.tone}`}>
                 {r.icon}
               </div>
-              <div>
-                <div className="text-sm font-medium">{r.name}</div>
-                <div className="text-xs text-muted-foreground">{r.desc}</div>
+              <div className="min-w-0">
+                <div className="text-sm font-medium leading-tight">{r.name}</div>
+                <div className="mt-0.5 text-[11px] text-muted-foreground">{r.desc}</div>
               </div>
             </div>
           </Card>
@@ -46,7 +47,7 @@ function RegulatoryPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Submission Register</CardTitle>
-          <CardDescription>Export to PDF, Excel, or CSV</CardDescription>
+          <CardDescription>Versi/revisi maks. 15 hari kerja dari submission awal · Export ke PDF, Excel, atau CSV</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -58,6 +59,8 @@ function RegulatoryPage() {
                 <TableHead>Period</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Due</TableHead>
+                <TableHead className="text-center">Versi/Revisi</TableHead>
+                <TableHead>Tanggal Revisi</TableHead>
                 <TableHead className="text-right">Export</TableHead>
               </TableRow>
             </TableHeader>
@@ -70,6 +73,8 @@ function RegulatoryPage() {
                   <TableCell className="text-xs">{r.period}</TableCell>
                   <TableCell><SeverityBadge value={r.status} /></TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">{r.due}</TableCell>
+                  <TableCell className="text-center font-mono text-xs">v{r.version}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{r.revisionDate}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button variant="ghost" size="sm" className="h-7 text-[11px]"><FileDown className="mr-1 h-3 w-3" />PDF</Button>

@@ -43,12 +43,15 @@ export interface Alert {
   id: string;
   ts: string;
   user: string;
+  userName: string;
   amount: number;
   score: number;
   rule: string;
+  rulesTriggered: string[];
   severity: Severity;
   fraudType: string;
   status: AlertStatus;
+  location: string;
 }
 
 const fraudTypeList = [
@@ -85,6 +88,9 @@ function ewalletAmount(r: number, fraudFlag = false): number {
   return Math.floor(10_000 + r * 90_000);                       // micro 10K-100K
 }
 
+const userNames = ["Ahmad Wijaya","Siti Rahmawati","Budi Santoso","Dewi Lestari","Eko Prasetyo","Fitri Handayani","Gunawan H.","Hesti Mulyani"];
+const idLocations = ["Jakarta Pusat","Bandung","Surabaya","Medan","Denpasar","Makassar","Semarang","Yogyakarta","Tangerang","Bekasi"];
+
 export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
   const r = seeded(i);
   const sev: Severity =
@@ -92,16 +98,23 @@ export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
   const status: AlertStatus =
     r > 0.75 ? "Escalated" : r > 0.5 ? "In Review" : r > 0.2 ? "New" : "Closed";
   const d = new Date(Date.now() - i * 1000 * 60 * 17);
+  const triggeredCount = r > 0.75 ? 3 : r > 0.45 ? 2 : 1;
+  const rulesTriggered = Array.from({ length: triggeredCount }).map(
+    (_, k) => rules[(i + k * 2) % rules.length],
+  );
   return {
     id: `ALR-${(100245 + i).toString()}`,
     ts: d.toISOString().replace("T", " ").slice(0, 19),
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
+    userName: userNames[i % userNames.length],
     amount: ewalletAmount(r, sev === "Critical"),
     score: Math.floor(20 + r * 80),
     rule: rules[i % rules.length],
+    rulesTriggered,
     severity: sev,
     fraudType: fraudTypeList[i % fraudTypeList.length],
     status,
+    location: idLocations[i % idLocations.length],
   };
 });
 
@@ -114,6 +127,17 @@ export type CaseStatus =
   | "False Positive"
   | "Closed";
 
+const caseLocations = ["Jakarta Pusat","Bandung","Surabaya","Medan","Denpasar","Makassar","Semarang","Yogyakarta","Tangerang","Bekasi","Palembang","Pekanbaru"];
+const caseDivisions = ["Fraud Ops","Risk Management","Compliance","Cyber Security","Consumer Protection","Branch Banking","Digital Channel"];
+const caseRecs = [
+  "Blacklist wallet & device, lapor SKNBI, edukasi nasabah.",
+  "Tahan saldo, eskalasi ke Cyber Security, koordinasi dengan bank rekanan.",
+  "Refund nasabah, perbarui rule R-1042, audit merchant terkait.",
+  "Investigasi lanjutan, koordinasi PPATK & Bareskrim.",
+  "Tutup wallet, freeze rekening tujuan, klaim asuransi fraud.",
+  "Monitoring 30 hari, kuatkan parameter velocity.",
+];
+
 export const cases = Array.from({ length: 22 }).map((_, i) => {
   const r = seeded(i + 100);
   const statuses: CaseStatus[] = [
@@ -125,11 +149,21 @@ export const cases = Array.from({ length: 22 }).map((_, i) => {
     "False Positive",
     "Closed",
   ];
+  const amount = ewalletAmount(r, statuses[i % statuses.length] === "Fraud Confirmed");
+  const recovered = statuses[i % statuses.length] === "Fraud Confirmed"
+    ? Math.floor(amount * (0.2 + r * 0.5))
+    : statuses[i % statuses.length] === "Closed" ? Math.floor(amount * (0.4 + r * 0.4)) : 0;
   return {
     id: `CASE-${(20890 + i).toString()}`,
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
     type: fraudTypeList[i % fraudTypeList.length],
-    amount: ewalletAmount(r, statuses[i % statuses.length] === "Fraud Confirmed"),
+    amount,
+    lossAmount: amount,
+    recoveredAmount: recovered,
+    location: caseLocations[i % caseLocations.length],
+    perpetratorAccount: `${["GoPay","OVO","DANA","ShopeePay","LinkAja"][i % 5]} ${(8121000000 + Math.floor(r * 999999999)).toString().slice(0,12)}`,
+    division: caseDivisions[i % caseDivisions.length],
+    recommendation: caseRecs[i % caseRecs.length],
     status: statuses[i % statuses.length],
     assignee: ["Andini P.", "Budi S.", "Citra L.", "Dharma W.", "Eka R."][i % 5],
     age: Math.floor(r * 30) + 1,
@@ -151,6 +185,8 @@ export const users = Array.from({ length: 18 }).map((_, i) => {
       "Gunawan H.",
       "Hesti Mulyani",
     ][i % 8],
+    nik: `32${(73010100000000 + Math.floor(r * 99999999999)).toString().slice(0, 14)}`,
+    internalFlag: i % 9 === 0 ? "Internal" : "Eksternal",
     phone: `+62 8${Math.floor(1000000000 + r * 8999999999)}`,
     email: `user${i + 1}@mail.id`,
     kyc: r > 0.7 ? "Tier 3" : r > 0.4 ? "Tier 2" : "Tier 1",
@@ -234,8 +270,12 @@ export const riskRegister = Array.from({ length: 10 }).map((_, i) => {
   };
 });
 
+function fmtDateTime(d: Date) {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export const cyberIncidents = Array.from({ length: 12 }).map((_, i) => {
-  const r = seeded(i + 700);
   return {
     id: `INC-${(80012 + i).toString()}`,
     type: [
@@ -248,27 +288,46 @@ export const cyberIncidents = Array.from({ length: 12 }).map((_, i) => {
     ][i % 6],
     severity: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
     status: ["Open", "Triage", "Contained", "Resolved"][i % 4],
-    detected: new Date(Date.now() - i * 3600_000 * 9).toISOString().slice(0, 16).replace("T", " "),
+    detected: fmtDateTime(new Date(Date.now() - (i + 1) * 3600_000 * 9)),
     source: ["External", "Internal", "Partner"][i % 3],
   };
 });
 
-export const auditLog = Array.from({ length: 20 }).map((_, i) => {
-  const r = seeded(i + 800);
+// Sensitive/regulated audit actions that must keep full before/after snapshots.
+export const SENSITIVE_AUDIT_ACTIONS = new Set<string>([
+  "Rule Updated",
+  "Case Status Changed",
+  "Case Assigned",
+  "Blacklist Added",
+  "Parameter Updated",
+  "Approval Granted",
+]);
+
+const auditActionPool = [
+  "Login",
+  "Rule Updated",
+  "Case Assigned",
+  "Blacklist Added",
+  "Approval Granted",
+  "Logout",
+  "Parameter Updated",
+  "Case Status Changed",
+  "Dashboard Viewed",
+  "Report Exported",
+];
+
+export const auditLog = Array.from({ length: 22 }).map((_, i) => {
+  const action = auditActionPool[i % auditActionPool.length];
+  const sensitive = SENSITIVE_AUDIT_ACTIONS.has(action);
   return {
-    ts: new Date(Date.now() - i * 1000 * 60 * 23).toISOString().slice(0, 19).replace("T", " "),
+    ts: fmtDateTime(new Date(Date.now() - (i + 1) * 1000 * 60 * 23)),
     user: ["andini.p", "budi.s", "citra.l", "admin", "auditor1"][i % 5],
-    action: [
-      "Login",
-      "Rule Updated",
-      "Case Assigned",
-      "Blacklist Added",
-      "Approval Granted",
-      "Logout",
-    ][i % 6],
-    object: ["RULE-1004", "CASE-20893", "USR-40512", "DEV-70241", "—"][i % 5],
-    before: ["Active", "Open", "—", "—", "—"][i % 5],
-    after: ["Disabled", "Assigned", "Blacklisted", "Approved", "—"][i % 5],
+    action,
+    object: ["RULE-1004", "CASE-20893", "USR-40512", "DEV-70241", "PARAM-MAX_DAILY"][i % 5],
+    sensitive,
+    before: sensitive ? ["Active", "Open", "—", "Rp 2.000.000", "Pending"][i % 5] : null,
+    after: sensitive ? ["Disabled", "Assigned", "Blacklisted", "Rp 5.000.000", "Approved"][i % 5] : null,
+    summary: sensitive ? null : `field "${["session","filter","report_type","page","view"][i % 5]}" diubah`,
   };
 });
 
@@ -306,12 +365,31 @@ export const blacklists = {
 };
 
 export const regulatoryReports = [
-  { id: "OJK-2025-Q2-001", name: "OJK Fraud Quarterly Report Q2 2025", regulator: "OJK", period: "Q2 2025", status: "Submitted", due: "2025-07-15" },
-  { id: "BI-2025-06-014", name: "BI Operational Incident June 2025", regulator: "Bank Indonesia", period: "Jun 2025", status: "Draft", due: "2025-07-05" },
-  { id: "OJK-2025-Q2-002", name: "Consumer Complaint Summary", regulator: "OJK", period: "Q2 2025", status: "Submitted", due: "2025-07-15" },
-  { id: "AUD-2025-H1", name: "Internal Audit Half-Year", regulator: "Internal", period: "H1 2025", status: "In Review", due: "2025-07-30" },
-  { id: "MGT-2025-06", name: "Management Risk Dashboard", regulator: "Internal", period: "Jun 2025", status: "Submitted", due: "2025-07-03" },
-  { id: "BI-2025-Q2-003", name: "BI Fraud Reporting Q2", regulator: "Bank Indonesia", period: "Q2 2025", status: "Pending", due: "2025-07-20" },
+  { id: "OJK-2025-S1-001", name: "OJK Fraud Semester I 2025", regulator: "OJK", period: "Semester I 2025", status: "Submitted", due: "2025-07-31", version: 2, revisionDate: "2025-08-12" },
+  { id: "BI-2025-06-014", name: "BI Operational Incident June 2025", regulator: "Bank Indonesia", period: "Jun 2025", status: "Draft", due: "2025-07-05", version: 1, revisionDate: "—" },
+  { id: "OJK-2025-Q2-002", name: "Consumer Complaint Summary", regulator: "OJK", period: "Q2 2025", status: "Submitted", due: "2025-07-15", version: 1, revisionDate: "—" },
+  { id: "AUD-2025-H1", name: "Internal Audit Half-Year", regulator: "Internal", period: "H1 2025", status: "In Review", due: "2025-07-30", version: 3, revisionDate: "2025-08-05" },
+  { id: "MGT-2025-06", name: "Management Risk Dashboard", regulator: "Internal", period: "Jun 2025", status: "Submitted", due: "2025-07-03", version: 1, revisionDate: "—" },
+  { id: "BI-2025-Q2-003", name: "BI Fraud Reporting Q2", regulator: "Bank Indonesia", period: "Q2 2025", status: "Pending", due: "2025-07-20", version: 1, revisionDate: "—" },
+  { id: "TIKMI-2025-S1", name: "TIKMI Self-Assessment / SBP / RBSP", regulator: "Bank Indonesia", period: "Semester I 2025", status: "In Review", due: "2025-08-15", version: 1, revisionDate: "—" },
+];
+
+// Executive dashboard absolute counts (companion to % in Real-Time Tx Monitoring)
+export const decisionCounts = {
+  approved: 47_823_412,
+  underReview: 654_215,
+  rejected: 117_336,
+};
+
+export const vaPentestTracker = [
+  { item: "DC", activity: "DC Operational Review", status: "Active", lastDate: "2025-04-22", nextDate: "2025-10-22", finding: "All systems nominal", remediation: "—", pic: "Infra Ops" },
+  { item: "DRC", activity: "DRC Sync Validation", status: "Active", lastDate: "2025-05-14", nextDate: "2025-11-14", finding: "Replication lag 2.4s — within SLA", remediation: "—", pic: "Infra Ops" },
+  { item: "DR Drill", activity: "Full DR Failover Drill", status: "Done", lastDate: "2025-03-08", nextDate: "2025-09-08", finding: "RTO 14m / RPO 1m — meet target", remediation: "Closed", pic: "BCM Team" },
+  { item: "VA", activity: "Vulnerability Assessment (Internal)", status: "Done", lastDate: "2025-04-30", nextDate: "2025-07-30", finding: "3 medium, 1 high (TLS config)", remediation: "In Progress", pic: "Cyber Security" },
+  { item: "VA", activity: "Vulnerability Assessment (External)", status: "Scheduled", lastDate: "2025-01-25", nextDate: "2025-07-25", finding: "—", remediation: "—", pic: "Cyber Security" },
+  { item: "Pentest", activity: "Pentest Mobile App (Black-box)", status: "Done", lastDate: "2025-05-20", nextDate: "2025-11-20", finding: "2 high, 4 medium (OWASP M4/M7)", remediation: "In Progress", pic: "AppSec" },
+  { item: "Pentest", activity: "Pentest API Gateway (Grey-box)", status: "Done", lastDate: "2025-06-02", nextDate: "2025-12-02", finding: "1 critical (auth bypass) — patched", remediation: "Closed", pic: "AppSec" },
+  { item: "Pentest", activity: "Pentest Internal Network", status: "Scheduled", lastDate: "2024-12-10", nextDate: "2025-07-10", finding: "—", remediation: "—", pic: "Cyber Security" },
 ];
 
 export const mlModels = [
@@ -372,6 +450,8 @@ export interface LiveTx {
   score: number;
   decision: "Approved" | "Review" | "Hold" | "Rejected";
   fraudType?: string;
+  heldAmount: number; // Saldo Tertahan (Rp) — for Hold/Review
+  currency: string;   // currency code from PG, placeholder "-" if unavailable
 }
 
 const channels = ["QRIS Payment", "P2P Transfer", "TopUp", "Bill Payment", "Merchant Payout", "Cash Out"];
@@ -400,6 +480,8 @@ export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) 
     score,
     decision,
     fraudType: score >= 70 ? fraudTypeList[i % fraudTypeList.length] : undefined,
+    heldAmount: (decision === "Hold" || decision === "Review") ? amount : 0,
+    currency: i % 7 === 3 ? "-" : "IDR",
   };
 });
 

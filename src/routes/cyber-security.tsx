@@ -5,8 +5,10 @@ import { PageHeader } from "@/components/page-header";
 import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { SeverityBadge } from "@/components/severity-badge";
-import { cyberIncidents } from "@/lib/mock-data";
+import { cyberIncidents, vaPentestTracker } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/cyber-security")({
   head: () => ({ meta: [{ title: "Cyber Security — Sentinel EFRMP" }] }),
@@ -48,6 +50,14 @@ function CyberPage() {
         <KpiCard label="Resolved (MTD)" value="62" delta={8.4} icon={<ShieldCheck className="h-4 w-4" />} tone="success" />
         <KpiCard label="MTTR" value="2.8 h" delta={-9.0} icon={<Activity className="h-4 w-4" />} tone="success" invertDelta />
       </div>
+
+      <Tabs defaultValue="soc" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="soc">SOC Overview</TabsTrigger>
+          <TabsTrigger value="va">VA &amp; Pentest / DC-DRC Tracker</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="soc" className="space-y-5">
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
@@ -140,6 +150,49 @@ function CyberPage() {
           </Table>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="va" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">VA &amp; Pentest / DC-DRC Tracker</CardTitle>
+              <CardDescription>Manual register untuk DC/DRC, VA, Pentest, dan DR Drill (read-only).</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/40">
+                      <TableHead>Item</TableHead>
+                      <TableHead>Jenis Aktivitas</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Tanggal Terakhir</TableHead>
+                      <TableHead>Tanggal Berikutnya</TableHead>
+                      <TableHead>Hasil / Temuan</TableHead>
+                      <TableHead>Status Remediasi</TableHead>
+                      <TableHead>PIC</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {vaPentestTracker.map((row, idx) => (
+                      <TableRow key={idx} className="hover:bg-muted/40">
+                        <TableCell><Badge variant="outline" className="text-[10px]">{row.item}</Badge></TableCell>
+                        <TableCell className="text-xs font-medium">{row.activity}</TableCell>
+                        <TableCell><SeverityBadge value={row.status} /></TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{row.lastDate}</TableCell>
+                        <TableCell className="font-mono text-xs">{row.nextDate}</TableCell>
+                        <TableCell className="max-w-[280px] text-xs text-muted-foreground">{row.finding}</TableCell>
+                        <TableCell className="text-xs">{row.remediation}</TableCell>
+                        <TableCell className="text-xs">{row.pic}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

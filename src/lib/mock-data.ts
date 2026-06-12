@@ -480,6 +480,8 @@ export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) 
     score,
     decision,
     fraudType: score >= 70 ? fraudTypeList[i % fraudTypeList.length] : undefined,
+    heldAmount: (decision === "Hold" || decision === "Review") ? amount : 0,
+    currency: i % 7 === 3 ? "-" : "IDR",
   };
 });
 

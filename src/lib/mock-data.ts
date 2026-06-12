@@ -127,6 +127,17 @@ export type CaseStatus =
   | "False Positive"
   | "Closed";
 
+const caseLocations = ["Jakarta Pusat","Bandung","Surabaya","Medan","Denpasar","Makassar","Semarang","Yogyakarta","Tangerang","Bekasi","Palembang","Pekanbaru"];
+const caseDivisions = ["Fraud Ops","Risk Management","Compliance","Cyber Security","Consumer Protection","Branch Banking","Digital Channel"];
+const caseRecs = [
+  "Blacklist wallet & device, lapor SKNBI, edukasi nasabah.",
+  "Tahan saldo, eskalasi ke Cyber Security, koordinasi dengan bank rekanan.",
+  "Refund nasabah, perbarui rule R-1042, audit merchant terkait.",
+  "Investigasi lanjutan, koordinasi PPATK & Bareskrim.",
+  "Tutup wallet, freeze rekening tujuan, klaim asuransi fraud.",
+  "Monitoring 30 hari, kuatkan parameter velocity.",
+];
+
 export const cases = Array.from({ length: 22 }).map((_, i) => {
   const r = seeded(i + 100);
   const statuses: CaseStatus[] = [
@@ -138,11 +149,21 @@ export const cases = Array.from({ length: 22 }).map((_, i) => {
     "False Positive",
     "Closed",
   ];
+  const amount = ewalletAmount(r, statuses[i % statuses.length] === "Fraud Confirmed");
+  const recovered = statuses[i % statuses.length] === "Fraud Confirmed"
+    ? Math.floor(amount * (0.2 + r * 0.5))
+    : statuses[i % statuses.length] === "Closed" ? Math.floor(amount * (0.4 + r * 0.4)) : 0;
   return {
     id: `CASE-${(20890 + i).toString()}`,
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
     type: fraudTypeList[i % fraudTypeList.length],
-    amount: ewalletAmount(r, statuses[i % statuses.length] === "Fraud Confirmed"),
+    amount,
+    lossAmount: amount,
+    recoveredAmount: recovered,
+    location: caseLocations[i % caseLocations.length],
+    perpetratorAccount: `${["GoPay","OVO","DANA","ShopeePay","LinkAja"][i % 5]} ${(8121000000 + Math.floor(r * 999999999)).toString().slice(0,12)}`,
+    division: caseDivisions[i % caseDivisions.length],
+    recommendation: caseRecs[i % caseRecs.length],
     status: statuses[i % statuses.length],
     assignee: ["Andini P.", "Budi S.", "Citra L.", "Dharma W.", "Eka R."][i % 5],
     age: Math.floor(r * 30) + 1,

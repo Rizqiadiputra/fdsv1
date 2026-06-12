@@ -88,6 +88,9 @@ function ewalletAmount(r: number, fraudFlag = false): number {
   return Math.floor(10_000 + r * 90_000);                       // micro 10K-100K
 }
 
+const userNames = ["Ahmad Wijaya","Siti Rahmawati","Budi Santoso","Dewi Lestari","Eko Prasetyo","Fitri Handayani","Gunawan H.","Hesti Mulyani"];
+const idLocations = ["Jakarta Pusat","Bandung","Surabaya","Medan","Denpasar","Makassar","Semarang","Yogyakarta","Tangerang","Bekasi"];
+
 export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
   const r = seeded(i);
   const sev: Severity =
@@ -95,16 +98,23 @@ export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
   const status: AlertStatus =
     r > 0.75 ? "Escalated" : r > 0.5 ? "In Review" : r > 0.2 ? "New" : "Closed";
   const d = new Date(Date.now() - i * 1000 * 60 * 17);
+  const triggeredCount = r > 0.75 ? 3 : r > 0.45 ? 2 : 1;
+  const rulesTriggered = Array.from({ length: triggeredCount }).map(
+    (_, k) => rules[(i + k * 2) % rules.length],
+  );
   return {
     id: `ALR-${(100245 + i).toString()}`,
     ts: d.toISOString().replace("T", " ").slice(0, 19),
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
+    userName: userNames[i % userNames.length],
     amount: ewalletAmount(r, sev === "Critical"),
     score: Math.floor(20 + r * 80),
     rule: rules[i % rules.length],
+    rulesTriggered,
     severity: sev,
     fraudType: fraudTypeList[i % fraudTypeList.length],
     status,
+    location: idLocations[i % idLocations.length],
   };
 });
 

@@ -270,8 +270,12 @@ export const riskRegister = Array.from({ length: 10 }).map((_, i) => {
   };
 });
 
+function fmtDateTime(d: Date) {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export const cyberIncidents = Array.from({ length: 12 }).map((_, i) => {
-  const r = seeded(i + 700);
   return {
     id: `INC-${(80012 + i).toString()}`,
     type: [
@@ -284,27 +288,46 @@ export const cyberIncidents = Array.from({ length: 12 }).map((_, i) => {
     ][i % 6],
     severity: (["Critical", "High", "Medium", "Low"] as Severity[])[i % 4],
     status: ["Open", "Triage", "Contained", "Resolved"][i % 4],
-    detected: new Date(Date.now() - i * 3600_000 * 9).toISOString().slice(0, 16).replace("T", " "),
+    detected: fmtDateTime(new Date(Date.now() - (i + 1) * 3600_000 * 9)),
     source: ["External", "Internal", "Partner"][i % 3],
   };
 });
 
-export const auditLog = Array.from({ length: 20 }).map((_, i) => {
-  const r = seeded(i + 800);
+// Sensitive/regulated audit actions that must keep full before/after snapshots.
+export const SENSITIVE_AUDIT_ACTIONS = new Set<string>([
+  "Rule Updated",
+  "Case Status Changed",
+  "Case Assigned",
+  "Blacklist Added",
+  "Parameter Updated",
+  "Approval Granted",
+]);
+
+const auditActionPool = [
+  "Login",
+  "Rule Updated",
+  "Case Assigned",
+  "Blacklist Added",
+  "Approval Granted",
+  "Logout",
+  "Parameter Updated",
+  "Case Status Changed",
+  "Dashboard Viewed",
+  "Report Exported",
+];
+
+export const auditLog = Array.from({ length: 22 }).map((_, i) => {
+  const action = auditActionPool[i % auditActionPool.length];
+  const sensitive = SENSITIVE_AUDIT_ACTIONS.has(action);
   return {
-    ts: new Date(Date.now() - i * 1000 * 60 * 23).toISOString().slice(0, 19).replace("T", " "),
+    ts: fmtDateTime(new Date(Date.now() - (i + 1) * 1000 * 60 * 23)),
     user: ["andini.p", "budi.s", "citra.l", "admin", "auditor1"][i % 5],
-    action: [
-      "Login",
-      "Rule Updated",
-      "Case Assigned",
-      "Blacklist Added",
-      "Approval Granted",
-      "Logout",
-    ][i % 6],
-    object: ["RULE-1004", "CASE-20893", "USR-40512", "DEV-70241", "—"][i % 5],
-    before: ["Active", "Open", "—", "—", "—"][i % 5],
-    after: ["Disabled", "Assigned", "Blacklisted", "Approved", "—"][i % 5],
+    action,
+    object: ["RULE-1004", "CASE-20893", "USR-40512", "DEV-70241", "PARAM-MAX_DAILY"][i % 5],
+    sensitive,
+    before: sensitive ? ["Active", "Open", "—", "Rp 2.000.000", "Pending"][i % 5] : null,
+    after: sensitive ? ["Disabled", "Assigned", "Blacklisted", "Rp 5.000.000", "Approved"][i % 5] : null,
+    summary: sensitive ? null : `field "${["session","filter","report_type","page","view"][i % 5]}" diubah`,
   };
 });
 

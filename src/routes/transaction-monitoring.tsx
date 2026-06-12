@@ -26,8 +26,11 @@ export const Route = createFileRoute("/transaction-monitoring")({
 function TxMonitoring() {
   const [items, setItems] = useState<LiveTx[]>(liveTransactions);
   const [tps, setTps] = useState(842);
+  const [lastPoll, setLastPoll] = useState<string>(new Date().toLocaleTimeString("id-ID"));
 
   useEffect(() => {
+    // Polling refresh — backend tetap mengukur SLA <500ms; UI hanya
+    // me-refresh tabel setiap 4 detik agar tidak membanjiri front-end.
     const t = setInterval(() => {
       setItems((prev) => {
         const next = [...prev];
@@ -44,7 +47,8 @@ function TxMonitoring() {
         return next;
       });
       setTps((v) => Math.max(600, Math.min(1200, v + Math.floor(Math.random() * 40 - 20))));
-    }, 2200);
+      setLastPoll(new Date().toLocaleTimeString("id-ID"));
+    }, 4000);
     return () => clearInterval(t);
   }, []);
 

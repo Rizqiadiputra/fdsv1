@@ -40,6 +40,17 @@ export const Route = createFileRoute("/fraud-operations")({
 function FraudOps() {
   const [tab, setTab] = useState("all");
   const [selected, setSelected] = useState<Alert | null>(null);
+  const [lastPoll, setLastPoll] = useState<string>(new Date().toLocaleTimeString("id-ID"));
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    // Polling refresh (bukan websocket) tiap 5 detik.
+    const t = setInterval(() => {
+      setTick((n) => n + 1);
+      setLastPoll(new Date().toLocaleTimeString("id-ID"));
+    }, 5000);
+    return () => clearInterval(t);
+  }, []);
 
   const filtered = alerts.filter((a) =>
     tab === "all" ? true : a.severity.toLowerCase() === tab,

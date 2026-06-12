@@ -56,21 +56,21 @@ const groups: {
   {
     label: "Intelligence",
     items: [
-      { title: "Account Behavior", url: "/behavior", icon: Fingerprint },
+      // { title: "Account Behavior", url: "/behavior", icon: Fingerprint },
       { title: "User Intelligence", url: "/users", icon: Users },
-      { title: "Device Intelligence", url: "/devices", icon: Smartphone },
+      // { title: "Device Intelligence", url: "/devices", icon: Smartphone },
       { title: "Merchant Intelligence", url: "/merchants", icon: Store },
-      { title: "Network Intelligence", url: "/network", icon: Network },
+      // { title: "Network Intelligence", url: "/network", icon: Network },
       { title: "e-KYC Fraud Monitor", url: "/ekyc", icon: UserCheck },
       { title: "Fraud Analytics", url: "/analytics", icon: BarChart3 },
     ],
   },
-  {
+    {
     label: "Risk & Security",
     items: [
       { title: "Operational Risk", url: "/operational-risk", icon: Activity },
       { title: "Cyber Security", url: "/cyber-security", icon: Lock },
-      { title: "Threat Intelligence", url: "/threat-intel", icon: Radar },
+      // { title: "Threat Intelligence", url: "/threat-intel", icon: Radar },
       { title: "Consumer Protection", url: "/consumer-protection", icon: HeartHandshake },
       { title: "Risk Management", url: "/risk-management", icon: GaugeCircle },
     ],
@@ -82,7 +82,7 @@ const groups: {
       { title: "Risk Scoring Engine", url: "/scoring", icon: Calculator },
       { title: "Parameter Configurator", url: "/parameters", icon: Sliders },
       { title: "Blacklist Management", url: "/blacklist", icon: Ban },
-      { title: "ML Analytics", url: "/ml-analytics", icon: Brain },
+      // { title: "ML Analytics", url: "/ml-analytics", icon: Brain },
     ],
   },
   {

@@ -49,7 +49,7 @@ const groups: {
   items: { title: string; url: string; icon: typeof LayoutDashboard }[];
 }[] = [
   {
-    label: "Command Center",
+    label: "Wajib Regulasi (BI/OJK)",
     items: [
       { title: "Executive Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Real-Time Tx Monitoring", url: "/transaction-monitoring", icon: Zap },
@@ -57,54 +57,29 @@ const groups: {
       { title: "Suspicious Transactions", url: "/suspicious", icon: ShieldQuestion },
       { title: "Case Management", url: "/cases", icon: Folder },
       { title: "Confirmed Fraud Register", url: "/fraud-register", icon: BookCheck },
-    ],
-  },
-  {
-    label: "Intelligence",
-    items: [
-      // { title: "Account Behavior", url: "/behavior", icon: Fingerprint },
-      { title: "User Intelligence", url: "/users", icon: Users },
-      // { title: "Device Intelligence", url: "/devices", icon: Smartphone },
-      { title: "Merchant Intelligence", url: "/merchants", icon: Store },
-      // { title: "Network Intelligence", url: "/network", icon: Network },
-      { title: "e-KYC Fraud Monitor", url: "/ekyc", icon: UserCheck },
-      { title: "Fraud Analytics", url: "/analytics", icon: BarChart3 },
-    ],
-  },
-    {
-    label: "Risk & Security",
-    items: [
-      { title: "Operational Risk", url: "/operational-risk", icon: Activity },
-      { title: "Cyber Security", url: "/cyber-security", icon: Lock },
-      // { title: "Threat Intelligence", url: "/threat-intel", icon: Radar },
-      { title: "Consumer Protection", url: "/consumer-protection", icon: HeartHandshake },
-      { title: "Laporan Dugaan Fraud (CS)", url: "/cs-intake", icon: Megaphone },
+      { title: "Laporan Dugaan Fraud (CS Intake)", url: "/cs-intake", icon: Megaphone },
       { title: "Whistleblowing System", url: "/whistleblowing", icon: Siren },
-      { title: "Risk Management", url: "/risk-management", icon: GaugeCircle },
+      { title: "User Intelligence", url: "/users", icon: Users },
+      { title: "Cyber Security", url: "/cyber-security", icon: Lock },
+      { title: "Fraud Loss Ratio", url: "/loss-ratio", icon: TrendingDown },
+      { title: "Regulatory Reporting (BI/OJK)", url: "/regulatory", icon: FileText },
+      { title: "Audit Trail", url: "/audit", icon: ScrollText },
     ],
   },
   {
-    label: "Engine & Policy",
+    label: "Operasional & Pendukung",
     items: [
       { title: "Rule Management", url: "/rules", icon: Sliders },
       { title: "Risk Scoring Engine", url: "/scoring", icon: Calculator },
       { title: "Parameter Configurator", url: "/parameters", icon: Sliders },
       { title: "Blacklist Management", url: "/blacklist", icon: Ban },
-      // { title: "ML Analytics", url: "/ml-analytics", icon: Brain },
-    ],
-  },
-  {
-    label: "Compliance KPIs",
-    items: [
-      { title: "Fraud Loss Ratio", url: "/loss-ratio", icon: TrendingDown },
+      { title: "Merchant Intelligence", url: "/merchants", icon: Store },
+      { title: "e-KYC Fraud Monitor", url: "/ekyc", icon: UserCheck },
+      { title: "Fraud Analytics", url: "/analytics", icon: BarChart3 },
+      { title: "Operational Risk", url: "/operational-risk", icon: Activity },
+      { title: "Consumer Protection", url: "/consumer-protection", icon: HeartHandshake },
+      { title: "Risk Management", url: "/risk-management", icon: GaugeCircle },
       { title: "Complaint Ratio", url: "/complaint-ratio", icon: MessageSquareWarning },
-    ],
-  },
-  {
-    label: "Governance",
-    items: [
-      { title: "Regulatory Reporting (BI/OJK)", url: "/regulatory", icon: FileText },
-      { title: "Audit Trail", url: "/audit", icon: ScrollText },
       { title: "Administration", url: "/administration", icon: Settings },
     ],
   },
@@ -131,9 +106,18 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent className="scrollbar-thin">
-        {groups.map((g) => (
+        {groups.map((g, i) => (
           <SidebarGroup key={g.label}>
-            <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/50">
+            <SidebarGroupLabel
+              className={
+                i === 0
+                  ? "mb-1 flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary"
+                  : "text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/50"
+              }
+            >
+              {i === 0 && (
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+              )}
               {g.label}
             </SidebarGroupLabel>
             <SidebarGroupContent>

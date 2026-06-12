@@ -51,6 +51,14 @@ function CyberPage() {
         <KpiCard label="MTTR" value="2.8 h" delta={-9.0} icon={<Activity className="h-4 w-4" />} tone="success" invertDelta />
       </div>
 
+      <Tabs defaultValue="soc" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="soc">SOC Overview</TabsTrigger>
+          <TabsTrigger value="va">VA &amp; Pentest / DC-DRC Tracker</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="soc" className="space-y-5">
+
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">

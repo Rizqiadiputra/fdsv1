@@ -198,7 +198,13 @@ function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      state = { ...defaultState, ...parsed, extraBlacklists: { ...defaultState.extraBlacklists, ...(parsed.extraBlacklists ?? {}) }, removedBlacklists: { ...defaultState.removedBlacklists, ...(parsed.removedBlacklists ?? {}) } };
+      state = {
+        ...defaultState,
+        ...parsed,
+        extraBlacklists: { ...defaultState.extraBlacklists, ...(parsed.extraBlacklists ?? {}) },
+        removedBlacklists: { ...defaultState.removedBlacklists, ...(parsed.removedBlacklists ?? {}) },
+        users: Array.isArray(parsed.users) && parsed.users.length ? parsed.users : seedUsers,
+      };
     }
   } catch {
     state = defaultState;

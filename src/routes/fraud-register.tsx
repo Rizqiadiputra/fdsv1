@@ -56,7 +56,18 @@ function FraudRegisterPage() {
       <PageHeader
         title="Confirmed Fraud Register"
         description="Register fraud terkonfirmasi — POJK 12/2024 (16 field, pelaporan semester). Sumber data: Case Management."
+        actions={
+          <>
+            <Button size="sm" variant="outline" onClick={() => alert("Export PDF (semua laporan) — mock")}>
+              <Download className="mr-1.5 h-3.5 w-3.5" /> Export PDF
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => alert("Export Excel (semua laporan) — mock")}>
+              <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" /> Export Excel
+            </Button>
+          </>
+        }
       />
+
 
       <Card>
         <CardHeader className="pb-3">

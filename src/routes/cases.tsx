@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SeverityBadge } from "@/components/severity-badge";
 import { cases, fmtIDR } from "@/lib/mock-data";
+import { useAppStore } from "@/lib/app-store";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
@@ -25,8 +26,9 @@ const statuses = ["Open", "Assigned", "Investigation", "Escalated", "Fraud Confi
 function CaseMgmt() {
   const [active, setActive] = useState<typeof cases[number] | null>(null);
   const [tab, setTab] = useState("all");
-
-  const filtered = tab === "all" ? cases : cases.filter((c) => c.status === tab);
+  const extra = useAppStore((s) => s.extraCases);
+  const allCases = [...extra, ...cases];
+  const filtered = tab === "all" ? allCases : allCases.filter((c) => c.status === tab);
 
   return (
     <div className="space-y-5">

@@ -27,7 +27,7 @@ function CaseMgmt() {
   const [active, setActive] = useState<typeof cases[number] | null>(null);
   const [tab, setTab] = useState("all");
   const extra = useAppStore((s) => s.extraCases);
-  const allCases = [...extra, ...cases];
+  const allCases = [...(extra as unknown as typeof cases), ...cases];
   const filtered = tab === "all" ? allCases : allCases.filter((c) => c.status === tab);
 
   return (

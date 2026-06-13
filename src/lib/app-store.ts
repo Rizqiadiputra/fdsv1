@@ -1,8 +1,11 @@
 // Client-side shared store with localStorage persistence.
 // Used to make Approve/Reject/Blacklist, CS notes/escalation,
-// blacklist add/remove, and audit-trail appends actually persist.
+// blacklist add/remove, audit-trail appends, and auth/RBAC
+// (login/logout, user directory, account management) persist.
 
 import { useSyncExternalStore } from "react";
+import type { Role } from "./rbac";
+
 
 export type AlertOverride = "Approved" | "Rejected" | "Blacklisted";
 

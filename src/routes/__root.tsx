@@ -142,12 +142,10 @@ function RootComponent() {
 function AuthGate() {
   const router = useRouter();
   const pathname = router.state.location.pathname;
-  // dynamic import here would break SSR; static import is fine since these are client-state utilities
-  const { useAppStore } = require("@/lib/app-store") as typeof import("@/lib/app-store");
-  const { canAccess, defaultLanding } = require("@/lib/rbac") as typeof import("@/lib/rbac");
   const session = useAppStore((s) => s.session);
   const users = useAppStore((s) => s.users);
   const currentUser = session ? users.find((u) => u.id === session.userId) ?? null : null;
+
 
   useEffect(() => {
     if (!currentUser && pathname !== "/login") {

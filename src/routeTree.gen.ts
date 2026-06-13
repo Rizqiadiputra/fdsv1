@@ -18,12 +18,14 @@ import { Route as ScoringRouteImport } from './routes/scoring'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RiskManagementRouteImport } from './routes/risk-management'
 import { Route as RegulatoryRouteImport } from './routes/regulatory'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ParametersRouteImport } from './routes/parameters'
 import { Route as OperationalRiskRouteImport } from './routes/operational-risk'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as MlAnalyticsRouteImport } from './routes/ml-analytics'
 import { Route as MerchantsRouteImport } from './routes/merchants'
 import { Route as LossRatioRouteImport } from './routes/loss-ratio'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as FraudRegisterRouteImport } from './routes/fraud-register'
 import { Route as FraudOperationsRouteImport } from './routes/fraud-operations'
 import { Route as EkycRouteImport } from './routes/ekyc'
@@ -38,161 +40,46 @@ import { Route as BehaviorRouteImport } from './routes/behavior'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdministrationRouteImport } from './routes/administration'
+import { Route as AccountManagementRouteImport } from './routes/account-management'
 import { Route as IndexRouteImport } from './routes/index'
 
-const WhistleblowingRoute = WhistleblowingRouteImport.update({
-  id: '/whistleblowing',
-  path: '/whistleblowing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsersRoute = UsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransactionMonitoringRoute = TransactionMonitoringRouteImport.update({
-  id: '/transaction-monitoring',
-  path: '/transaction-monitoring',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ThreatIntelRoute = ThreatIntelRouteImport.update({
-  id: '/threat-intel',
-  path: '/threat-intel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SuspiciousRoute = SuspiciousRouteImport.update({
-  id: '/suspicious',
-  path: '/suspicious',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScoringRoute = ScoringRouteImport.update({
-  id: '/scoring',
-  path: '/scoring',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RulesRoute = RulesRouteImport.update({
-  id: '/rules',
-  path: '/rules',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RiskManagementRoute = RiskManagementRouteImport.update({
-  id: '/risk-management',
-  path: '/risk-management',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegulatoryRoute = RegulatoryRouteImport.update({
-  id: '/regulatory',
-  path: '/regulatory',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ParametersRoute = ParametersRouteImport.update({
-  id: '/parameters',
-  path: '/parameters',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OperationalRiskRoute = OperationalRiskRouteImport.update({
-  id: '/operational-risk',
-  path: '/operational-risk',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NetworkRoute = NetworkRouteImport.update({
-  id: '/network',
-  path: '/network',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MlAnalyticsRoute = MlAnalyticsRouteImport.update({
-  id: '/ml-analytics',
-  path: '/ml-analytics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MerchantsRoute = MerchantsRouteImport.update({
-  id: '/merchants',
-  path: '/merchants',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LossRatioRoute = LossRatioRouteImport.update({
-  id: '/loss-ratio',
-  path: '/loss-ratio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FraudRegisterRoute = FraudRegisterRouteImport.update({
-  id: '/fraud-register',
-  path: '/fraud-register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FraudOperationsRoute = FraudOperationsRouteImport.update({
-  id: '/fraud-operations',
-  path: '/fraud-operations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EkycRoute = EkycRouteImport.update({
-  id: '/ekyc',
-  path: '/ekyc',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevicesRoute = DevicesRouteImport.update({
-  id: '/devices',
-  path: '/devices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CyberSecurityRoute = CyberSecurityRouteImport.update({
-  id: '/cyber-security',
-  path: '/cyber-security',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CsIntakeRoute = CsIntakeRouteImport.update({
-  id: '/cs-intake',
-  path: '/cs-intake',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConsumerProtectionRoute = ConsumerProtectionRouteImport.update({
-  id: '/consumer-protection',
-  path: '/consumer-protection',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ComplaintRatioRoute = ComplaintRatioRouteImport.update({
-  id: '/complaint-ratio',
-  path: '/complaint-ratio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CasesRoute = CasesRouteImport.update({
-  id: '/cases',
-  path: '/cases',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlacklistRoute = BlacklistRouteImport.update({
-  id: '/blacklist',
-  path: '/blacklist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BehaviorRoute = BehaviorRouteImport.update({
-  id: '/behavior',
-  path: '/behavior',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuditRoute = AuditRouteImport.update({
-  id: '/audit',
-  path: '/audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnalyticsRoute = AnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdministrationRoute = AdministrationRouteImport.update({
-  id: '/administration',
-  path: '/administration',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const WhistleblowingRoute = WhistleblowingRouteImport.update({ id: '/whistleblowing', path: '/whistleblowing', getParentRoute: () => rootRouteImport } as any)
+const UsersRoute = UsersRouteImport.update({ id: '/users', path: '/users', getParentRoute: () => rootRouteImport } as any)
+const TransactionMonitoringRoute = TransactionMonitoringRouteImport.update({ id: '/transaction-monitoring', path: '/transaction-monitoring', getParentRoute: () => rootRouteImport } as any)
+const ThreatIntelRoute = ThreatIntelRouteImport.update({ id: '/threat-intel', path: '/threat-intel', getParentRoute: () => rootRouteImport } as any)
+const SuspiciousRoute = SuspiciousRouteImport.update({ id: '/suspicious', path: '/suspicious', getParentRoute: () => rootRouteImport } as any)
+const ScoringRoute = ScoringRouteImport.update({ id: '/scoring', path: '/scoring', getParentRoute: () => rootRouteImport } as any)
+const RulesRoute = RulesRouteImport.update({ id: '/rules', path: '/rules', getParentRoute: () => rootRouteImport } as any)
+const RiskManagementRoute = RiskManagementRouteImport.update({ id: '/risk-management', path: '/risk-management', getParentRoute: () => rootRouteImport } as any)
+const RegulatoryRoute = RegulatoryRouteImport.update({ id: '/regulatory', path: '/regulatory', getParentRoute: () => rootRouteImport } as any)
+const ProfileRoute = ProfileRouteImport.update({ id: '/profile', path: '/profile', getParentRoute: () => rootRouteImport } as any)
+const ParametersRoute = ParametersRouteImport.update({ id: '/parameters', path: '/parameters', getParentRoute: () => rootRouteImport } as any)
+const OperationalRiskRoute = OperationalRiskRouteImport.update({ id: '/operational-risk', path: '/operational-risk', getParentRoute: () => rootRouteImport } as any)
+const NetworkRoute = NetworkRouteImport.update({ id: '/network', path: '/network', getParentRoute: () => rootRouteImport } as any)
+const MlAnalyticsRoute = MlAnalyticsRouteImport.update({ id: '/ml-analytics', path: '/ml-analytics', getParentRoute: () => rootRouteImport } as any)
+const MerchantsRoute = MerchantsRouteImport.update({ id: '/merchants', path: '/merchants', getParentRoute: () => rootRouteImport } as any)
+const LossRatioRoute = LossRatioRouteImport.update({ id: '/loss-ratio', path: '/loss-ratio', getParentRoute: () => rootRouteImport } as any)
+const LoginRoute = LoginRouteImport.update({ id: '/login', path: '/login', getParentRoute: () => rootRouteImport } as any)
+const FraudRegisterRoute = FraudRegisterRouteImport.update({ id: '/fraud-register', path: '/fraud-register', getParentRoute: () => rootRouteImport } as any)
+const FraudOperationsRoute = FraudOperationsRouteImport.update({ id: '/fraud-operations', path: '/fraud-operations', getParentRoute: () => rootRouteImport } as any)
+const EkycRoute = EkycRouteImport.update({ id: '/ekyc', path: '/ekyc', getParentRoute: () => rootRouteImport } as any)
+const DevicesRoute = DevicesRouteImport.update({ id: '/devices', path: '/devices', getParentRoute: () => rootRouteImport } as any)
+const CyberSecurityRoute = CyberSecurityRouteImport.update({ id: '/cyber-security', path: '/cyber-security', getParentRoute: () => rootRouteImport } as any)
+const CsIntakeRoute = CsIntakeRouteImport.update({ id: '/cs-intake', path: '/cs-intake', getParentRoute: () => rootRouteImport } as any)
+const ConsumerProtectionRoute = ConsumerProtectionRouteImport.update({ id: '/consumer-protection', path: '/consumer-protection', getParentRoute: () => rootRouteImport } as any)
+const ComplaintRatioRoute = ComplaintRatioRouteImport.update({ id: '/complaint-ratio', path: '/complaint-ratio', getParentRoute: () => rootRouteImport } as any)
+const CasesRoute = CasesRouteImport.update({ id: '/cases', path: '/cases', getParentRoute: () => rootRouteImport } as any)
+const BlacklistRoute = BlacklistRouteImport.update({ id: '/blacklist', path: '/blacklist', getParentRoute: () => rootRouteImport } as any)
+const BehaviorRoute = BehaviorRouteImport.update({ id: '/behavior', path: '/behavior', getParentRoute: () => rootRouteImport } as any)
+const AuditRoute = AuditRouteImport.update({ id: '/audit', path: '/audit', getParentRoute: () => rootRouteImport } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({ id: '/analytics', path: '/analytics', getParentRoute: () => rootRouteImport } as any)
+const AdministrationRoute = AdministrationRouteImport.update({ id: '/administration', path: '/administration', getParentRoute: () => rootRouteImport } as any)
+const AccountManagementRoute = AccountManagementRouteImport.update({ id: '/account-management', path: '/account-management', getParentRoute: () => rootRouteImport } as any)
+const IndexRoute = IndexRouteImport.update({ id: '/', path: '/', getParentRoute: () => rootRouteImport } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account-management': typeof AccountManagementRoute
   '/administration': typeof AdministrationRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -207,12 +94,14 @@ export interface FileRoutesByFullPath {
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
+  '/login': typeof LoginRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/network': typeof NetworkRoute
   '/operational-risk': typeof OperationalRiskRoute
   '/parameters': typeof ParametersRoute
+  '/profile': typeof ProfileRoute
   '/regulatory': typeof RegulatoryRoute
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
@@ -223,41 +112,11 @@ export interface FileRoutesByFullPath {
   '/users': typeof UsersRoute
   '/whistleblowing': typeof WhistleblowingRoute
 }
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/administration': typeof AdministrationRoute
-  '/analytics': typeof AnalyticsRoute
-  '/audit': typeof AuditRoute
-  '/behavior': typeof BehaviorRoute
-  '/blacklist': typeof BlacklistRoute
-  '/cases': typeof CasesRoute
-  '/complaint-ratio': typeof ComplaintRatioRoute
-  '/consumer-protection': typeof ConsumerProtectionRoute
-  '/cs-intake': typeof CsIntakeRoute
-  '/cyber-security': typeof CyberSecurityRoute
-  '/devices': typeof DevicesRoute
-  '/ekyc': typeof EkycRoute
-  '/fraud-operations': typeof FraudOperationsRoute
-  '/fraud-register': typeof FraudRegisterRoute
-  '/loss-ratio': typeof LossRatioRoute
-  '/merchants': typeof MerchantsRoute
-  '/ml-analytics': typeof MlAnalyticsRoute
-  '/network': typeof NetworkRoute
-  '/operational-risk': typeof OperationalRiskRoute
-  '/parameters': typeof ParametersRoute
-  '/regulatory': typeof RegulatoryRoute
-  '/risk-management': typeof RiskManagementRoute
-  '/rules': typeof RulesRoute
-  '/scoring': typeof ScoringRoute
-  '/suspicious': typeof SuspiciousRoute
-  '/threat-intel': typeof ThreatIntelRoute
-  '/transaction-monitoring': typeof TransactionMonitoringRoute
-  '/users': typeof UsersRoute
-  '/whistleblowing': typeof WhistleblowingRoute
-}
+export interface FileRoutesByTo extends FileRoutesByFullPath {}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account-management': typeof AccountManagementRoute
   '/administration': typeof AdministrationRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -272,12 +131,14 @@ export interface FileRoutesById {
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
+  '/login': typeof LoginRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/network': typeof NetworkRoute
   '/operational-risk': typeof OperationalRiskRoute
   '/parameters': typeof ParametersRoute
+  '/profile': typeof ProfileRoute
   '/regulatory': typeof RegulatoryRoute
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
@@ -292,6 +153,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account-management'
     | '/administration'
     | '/analytics'
     | '/audit'
@@ -306,12 +168,14 @@ export interface FileRouteTypes {
     | '/ekyc'
     | '/fraud-operations'
     | '/fraud-register'
+    | '/login'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
     | '/network'
     | '/operational-risk'
     | '/parameters'
+    | '/profile'
     | '/regulatory'
     | '/risk-management'
     | '/rules'
@@ -324,6 +188,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account-management'
     | '/administration'
     | '/analytics'
     | '/audit'
@@ -338,12 +203,14 @@ export interface FileRouteTypes {
     | '/ekyc'
     | '/fraud-operations'
     | '/fraud-register'
+    | '/login'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
     | '/network'
     | '/operational-risk'
     | '/parameters'
+    | '/profile'
     | '/regulatory'
     | '/risk-management'
     | '/rules'
@@ -356,6 +223,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account-management'
     | '/administration'
     | '/analytics'
     | '/audit'
@@ -370,12 +238,14 @@ export interface FileRouteTypes {
     | '/ekyc'
     | '/fraud-operations'
     | '/fraud-register'
+    | '/login'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
     | '/network'
     | '/operational-risk'
     | '/parameters'
+    | '/profile'
     | '/regulatory'
     | '/risk-management'
     | '/rules'
@@ -389,6 +259,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountManagementRoute: typeof AccountManagementRoute
   AdministrationRoute: typeof AdministrationRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuditRoute: typeof AuditRoute
@@ -403,12 +274,14 @@ export interface RootRouteChildren {
   EkycRoute: typeof EkycRoute
   FraudOperationsRoute: typeof FraudOperationsRoute
   FraudRegisterRoute: typeof FraudRegisterRoute
+  LoginRoute: typeof LoginRoute
   LossRatioRoute: typeof LossRatioRoute
   MerchantsRoute: typeof MerchantsRoute
   MlAnalyticsRoute: typeof MlAnalyticsRoute
   NetworkRoute: typeof NetworkRoute
   OperationalRiskRoute: typeof OperationalRiskRoute
   ParametersRoute: typeof ParametersRoute
+  ProfileRoute: typeof ProfileRoute
   RegulatoryRoute: typeof RegulatoryRoute
   RiskManagementRoute: typeof RiskManagementRoute
   RulesRoute: typeof RulesRoute
@@ -422,221 +295,45 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/whistleblowing': {
-      id: '/whistleblowing'
-      path: '/whistleblowing'
-      fullPath: '/whistleblowing'
-      preLoaderRoute: typeof WhistleblowingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transaction-monitoring': {
-      id: '/transaction-monitoring'
-      path: '/transaction-monitoring'
-      fullPath: '/transaction-monitoring'
-      preLoaderRoute: typeof TransactionMonitoringRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/threat-intel': {
-      id: '/threat-intel'
-      path: '/threat-intel'
-      fullPath: '/threat-intel'
-      preLoaderRoute: typeof ThreatIntelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/suspicious': {
-      id: '/suspicious'
-      path: '/suspicious'
-      fullPath: '/suspicious'
-      preLoaderRoute: typeof SuspiciousRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/scoring': {
-      id: '/scoring'
-      path: '/scoring'
-      fullPath: '/scoring'
-      preLoaderRoute: typeof ScoringRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rules': {
-      id: '/rules'
-      path: '/rules'
-      fullPath: '/rules'
-      preLoaderRoute: typeof RulesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/risk-management': {
-      id: '/risk-management'
-      path: '/risk-management'
-      fullPath: '/risk-management'
-      preLoaderRoute: typeof RiskManagementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/regulatory': {
-      id: '/regulatory'
-      path: '/regulatory'
-      fullPath: '/regulatory'
-      preLoaderRoute: typeof RegulatoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/parameters': {
-      id: '/parameters'
-      path: '/parameters'
-      fullPath: '/parameters'
-      preLoaderRoute: typeof ParametersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/operational-risk': {
-      id: '/operational-risk'
-      path: '/operational-risk'
-      fullPath: '/operational-risk'
-      preLoaderRoute: typeof OperationalRiskRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/network': {
-      id: '/network'
-      path: '/network'
-      fullPath: '/network'
-      preLoaderRoute: typeof NetworkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ml-analytics': {
-      id: '/ml-analytics'
-      path: '/ml-analytics'
-      fullPath: '/ml-analytics'
-      preLoaderRoute: typeof MlAnalyticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/merchants': {
-      id: '/merchants'
-      path: '/merchants'
-      fullPath: '/merchants'
-      preLoaderRoute: typeof MerchantsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/loss-ratio': {
-      id: '/loss-ratio'
-      path: '/loss-ratio'
-      fullPath: '/loss-ratio'
-      preLoaderRoute: typeof LossRatioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fraud-register': {
-      id: '/fraud-register'
-      path: '/fraud-register'
-      fullPath: '/fraud-register'
-      preLoaderRoute: typeof FraudRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fraud-operations': {
-      id: '/fraud-operations'
-      path: '/fraud-operations'
-      fullPath: '/fraud-operations'
-      preLoaderRoute: typeof FraudOperationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ekyc': {
-      id: '/ekyc'
-      path: '/ekyc'
-      fullPath: '/ekyc'
-      preLoaderRoute: typeof EkycRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/devices': {
-      id: '/devices'
-      path: '/devices'
-      fullPath: '/devices'
-      preLoaderRoute: typeof DevicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cyber-security': {
-      id: '/cyber-security'
-      path: '/cyber-security'
-      fullPath: '/cyber-security'
-      preLoaderRoute: typeof CyberSecurityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cs-intake': {
-      id: '/cs-intake'
-      path: '/cs-intake'
-      fullPath: '/cs-intake'
-      preLoaderRoute: typeof CsIntakeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/consumer-protection': {
-      id: '/consumer-protection'
-      path: '/consumer-protection'
-      fullPath: '/consumer-protection'
-      preLoaderRoute: typeof ConsumerProtectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/complaint-ratio': {
-      id: '/complaint-ratio'
-      path: '/complaint-ratio'
-      fullPath: '/complaint-ratio'
-      preLoaderRoute: typeof ComplaintRatioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cases': {
-      id: '/cases'
-      path: '/cases'
-      fullPath: '/cases'
-      preLoaderRoute: typeof CasesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blacklist': {
-      id: '/blacklist'
-      path: '/blacklist'
-      fullPath: '/blacklist'
-      preLoaderRoute: typeof BlacklistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/behavior': {
-      id: '/behavior'
-      path: '/behavior'
-      fullPath: '/behavior'
-      preLoaderRoute: typeof BehaviorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/audit': {
-      id: '/audit'
-      path: '/audit'
-      fullPath: '/audit'
-      preLoaderRoute: typeof AuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/analytics': {
-      id: '/analytics'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AnalyticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/administration': {
-      id: '/administration'
-      path: '/administration'
-      fullPath: '/administration'
-      preLoaderRoute: typeof AdministrationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    '/whistleblowing': { id: '/whistleblowing'; path: '/whistleblowing'; fullPath: '/whistleblowing'; preLoaderRoute: typeof WhistleblowingRouteImport; parentRoute: typeof rootRouteImport }
+    '/users': { id: '/users'; path: '/users'; fullPath: '/users'; preLoaderRoute: typeof UsersRouteImport; parentRoute: typeof rootRouteImport }
+    '/transaction-monitoring': { id: '/transaction-monitoring'; path: '/transaction-monitoring'; fullPath: '/transaction-monitoring'; preLoaderRoute: typeof TransactionMonitoringRouteImport; parentRoute: typeof rootRouteImport }
+    '/threat-intel': { id: '/threat-intel'; path: '/threat-intel'; fullPath: '/threat-intel'; preLoaderRoute: typeof ThreatIntelRouteImport; parentRoute: typeof rootRouteImport }
+    '/suspicious': { id: '/suspicious'; path: '/suspicious'; fullPath: '/suspicious'; preLoaderRoute: typeof SuspiciousRouteImport; parentRoute: typeof rootRouteImport }
+    '/scoring': { id: '/scoring'; path: '/scoring'; fullPath: '/scoring'; preLoaderRoute: typeof ScoringRouteImport; parentRoute: typeof rootRouteImport }
+    '/rules': { id: '/rules'; path: '/rules'; fullPath: '/rules'; preLoaderRoute: typeof RulesRouteImport; parentRoute: typeof rootRouteImport }
+    '/risk-management': { id: '/risk-management'; path: '/risk-management'; fullPath: '/risk-management'; preLoaderRoute: typeof RiskManagementRouteImport; parentRoute: typeof rootRouteImport }
+    '/regulatory': { id: '/regulatory'; path: '/regulatory'; fullPath: '/regulatory'; preLoaderRoute: typeof RegulatoryRouteImport; parentRoute: typeof rootRouteImport }
+    '/profile': { id: '/profile'; path: '/profile'; fullPath: '/profile'; preLoaderRoute: typeof ProfileRouteImport; parentRoute: typeof rootRouteImport }
+    '/parameters': { id: '/parameters'; path: '/parameters'; fullPath: '/parameters'; preLoaderRoute: typeof ParametersRouteImport; parentRoute: typeof rootRouteImport }
+    '/operational-risk': { id: '/operational-risk'; path: '/operational-risk'; fullPath: '/operational-risk'; preLoaderRoute: typeof OperationalRiskRouteImport; parentRoute: typeof rootRouteImport }
+    '/network': { id: '/network'; path: '/network'; fullPath: '/network'; preLoaderRoute: typeof NetworkRouteImport; parentRoute: typeof rootRouteImport }
+    '/ml-analytics': { id: '/ml-analytics'; path: '/ml-analytics'; fullPath: '/ml-analytics'; preLoaderRoute: typeof MlAnalyticsRouteImport; parentRoute: typeof rootRouteImport }
+    '/merchants': { id: '/merchants'; path: '/merchants'; fullPath: '/merchants'; preLoaderRoute: typeof MerchantsRouteImport; parentRoute: typeof rootRouteImport }
+    '/loss-ratio': { id: '/loss-ratio'; path: '/loss-ratio'; fullPath: '/loss-ratio'; preLoaderRoute: typeof LossRatioRouteImport; parentRoute: typeof rootRouteImport }
+    '/login': { id: '/login'; path: '/login'; fullPath: '/login'; preLoaderRoute: typeof LoginRouteImport; parentRoute: typeof rootRouteImport }
+    '/fraud-register': { id: '/fraud-register'; path: '/fraud-register'; fullPath: '/fraud-register'; preLoaderRoute: typeof FraudRegisterRouteImport; parentRoute: typeof rootRouteImport }
+    '/fraud-operations': { id: '/fraud-operations'; path: '/fraud-operations'; fullPath: '/fraud-operations'; preLoaderRoute: typeof FraudOperationsRouteImport; parentRoute: typeof rootRouteImport }
+    '/ekyc': { id: '/ekyc'; path: '/ekyc'; fullPath: '/ekyc'; preLoaderRoute: typeof EkycRouteImport; parentRoute: typeof rootRouteImport }
+    '/devices': { id: '/devices'; path: '/devices'; fullPath: '/devices'; preLoaderRoute: typeof DevicesRouteImport; parentRoute: typeof rootRouteImport }
+    '/cyber-security': { id: '/cyber-security'; path: '/cyber-security'; fullPath: '/cyber-security'; preLoaderRoute: typeof CyberSecurityRouteImport; parentRoute: typeof rootRouteImport }
+    '/cs-intake': { id: '/cs-intake'; path: '/cs-intake'; fullPath: '/cs-intake'; preLoaderRoute: typeof CsIntakeRouteImport; parentRoute: typeof rootRouteImport }
+    '/consumer-protection': { id: '/consumer-protection'; path: '/consumer-protection'; fullPath: '/consumer-protection'; preLoaderRoute: typeof ConsumerProtectionRouteImport; parentRoute: typeof rootRouteImport }
+    '/complaint-ratio': { id: '/complaint-ratio'; path: '/complaint-ratio'; fullPath: '/complaint-ratio'; preLoaderRoute: typeof ComplaintRatioRouteImport; parentRoute: typeof rootRouteImport }
+    '/cases': { id: '/cases'; path: '/cases'; fullPath: '/cases'; preLoaderRoute: typeof CasesRouteImport; parentRoute: typeof rootRouteImport }
+    '/blacklist': { id: '/blacklist'; path: '/blacklist'; fullPath: '/blacklist'; preLoaderRoute: typeof BlacklistRouteImport; parentRoute: typeof rootRouteImport }
+    '/behavior': { id: '/behavior'; path: '/behavior'; fullPath: '/behavior'; preLoaderRoute: typeof BehaviorRouteImport; parentRoute: typeof rootRouteImport }
+    '/audit': { id: '/audit'; path: '/audit'; fullPath: '/audit'; preLoaderRoute: typeof AuditRouteImport; parentRoute: typeof rootRouteImport }
+    '/analytics': { id: '/analytics'; path: '/analytics'; fullPath: '/analytics'; preLoaderRoute: typeof AnalyticsRouteImport; parentRoute: typeof rootRouteImport }
+    '/administration': { id: '/administration'; path: '/administration'; fullPath: '/administration'; preLoaderRoute: typeof AdministrationRouteImport; parentRoute: typeof rootRouteImport }
+    '/account-management': { id: '/account-management'; path: '/account-management'; fullPath: '/account-management'; preLoaderRoute: typeof AccountManagementRouteImport; parentRoute: typeof rootRouteImport }
+    '/': { id: '/'; path: '/'; fullPath: '/'; preLoaderRoute: typeof IndexRouteImport; parentRoute: typeof rootRouteImport }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountManagementRoute: AccountManagementRoute,
   AdministrationRoute: AdministrationRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuditRoute: AuditRoute,
@@ -651,12 +348,14 @@ const rootRouteChildren: RootRouteChildren = {
   EkycRoute: EkycRoute,
   FraudOperationsRoute: FraudOperationsRoute,
   FraudRegisterRoute: FraudRegisterRoute,
+  LoginRoute: LoginRoute,
   LossRatioRoute: LossRatioRoute,
   MerchantsRoute: MerchantsRoute,
   MlAnalyticsRoute: MlAnalyticsRoute,
   NetworkRoute: NetworkRoute,
   OperationalRiskRoute: OperationalRiskRoute,
   ParametersRoute: ParametersRoute,
+  ProfileRoute: ProfileRoute,
   RegulatoryRoute: RegulatoryRoute,
   RiskManagementRoute: RiskManagementRoute,
   RulesRoute: RulesRoute,

@@ -129,9 +129,53 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AppShell />
+        <AuthGate />
         <Toaster position="top-right" richColors />
       </ThemeProvider>
     </QueryClientProvider>
   );
 }
+
+function AuthGate() {
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
+  // dynamic import here would break SSR; static import is fine since these are client-state utilities
+  const { useAppStore } = require("@/lib/app-store") as typeof import("@/lib/app-store");
+  const { canAccess, defaultLanding } = require("@/lib/rbac") as typeof import("@/lib/rbac");
+  const session = useAppStore((s) => s.session);
+  const users = useAppStore((s) => s.users);
+  const currentUser = session ? users.find((u) => u.id === session.userId) ?? null : null;
+
+  useEffect(() => {
+    if (!currentUser && pathname !== "/login") {
+      router.navigate({ to: "/login", replace: true });
+      return;
+    }
+    if (currentUser && pathname === "/login") {
+      router.navigate({ to: defaultLanding(currentUser.role) as any, replace: true });
+      return;
+    }
+    if (currentUser && !canAccess(currentUser.role, pathname)) {
+      router.navigate({ to: defaultLanding(currentUser.role) as any, replace: true });
+    }
+  }, [currentUser, pathname, router]);
+
+  if (pathname === "/login") {
+    return <Outlet />;
+  }
+  if (!currentUser) return null;
+  if (!canAccess(currentUser.role, pathname)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center">
+        <div>
+          <h1 className="text-xl font-semibold">Access Denied</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Role <span className="font-mono">{currentUser.role}</span> tidak memiliki akses ke halaman ini.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return <AppShell />;
+}
+

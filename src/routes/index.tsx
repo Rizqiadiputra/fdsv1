@@ -54,6 +54,8 @@ export const Route = createFileRoute("/")({
 });
 
 function ExecutiveDashboard() {
+  const now = new Date();
+  const hhmm = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
   return (
     <div className="space-y-6">
       <PageHeader
@@ -61,6 +63,14 @@ function ExecutiveDashboard() {
         description="Indonesian E-Wallet fraud, risk & resilience — aligned to Bank Indonesia PSP and OJK Consumer Protection requirements."
         actions={
           <>
+            <div className="hidden items-center gap-1.5 md:flex">
+              <Badge variant="outline" className="border-success/40 bg-success/10 text-success text-[10px]">
+                <span className="mr-1 h-1.5 w-1.5 rounded-full bg-success" /> Internal
+              </Badge>
+              <Badge variant="outline" className="border-info/40 bg-info/10 text-info text-[10px]">
+                <span className="mr-1 h-1.5 w-1.5 rounded-full bg-info" /> Sumsub
+              </Badge>
+            </div>
             <Select defaultValue="30d">
               <SelectTrigger className="h-9 w-[140px]">
                 <SelectValue />
@@ -79,9 +89,13 @@ function ExecutiveDashboard() {
         }
       />
 
+      <p className="-mt-3 text-xs text-muted-foreground">
+        Sumber data terintegrasi: <span className="font-medium text-foreground">Internal</span> + <span className="font-medium text-foreground">Sumsub</span> · ringkasan harian as of {hhmm} WIB
+      </p>
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-        <KpiCard label="Total Transactions" value={fmtNum(48923741)} delta={4.2} hint="vs prev. period" icon={<Receipt className="h-4 w-4" />} />
-        <KpiCard label="Transaction Value" value="Rp 14.2 T" delta={6.1} hint="this month" icon={<CircleDollarSign className="h-4 w-4" />} tone="info" />
+        <KpiCard label="Total Transaksi (Hari Ini)" value={fmtNum(48923741)} delta={4.2} hint={`as of ${hhmm} WIB`} icon={<Receipt className="h-4 w-4" />} />
+        <KpiCard label="Nilai Transaksi (Hari Ini)" value="Rp 14.2 T" delta={6.1} hint={`as of ${hhmm} WIB`} icon={<CircleDollarSign className="h-4 w-4" />} tone="info" />
         <KpiCard label="Active Alerts" value="2,418" delta={12.4} hint="open queue" icon={<ShieldAlert className="h-4 w-4" />} tone="warning" invertDelta />
         <KpiCard label="Active Cases" value="312" delta={-3.8} icon={<Folder className="h-4 w-4" />} tone="info" invertDelta />
         <KpiCard label="Confirmed Fraud" value="148" delta={-8.5} icon={<AlertTriangle className="h-4 w-4" />} tone="destructive" invertDelta />
@@ -95,10 +109,11 @@ function ExecutiveDashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        <KpiCard label="Approved Count" value={fmtNum(decisionCounts.approved)} delta={4.1} hint="absolute count" icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
-        <KpiCard label="Under Review Count" value={fmtNum(decisionCounts.underReview)} delta={-1.6} hint="hold + review" icon={<Activity className="h-4 w-4" />} tone="warning" invertDelta />
-        <KpiCard label="Rejected Count" value={fmtNum(decisionCounts.rejected)} delta={-3.2} hint="auto + manual" icon={<ShieldAlert className="h-4 w-4" />} tone="destructive" invertDelta />
+        <KpiCard label="Approved Count (Hari Ini)" value={fmtNum(decisionCounts.approved)} delta={4.1} hint={`as of ${hhmm} WIB`} icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
+        <KpiCard label="Under Review Count (Hari Ini)" value={fmtNum(decisionCounts.underReview)} delta={-1.6} hint={`as of ${hhmm} WIB`} icon={<Activity className="h-4 w-4" />} tone="warning" invertDelta />
+        <KpiCard label="Rejected Count (Hari Ini)" value={fmtNum(decisionCounts.rejected)} delta={-3.2} hint={`as of ${hhmm} WIB`} icon={<ShieldAlert className="h-4 w-4" />} tone="destructive" invertDelta />
       </div>
+
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">

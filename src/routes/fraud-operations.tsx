@@ -119,6 +119,7 @@ function FraudOps() {
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead className="w-[140px]">Alert ID</TableHead>
+                  <TableHead className="w-[140px]">Transaction ID</TableHead>
                   <TableHead>Timestamp</TableHead>
                   <TableHead>User</TableHead>
                   <TableHead>Source</TableHead>

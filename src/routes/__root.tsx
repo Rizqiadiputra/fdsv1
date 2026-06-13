@@ -150,8 +150,11 @@ function AuthGate() {
   const session = useAppStore((s) => s.session);
   const users = useAppStore((s) => s.users);
   const currentUser = session ? (users.find((u) => u.id === session.userId) ?? null) : null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
+    if (!mounted) return;
     if (!currentUser && pathname !== "/login") {
       router.navigate({ to: "/login", replace: true });
       return;
@@ -163,7 +166,7 @@ function AuthGate() {
     if (currentUser && !canAccess(currentUser.role, pathname)) {
       router.navigate({ to: defaultLanding(currentUser.role) as any, replace: true });
     }
-  }, [currentUser, pathname, router]);
+  }, [mounted, currentUser, pathname, router]);
 
   if (pathname === "/login") {
     return <Outlet />;

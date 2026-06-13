@@ -1,13 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Outlet,
-  Link,
-  createRootRouteWithContext,
-  useRouter,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -17,16 +10,13 @@ import { Toaster } from "@/components/ui/sonner";
 import { useAppStore } from "@/lib/app-store";
 import { canAccess, defaultLanding } from "@/lib/rbac";
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">The page you're looking for doesn't exist.</p>
         <div className="mt-6">
           <Link
             to="/"
@@ -50,9 +40,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">Try again or head home.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -89,13 +77,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "Sentinel" },
       { property: "og:title", content: "FDSV1— Enterprise Fraud Risk Management" },
-      { property: "og:description", content: "Guardian Platform is an enterprise fraud risk management solution for digital finance." },
+      {
+        property: "og:description",
+        content: "Guardian Platform is an enterprise fraud risk management solution for digital finance.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:title", content: "FDSV1— Enterprise Fraud Risk Management" },
-      { name: "description", content: "Guardian Platform is an enterprise fraud risk management solution for digital finance." },
-      { name: "twitter:description", content: "Guardian Platform is an enterprise fraud risk management solution for digital finance." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc0d1d05-fcaf-4fae-84a5-41cce6899eba/id-preview-c7f1ff5d--3cb8c00d-f53f-4e3e-badb-864bed63e3a9.lovable.app-1780633346821.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc0d1d05-fcaf-4fae-84a5-41cce6899eba/id-preview-c7f1ff5d--3cb8c00d-f53f-4e3e-badb-864bed63e3a9.lovable.app-1780633346821.png" },
+      {
+        name: "description",
+        content: "Guardian Platform is an enterprise fraud risk management solution for digital finance.",
+      },
+      {
+        name: "twitter:description",
+        content: "Guardian Platform is an enterprise fraud risk management solution for digital finance.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc0d1d05-fcaf-4fae-84a5-41cce6899eba/id-preview-c7f1ff5d--3cb8c00d-f53f-4e3e-badb-864bed63e3a9.lovable.app-1780633346821.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc0d1d05-fcaf-4fae-84a5-41cce6899eba/id-preview-c7f1ff5d--3cb8c00d-f53f-4e3e-badb-864bed63e3a9.lovable.app-1780633346821.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
@@ -144,8 +149,7 @@ function AuthGate() {
   const pathname = router.state.location.pathname;
   const session = useAppStore((s) => s.session);
   const users = useAppStore((s) => s.users);
-  const currentUser = session ? users.find((u) => u.id === session.userId) ?? null : null;
-
+  const currentUser = session ? (users.find((u) => u.id === session.userId) ?? null) : null;
 
   useEffect(() => {
     if (!currentUser && pathname !== "/login") {
@@ -179,4 +183,3 @@ function AuthGate() {
   }
   return <AppShell />;
 }
-

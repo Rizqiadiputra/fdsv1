@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { auditLog } from "@/lib/mock-data";
+import { useAppStore } from "@/lib/app-store";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/audit")({
@@ -14,6 +15,8 @@ export const Route = createFileRoute("/audit")({
 });
 
 function AuditPage() {
+  const extra = useAppStore((s) => s.extraAudit);
+  const log = [...extra, ...auditLog];
   return (
     <div className="space-y-5">
       <PageHeader
@@ -40,7 +43,7 @@ function AuditPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {auditLog.map((a, i) => (
+              {log.map((a, i) => (
                 <TableRow key={i} className="hover:bg-muted/40">
                   <TableCell className="font-mono text-xs text-muted-foreground">{a.ts}</TableCell>
                   <TableCell className="text-xs"><Badge variant="outline" className="font-mono text-[10px]">{a.user}</Badge></TableCell>

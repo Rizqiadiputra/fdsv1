@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cases, fmtIDR } from "@/lib/mock-data";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/fraud-register")({
   head: () => ({ meta: [{ title: "Confirmed Fraud Register — Sentinel EFRMP" }] }),
@@ -58,10 +59,10 @@ function FraudRegisterPage() {
         description="Register fraud terkonfirmasi — POJK 12/2024 (16 field, pelaporan semester). Sumber data: Case Management."
         actions={
           <>
-            <Button size="sm" variant="outline" onClick={() => alert("Export PDF (semua laporan) — mock")}>
+            <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export PDF sedang dalam pengembangan", { description: `${reports.length} laporan akan diekspor pada rilis berikutnya.` })}>
               <Download className="mr-1.5 h-3.5 w-3.5" /> Export PDF
             </Button>
-            <Button size="sm" variant="outline" onClick={() => alert("Export Excel (semua laporan) — mock")}>
+            <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export Excel sedang dalam pengembangan", { description: `${reports.length} laporan akan diekspor pada rilis berikutnya.` })}>
               <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" /> Export Excel
             </Button>
           </>
@@ -113,8 +114,8 @@ function FraudRegisterPage() {
             <DialogTitle className="flex items-center justify-between gap-2">
               <span>Laporan Fraud · {open?.reportId}</span>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline"><Download className="h-3 w-3" /> Export PDF</Button>
-                <Button size="sm" variant="outline"><FileSpreadsheet className="h-3 w-3" /> Export Excel</Button>
+                <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export PDF sedang dalam pengembangan")}><Download className="h-3 w-3" /> Export PDF</Button>
+                <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export Excel sedang dalam pengembangan")}><FileSpreadsheet className="h-3 w-3" /> Export Excel</Button>
               </div>
             </DialogTitle>
           </DialogHeader>

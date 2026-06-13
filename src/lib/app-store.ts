@@ -1,8 +1,11 @@
 // Client-side shared store with localStorage persistence.
 // Used to make Approve/Reject/Blacklist, CS notes/escalation,
-// blacklist add/remove, and audit-trail appends actually persist.
+// blacklist add/remove, audit-trail appends, and auth/RBAC
+// (login/logout, user directory, account management) persist.
 
 import { useSyncExternalStore } from "react";
+import type { Role } from "./rbac";
+
 
 export type AlertOverride = "Approved" | "Rejected" | "Blacklisted";
 
@@ -62,6 +65,26 @@ export interface ExtraCase {
   sourceReportId?: string;
 }
 
+export interface AppUser {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  role: Role;
+  department: string;
+  employeeId: string;
+  phone: string;
+  office: string;
+  status: "Aktif" | "Nonaktif";
+  lastLogin: string | null;
+  createdAt: string;
+}
+
+export interface AuthSession {
+  userId: string;
+  loginAt: string;
+}
+
 interface AppState {
   alertOverrides: Record<string, AlertOverride>;
   extraAudit: AuditEntry[];
@@ -69,11 +92,86 @@ interface AppState {
   removedBlacklists: Record<BlacklistCategory, string[]>;
   csReports: CsReport[] | null; // null = use seed
   extraCases: ExtraCase[];
+  users: AppUser[];
+  session: AuthSession | null;
 }
 
 const STORAGE_KEY = "sentinel-efrmp-store-v1";
 export const CURRENT_USER = "Andini Putri";
 export const CURRENT_USER_HANDLE = "andini.p";
+
+const seedUsers: AppUser[] = [
+  {
+    id: "U-001",
+    name: "Andini Putri",
+    email: "andini.putri@sentinel.id",
+    username: "andini.p",
+    role: "manager",
+    department: "Fraud Risk Management",
+    employeeId: "EMP-10231",
+    phone: "+62 812-1100-0001",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-02-14",
+  },
+  {
+    id: "U-002",
+    name: "Bagas Wirawan",
+    email: "bagas.w@sentinel.id",
+    username: "bagas.w",
+    role: "analyst",
+    department: "Fraud Operations",
+    employeeId: "EMP-10455",
+    phone: "+62 812-1100-0002",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-05-02",
+  },
+  {
+    id: "U-003",
+    name: "Citra Larasati",
+    email: "citra.l@sentinel.id",
+    username: "citra.l",
+    role: "compliance",
+    department: "Compliance & Regulatory",
+    employeeId: "EMP-10612",
+    phone: "+62 812-1100-0003",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-06-19",
+  },
+  {
+    id: "U-004",
+    name: "Dimas Hidayat",
+    email: "dimas.h@sentinel.id",
+    username: "dimas.h",
+    role: "cs",
+    department: "Customer Service",
+    employeeId: "EMP-10788",
+    phone: "+62 812-1100-0004",
+    office: "Cabang Bandung",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-08-04",
+  },
+  {
+    id: "U-005",
+    name: "Erlina Suryani",
+    email: "erlina.s@sentinel.id",
+    username: "erlina.s",
+    role: "admin",
+    department: "IT Security",
+    employeeId: "EMP-10901",
+    phone: "+62 812-1100-0005",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-09-21",
+  },
+];
 
 const defaultState: AppState = {
   alertOverrides: {},
@@ -82,7 +180,10 @@ const defaultState: AppState = {
   removedBlacklists: { user: [], device: [], merchant: [], account: [], ip: [] },
   csReports: null,
   extraCases: [],
+  users: seedUsers,
+  session: null,
 };
+
 
 let state: AppState = defaultState;
 const listeners = new Set<() => void>();
@@ -97,7 +198,13 @@ function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      state = { ...defaultState, ...parsed, extraBlacklists: { ...defaultState.extraBlacklists, ...(parsed.extraBlacklists ?? {}) }, removedBlacklists: { ...defaultState.removedBlacklists, ...(parsed.removedBlacklists ?? {}) } };
+      state = {
+        ...defaultState,
+        ...parsed,
+        extraBlacklists: { ...defaultState.extraBlacklists, ...(parsed.extraBlacklists ?? {}) },
+        removedBlacklists: { ...defaultState.removedBlacklists, ...(parsed.removedBlacklists ?? {}) },
+        users: Array.isArray(parsed.users) && parsed.users.length ? parsed.users : seedUsers,
+      };
     }
   } catch {
     state = defaultState;
@@ -350,4 +457,150 @@ export function csEscalate(id: string): string {
     summary: null,
   });
   return caseId;
+}
+
+// ---------- Auth & Users ----------
+
+// Demo credentials. Each maps to a seed user by username.
+export const DEMO_CREDENTIALS: { username: string; password: string; role: Role; name: string }[] = [
+  { username: "andini.p", password: "manager123", role: "manager", name: "Andini Putri" },
+  { username: "bagas.w", password: "analyst123", role: "analyst", name: "Bagas Wirawan" },
+  { username: "citra.l", password: "compliance123", role: "compliance", name: "Citra Larasati" },
+  { username: "dimas.h", password: "cs123", role: "cs", name: "Dimas Hidayat" },
+  { username: "erlina.s", password: "admin123", role: "admin", name: "Erlina Suryani" },
+];
+
+export function getCurrentUser(): AppUser | null {
+  if (!state.session) return null;
+  return state.users.find((u) => u.id === state.session!.userId) ?? null;
+}
+
+export function login(usernameOrEmail: string, password: string): { ok: true; user: AppUser } | { ok: false; error: string } {
+  const id = usernameOrEmail.trim().toLowerCase();
+  const cred = DEMO_CREDENTIALS.find(
+    (c) => c.username.toLowerCase() === id || `${c.username}@sentinel.id` === id,
+  );
+  if (!cred || cred.password !== password) {
+    return { ok: false, error: "Username/email atau password salah." };
+  }
+  const user = state.users.find((u) => u.username === cred.username);
+  if (!user) return { ok: false, error: "User tidak ditemukan di direktori." };
+  if (user.status === "Nonaktif") return { ok: false, error: "Akun dinonaktifkan. Hubungi admin." };
+  const ts = nowTs();
+  setState((s) => ({
+    ...s,
+    session: { userId: user.id, loginAt: ts },
+    users: s.users.map((u) => (u.id === user.id ? { ...u, lastLogin: ts } : u)),
+  }));
+  addAudit({
+    user: user.username,
+    action: "User Login",
+    object: user.id,
+    sensitive: true,
+    before: "—",
+    after: `${user.name} (${ROLE_LABEL_FOR_AUDIT[user.role]})`,
+    summary: null,
+  });
+  return { ok: true, user };
+}
+
+const ROLE_LABEL_FOR_AUDIT: Record<Role, string> = {
+  manager: "Fraud Manager",
+  analyst: "Fraud Analyst",
+  compliance: "Compliance Officer",
+  cs: "CS Agent",
+  admin: "IT/Security Admin",
+};
+
+export function logout() {
+  const user = getCurrentUser();
+  if (user) {
+    addAudit({
+      user: user.username,
+      action: "User Logout",
+      object: user.id,
+      sensitive: true,
+      before: user.name,
+      after: "—",
+      summary: null,
+    });
+  }
+  setState((s) => ({ ...s, session: null }));
+}
+
+export function addUser(input: Omit<AppUser, "id" | "lastLogin" | "createdAt" | "status"> & { status?: AppUser["status"] }): AppUser {
+  const id = `U-${String(Math.floor(100 + Math.random() * 899))}`;
+  const user: AppUser = {
+    ...input,
+    id,
+    status: input.status ?? "Aktif",
+    lastLogin: null,
+    createdAt: nowDate(),
+  };
+  setState((s) => ({ ...s, users: [user, ...s.users] }));
+  const actor = getCurrentUser()?.username ?? CURRENT_USER_HANDLE;
+  addAudit({
+    user: actor,
+    action: "User Created",
+    object: id,
+    sensitive: true,
+    before: "—",
+    after: `${user.name} · ${ROLE_LABEL_FOR_AUDIT[user.role]} · ${user.department}`,
+    summary: null,
+  });
+  return user;
+}
+
+export function updateUser(id: string, patch: Partial<Omit<AppUser, "id">>) {
+  let before: AppUser | undefined;
+  let after: AppUser | undefined;
+  setState((s) => ({
+    ...s,
+    users: s.users.map((u) => {
+      if (u.id !== id) return u;
+      before = u;
+      after = { ...u, ...patch };
+      return after;
+    }),
+  }));
+  if (!before || !after) return;
+  const actor = getCurrentUser()?.username ?? CURRENT_USER_HANDLE;
+  addAudit({
+    user: actor,
+    action: "User Updated",
+    object: id,
+    sensitive: true,
+    before: `${before.name} · ${ROLE_LABEL_FOR_AUDIT[before.role]} · ${before.status}`,
+    after: `${after.name} · ${ROLE_LABEL_FOR_AUDIT[after.role]} · ${after.status}`,
+    summary: null,
+  });
+}
+
+export function resetUserPassword(id: string) {
+  const user = state.users.find((u) => u.id === id);
+  if (!user) return;
+  const actor = getCurrentUser()?.username ?? CURRENT_USER_HANDLE;
+  addAudit({
+    user: actor,
+    action: "Password Reset",
+    object: id,
+    sensitive: true,
+    before: "—",
+    after: `Reset link issued · ${user.email}`,
+    summary: null,
+  });
+}
+
+export function changeOwnPassword() {
+  const user = getCurrentUser();
+  if (!user) return;
+  addAudit({
+    user: user.username,
+    action: "Password Changed",
+    object: user.id,
+    sensitive: true,
+    before: "—",
+    after: "Self-service password update",
+    summary: null,
+  });
 }

@@ -27,7 +27,11 @@ const titles: Record<string, string> = {
   "/audit": "Audit Trail",
   "/ml-analytics": "Machine Learning Analytics",
   "/administration": "Administration",
+  "/profile": "Profile",
+  "/account-management": "Account Management",
+  "/login": "Login",
 };
+
 
 export function AppShell() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });

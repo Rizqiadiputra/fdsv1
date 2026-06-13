@@ -18,12 +18,14 @@ import { Route as ScoringRouteImport } from './routes/scoring'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RiskManagementRouteImport } from './routes/risk-management'
 import { Route as RegulatoryRouteImport } from './routes/regulatory'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ParametersRouteImport } from './routes/parameters'
 import { Route as OperationalRiskRouteImport } from './routes/operational-risk'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as MlAnalyticsRouteImport } from './routes/ml-analytics'
 import { Route as MerchantsRouteImport } from './routes/merchants'
 import { Route as LossRatioRouteImport } from './routes/loss-ratio'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as FraudRegisterRouteImport } from './routes/fraud-register'
 import { Route as FraudOperationsRouteImport } from './routes/fraud-operations'
 import { Route as EkycRouteImport } from './routes/ekyc'
@@ -38,6 +40,7 @@ import { Route as BehaviorRouteImport } from './routes/behavior'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdministrationRouteImport } from './routes/administration'
+import { Route as AccountManagementRouteImport } from './routes/account-management'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WhistleblowingRoute = WhistleblowingRouteImport.update({
@@ -85,6 +88,11 @@ const RegulatoryRoute = RegulatoryRouteImport.update({
   path: '/regulatory',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParametersRoute = ParametersRouteImport.update({
   id: '/parameters',
   path: '/parameters',
@@ -113,6 +121,11 @@ const MerchantsRoute = MerchantsRouteImport.update({
 const LossRatioRoute = LossRatioRouteImport.update({
   id: '/loss-ratio',
   path: '/loss-ratio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FraudRegisterRoute = FraudRegisterRouteImport.update({
@@ -185,6 +198,11 @@ const AdministrationRoute = AdministrationRouteImport.update({
   path: '/administration',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountManagementRoute = AccountManagementRouteImport.update({
+  id: '/account-management',
+  path: '/account-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -193,6 +211,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account-management': typeof AccountManagementRoute
   '/administration': typeof AdministrationRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -207,12 +226,14 @@ export interface FileRoutesByFullPath {
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
+  '/login': typeof LoginRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/network': typeof NetworkRoute
   '/operational-risk': typeof OperationalRiskRoute
   '/parameters': typeof ParametersRoute
+  '/profile': typeof ProfileRoute
   '/regulatory': typeof RegulatoryRoute
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
@@ -225,6 +246,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account-management': typeof AccountManagementRoute
   '/administration': typeof AdministrationRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -239,12 +261,14 @@ export interface FileRoutesByTo {
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
+  '/login': typeof LoginRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/network': typeof NetworkRoute
   '/operational-risk': typeof OperationalRiskRoute
   '/parameters': typeof ParametersRoute
+  '/profile': typeof ProfileRoute
   '/regulatory': typeof RegulatoryRoute
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
@@ -258,6 +282,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account-management': typeof AccountManagementRoute
   '/administration': typeof AdministrationRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -272,12 +297,14 @@ export interface FileRoutesById {
   '/ekyc': typeof EkycRoute
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
+  '/login': typeof LoginRoute
   '/loss-ratio': typeof LossRatioRoute
   '/merchants': typeof MerchantsRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/network': typeof NetworkRoute
   '/operational-risk': typeof OperationalRiskRoute
   '/parameters': typeof ParametersRoute
+  '/profile': typeof ProfileRoute
   '/regulatory': typeof RegulatoryRoute
   '/risk-management': typeof RiskManagementRoute
   '/rules': typeof RulesRoute
@@ -292,6 +319,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account-management'
     | '/administration'
     | '/analytics'
     | '/audit'
@@ -306,12 +334,14 @@ export interface FileRouteTypes {
     | '/ekyc'
     | '/fraud-operations'
     | '/fraud-register'
+    | '/login'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
     | '/network'
     | '/operational-risk'
     | '/parameters'
+    | '/profile'
     | '/regulatory'
     | '/risk-management'
     | '/rules'
@@ -324,6 +354,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account-management'
     | '/administration'
     | '/analytics'
     | '/audit'
@@ -338,12 +369,14 @@ export interface FileRouteTypes {
     | '/ekyc'
     | '/fraud-operations'
     | '/fraud-register'
+    | '/login'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
     | '/network'
     | '/operational-risk'
     | '/parameters'
+    | '/profile'
     | '/regulatory'
     | '/risk-management'
     | '/rules'
@@ -356,6 +389,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account-management'
     | '/administration'
     | '/analytics'
     | '/audit'
@@ -370,12 +404,14 @@ export interface FileRouteTypes {
     | '/ekyc'
     | '/fraud-operations'
     | '/fraud-register'
+    | '/login'
     | '/loss-ratio'
     | '/merchants'
     | '/ml-analytics'
     | '/network'
     | '/operational-risk'
     | '/parameters'
+    | '/profile'
     | '/regulatory'
     | '/risk-management'
     | '/rules'
@@ -389,6 +425,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountManagementRoute: typeof AccountManagementRoute
   AdministrationRoute: typeof AdministrationRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuditRoute: typeof AuditRoute
@@ -403,12 +440,14 @@ export interface RootRouteChildren {
   EkycRoute: typeof EkycRoute
   FraudOperationsRoute: typeof FraudOperationsRoute
   FraudRegisterRoute: typeof FraudRegisterRoute
+  LoginRoute: typeof LoginRoute
   LossRatioRoute: typeof LossRatioRoute
   MerchantsRoute: typeof MerchantsRoute
   MlAnalyticsRoute: typeof MlAnalyticsRoute
   NetworkRoute: typeof NetworkRoute
   OperationalRiskRoute: typeof OperationalRiskRoute
   ParametersRoute: typeof ParametersRoute
+  ProfileRoute: typeof ProfileRoute
   RegulatoryRoute: typeof RegulatoryRoute
   RiskManagementRoute: typeof RiskManagementRoute
   RulesRoute: typeof RulesRoute
@@ -485,6 +524,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegulatoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/parameters': {
       id: '/parameters'
       path: '/parameters'
@@ -525,6 +571,13 @@ declare module '@tanstack/react-router' {
       path: '/loss-ratio'
       fullPath: '/loss-ratio'
       preLoaderRoute: typeof LossRatioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fraud-register': {
@@ -625,6 +678,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministrationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account-management': {
+      id: '/account-management'
+      path: '/account-management'
+      fullPath: '/account-management'
+      preLoaderRoute: typeof AccountManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -637,6 +697,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountManagementRoute: AccountManagementRoute,
   AdministrationRoute: AdministrationRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuditRoute: AuditRoute,
@@ -651,12 +712,14 @@ const rootRouteChildren: RootRouteChildren = {
   EkycRoute: EkycRoute,
   FraudOperationsRoute: FraudOperationsRoute,
   FraudRegisterRoute: FraudRegisterRoute,
+  LoginRoute: LoginRoute,
   LossRatioRoute: LossRatioRoute,
   MerchantsRoute: MerchantsRoute,
   MlAnalyticsRoute: MlAnalyticsRoute,
   NetworkRoute: NetworkRoute,
   OperationalRiskRoute: OperationalRiskRoute,
   ParametersRoute: ParametersRoute,
+  ProfileRoute: ProfileRoute,
   RegulatoryRoute: RegulatoryRoute,
   RiskManagementRoute: RiskManagementRoute,
   RulesRoute: RulesRoute,

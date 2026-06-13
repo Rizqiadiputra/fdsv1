@@ -135,7 +135,7 @@ function FraudRegisterPage() {
     [],
   );
 
-  const [open, setOpen] = useState<typeof reports[number] | null>(null);
+  const [open, setOpen] = useState<Report | null>(null);
 
   return (
     <div className="space-y-5">
@@ -144,10 +144,10 @@ function FraudRegisterPage() {
         description="Register fraud terkonfirmasi — POJK 12/2024 (16 field, pelaporan semester). Sumber data: Case Management."
         actions={
           <>
-            <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export PDF sedang dalam pengembangan", { description: `${reports.length} laporan akan diekspor pada rilis berikutnya.` })}>
+            <Button size="sm" variant="outline" onClick={() => exportPDF(reports, `fraud-register-${new Date().toISOString().slice(0,10)}.pdf`, "Confirmed Fraud Register — POJK 12/2024")}>
               <Download className="mr-1.5 h-3.5 w-3.5" /> Export PDF
             </Button>
-            <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export Excel sedang dalam pengembangan", { description: `${reports.length} laporan akan diekspor pada rilis berikutnya.` })}>
+            <Button size="sm" variant="outline" onClick={() => exportCSV(reports, `fraud-register-${new Date().toISOString().slice(0,10)}.csv`)}>
               <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" /> Export Excel
             </Button>
           </>

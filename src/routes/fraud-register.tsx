@@ -199,8 +199,8 @@ function FraudRegisterPage() {
             <DialogTitle className="flex items-center justify-between gap-2">
               <span>Laporan Fraud · {open?.reportId}</span>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export PDF sedang dalam pengembangan")}><Download className="h-3 w-3" /> Export PDF</Button>
-                <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export Excel sedang dalam pengembangan")}><FileSpreadsheet className="h-3 w-3" /> Export Excel</Button>
+                <Button size="sm" variant="outline" onClick={() => open && exportPDF([open], `${open.reportId}.pdf`, `Laporan Fraud · ${open.reportId}`)}><Download className="h-3 w-3" /> Export PDF</Button>
+                <Button size="sm" variant="outline" onClick={() => open && exportCSV([open], `${open.reportId}.csv`)}><FileSpreadsheet className="h-3 w-3" /> Export Excel</Button>
               </div>
             </DialogTitle>
           </DialogHeader>

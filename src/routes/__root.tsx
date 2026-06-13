@@ -14,6 +14,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppShell } from "@/components/app-shell";
 import { Toaster } from "@/components/ui/sonner";
+import { useAppStore } from "@/lib/app-store";
+import { canAccess, defaultLanding } from "@/lib/rbac";
+
 
 function NotFoundComponent() {
   return (

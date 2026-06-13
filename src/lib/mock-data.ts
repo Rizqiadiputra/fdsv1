@@ -39,8 +39,11 @@ export const incidentTrend = [
 export type Severity = "Critical" | "High" | "Medium" | "Low";
 export type AlertStatus = "New" | "In Review" | "Escalated" | "Closed";
 
+export type Source = "Internal" | "Sumsub";
+
 export interface Alert {
   id: string;
+  txId: string;
   ts: string;
   user: string;
   userName: string;
@@ -52,6 +55,7 @@ export interface Alert {
   fraudType: string;
   status: AlertStatus;
   location: string;
+  source: Source;
 }
 
 const fraudTypeList = [
@@ -104,6 +108,7 @@ export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
   );
   return {
     id: `ALR-${(100245 + i).toString()}`,
+    txId: `TX-${(900012 + i * 13).toString()}`,
     ts: d.toISOString().replace("T", " ").slice(0, 19),
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
     userName: userNames[i % userNames.length],
@@ -115,6 +120,7 @@ export const alerts: Alert[] = Array.from({ length: 48 }).map((_, i) => {
     fraudType: fraudTypeList[i % fraudTypeList.length],
     status,
     location: idLocations[i % idLocations.length],
+    source: (i % 3 === 0 ? "Sumsub" : "Internal") as Source,
   };
 });
 
@@ -443,6 +449,7 @@ export interface LiveTx {
   id: string;
   ts: string;
   user: string;
+  userName: string;
   channel: string;
   wallet: string;
   amount: number;
@@ -450,8 +457,9 @@ export interface LiveTx {
   score: number;
   decision: "Approved" | "Review" | "Hold" | "Rejected";
   fraudType?: string;
-  heldAmount: number; // Saldo Tertahan (Rp) — for Hold/Review
-  currency: string;   // currency code from PG, placeholder "-" if unavailable
+  heldAmount: number;
+  currency: string;
+  source: Source;
 }
 
 const channels = ["QRIS Payment", "P2P Transfer", "TopUp", "Bill Payment", "Merchant Payout", "Cash Out"];
@@ -464,7 +472,6 @@ const merchants = [
 export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) => {
   const r = seeded(i + 1100);
   const score = Math.floor(10 + r * 90);
-  // Most live tx are micro/normal; only fraud-flagged tx skew higher
   const baseAmount = idrAmounts[Math.floor(r * idrAmounts.length)];
   const amount = r > 0.9 && score >= 85 ? Math.floor(5_000_000 + r * 12_000_000) : baseAmount;
   const decision: LiveTx["decision"] =
@@ -473,6 +480,7 @@ export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) 
     id: `TX-${(900012 + i * 7).toString()}`,
     ts: new Date(Date.now() - i * 1000 * 11).toISOString().replace("T", " ").slice(11, 19),
     user: `USR-${(40012 + Math.floor(r * 8000)).toString()}`,
+    userName: userNames[i % userNames.length],
     channel: channels[i % channels.length],
     wallet: ewalletProviders[i % ewalletProviders.length],
     amount,
@@ -482,6 +490,7 @@ export const liveTransactions: LiveTx[] = Array.from({ length: 32 }).map((_, i) 
     fraudType: score >= 70 ? fraudTypeList[i % fraudTypeList.length] : undefined,
     heldAmount: (decision === "Hold" || decision === "Review") ? amount : 0,
     currency: i % 7 === 3 ? "-" : "IDR",
+    source: (i % 4 === 0 ? "Sumsub" : "Internal") as Source,
   };
 });
 

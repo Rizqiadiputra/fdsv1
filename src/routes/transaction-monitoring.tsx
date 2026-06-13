@@ -103,16 +103,19 @@ function TxMonitoring() {
                   <TableHead>Time</TableHead>
                   <TableHead>Tx ID</TableHead>
                   <TableHead>Wallet</TableHead>
-                  <TableHead>User</TableHead>
+                  <TableHead>User ID</TableHead>
+                  <TableHead>User Name</TableHead>
                   <TableHead>Channel</TableHead>
                   <TableHead>Merchant</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead>Mata Uang</TableHead>
                   <TableHead>Score</TableHead>
                   <TableHead>Decision</TableHead>
+                  <TableHead>Source</TableHead>
                   <TableHead className="text-right">Saldo Tertahan</TableHead>
                 </TableRow>
               </TableHeader>
+
               <TableBody>
                 {items.map((t) => (
                   <TableRow key={t.id} className="hover:bg-muted/40">
@@ -120,6 +123,7 @@ function TxMonitoring() {
                     <TableCell className="font-mono text-xs">{t.id}</TableCell>
                     <TableCell><Badge variant="outline" className="text-[10px]">{t.wallet}</Badge></TableCell>
                     <TableCell className="font-mono text-xs">{t.user}</TableCell>
+                    <TableCell className="text-xs">{t.userName}</TableCell>
                     <TableCell className="text-xs">{t.channel}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{t.merchant ?? "—"}</TableCell>
                     <TableCell className="text-right font-mono text-xs">{fmtIDR(t.amount)}</TableCell>
@@ -142,11 +146,18 @@ function TxMonitoring() {
                         t.decision === "Rejected" && "border-destructive/40 bg-destructive/10 text-destructive",
                       )}>{t.decision}</Badge>
                     </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={cn(
+                        "text-[10px]",
+                        t.source === "Sumsub" ? "border-info/40 bg-info/10 text-info" : "border-success/40 bg-success/10 text-success",
+                      )}>{t.source}</Badge>
+                    </TableCell>
                     <TableCell className="text-right font-mono text-xs text-muted-foreground">
                       {t.heldAmount > 0 ? fmtIDR(t.heldAmount) : "—"}
                     </TableCell>
                   </TableRow>
                 ))}
+
               </TableBody>
             </Table>
           </div>

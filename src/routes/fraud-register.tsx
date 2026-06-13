@@ -105,35 +105,102 @@ export const Route = createFileRoute("/fraud-register")({
 const fraudJenis = ["Account Takeover (ATO)", "Money Mule", "Phishing", "QRIS Fraud", "Promo Abuse", "Synthetic Identity"];
 
 function FraudRegisterPage() {
-  const reports = useMemo(
-    () =>
-      cases
-        .filter((c) => c.status === "Fraud Confirmed" || c.status === "Closed")
-        .map((c, i) => ({
+  const reports = useMemo(() => {
+    const narrativeByType: Record<string, { aktivitas: string; deskripsi: (c: typeof cases[number]) => string; penyebab: string; penanganan: string; perbaikan: string; pihak: string }> = {
+      "Account Takeover": {
+        aktivitas: "Login dari device baru + cash out wallet",
+        deskripsi: (c) => `Pelaku berhasil login ke akun ${c.user} dari device baru tanpa challenge tambahan, kemudian melakukan cash out ${fmtIDR(c.lossAmount)} ke ${c.perpetratorAccount} dalam <15 menit.`,
+        penyebab: "Kredensial nasabah bocor (phishing) dan rule device-binding tidak memicu step-up authentication pada login pertama dari device baru.",
+        penanganan: "Suspend wallet, freeze rekening tujuan, reset kredensial nasabah, refund parsial.",
+        perbaikan: "Wajib step-up biometric/OTP pada login device baru + cooling-off 1 jam untuk cash out pertama.",
+        pihak: "Nasabah",
+      },
+      "Money Mule": {
+        aktivitas: "Penerimaan transfer fan-in & forward keluar",
+        deskripsi: (c) => `Akun ${c.user} berperan sebagai mule — menerima dana fan-in dari ≥8 wallet berbeda lalu meneruskan ke ${c.perpetratorAccount} dengan total ${fmtIDR(c.lossAmount)}.`,
+        penyebab: "Pola fan-in/fan-out tidak terdeteksi rule velocity karena nominal per-transaksi di bawah threshold.",
+        penanganan: "Blokir wallet mule, laporan LTKM ke PPATK, koordinasi dengan bank tujuan.",
+        perbaikan: "Tambah rule graph-based mule detection (fan-in count + holding time <30 menit).",
+        pihak: "Nasabah & Pihak Ke-3",
+      },
+      "QRIS Fraud": {
+        aktivitas: "Pembayaran QRIS ke merchant fiktif berulang",
+        deskripsi: (c) => `Transaksi QRIS berulang dari ${c.user} ke merchant terindikasi fiktif senilai total ${fmtIDR(c.lossAmount)} di area ${c.location}.`,
+        penyebab: "Onboarding merchant kurang ketat — KYB hanya berbasis dokumen tanpa verifikasi fisik lokasi usaha.",
+        penanganan: "Suspend MID merchant, hold settlement, investigasi acquirer.",
+        perbaikan: "Wajibkan geo-verification & site visit untuk merchant high-risk MCC.",
+        pihak: "Perusahaan & Merchant",
+      },
+      "Promo Abuse": {
+        aktivitas: "Multi-account redemption promo cashback",
+        deskripsi: (c) => `Cluster ${Math.floor(c.lossAmount / 50000)} akun terhubung satu device fingerprint melakukan redeem promo cashback berulang, total kerugian ${fmtIDR(c.lossAmount)}.`,
+        penyebab: "Rule promo eligibility tidak cek device fingerprint & shared IP.",
+        penanganan: "Cabut cashback, blacklist device & IP, blokir akun terkait cluster.",
+        perbaikan: "Tambah device-fingerprint dedup + IP velocity limit pada engine eligibility promo.",
+        pihak: "Perusahaan",
+      },
+      "Wallet Transfer Burst": {
+        aktivitas: "Transfer P2P berulang dalam interval singkat",
+        deskripsi: (c) => `Akun ${c.user} melakukan ≥12 transfer P2P dalam 10 menit ke ${c.perpetratorAccount} dengan total ${fmtIDR(c.lossAmount)} — pola structuring untuk hindari threshold.`,
+        penyebab: "Threshold velocity per-menit terlalu longgar dan tidak mempertimbangkan agregat per-penerima.",
+        penanganan: "Hold saldo, reverse transaksi terakhir, eskalasi ke Cyber Security.",
+        perbaikan: "Tighten rule R-3015: max 5 transfer/10 menit dan agregat ke single beneficiary.",
+        pihak: "Nasabah",
+      },
+      "SIM Swap": {
+        aktivitas: "Reset OTP pasca penggantian SIM operator",
+        deskripsi: (c) => `Pasca event SIM swap pada nomor ter-binding akun ${c.user}, pelaku reset OTP dan melakukan cash out ${fmtIDR(c.lossAmount)} ke ${c.perpetratorAccount}.`,
+        penyebab: "Tidak ada cooling-off pasca event SIM swap dari telco — OTP langsung dapat digunakan.",
+        penanganan: "Blokir wallet, freeze rekening tujuan, refund nasabah, koordinasi dengan telco.",
+        perbaikan: "Integrasi feed SIM-swap dari telco + cooling-off 24 jam untuk transaksi sensitif.",
+        pihak: "Nasabah",
+      },
+      "Synthetic Identity": {
+        aktivitas: "Pembukaan akun dengan identitas sintetis untuk pencairan",
+        deskripsi: (c) => `Akun ${c.user} dibuka menggunakan kombinasi NIK valid + nama & foto sintetis (deepfake liveness), digunakan untuk menampung & mencairkan dana ${fmtIDR(c.lossAmount)}.`,
+        penyebab: "Liveness check eKYC dapat dilewati dengan deepfake video; cross-check NIK-foto Dukcapil tidak strict.",
+        penanganan: "Tutup akun, blacklist NIK & device, laporkan ke Dukcapil & PPATK.",
+        perbaikan: "Upgrade liveness vendor ke active challenge + face-match Dukcapil mandatory untuk Tier 2.",
+        pihak: "Perusahaan & Nasabah",
+      },
+    };
+
+    const fallback = narrativeByType["Account Takeover"];
+    const namaPelakuPool = ["Tidak Diketahui", "Bambang H.", "Sinta W.", "Rudi A.", "Hendra K.", "Maya L."];
+
+    return cases
+      .filter((c) => c.status === "Fraud Confirmed" || c.status === "Closed")
+      .map((c, i) => {
+        const n = narrativeByType[c.type] ?? fallback;
+        const isInternal = c.division.toLowerCase().includes("internal") || i % 9 === 0;
+        const pelakuKategori = isInternal ? "Internal — Karyawan" : c.type === "Money Mule" || c.type === "Synthetic Identity" ? "Eksternal — Pihak Ke-3" : "Eksternal — Nasabah";
+        const tanggal = `2025-${String(((i % 6) + 1)).padStart(2, "0")}-${String(((i % 27) + 1)).padStart(2, "0")}`;
+        const jam = `${String((7 + (i * 3)) % 24).padStart(2, "0")}:${String((i * 7) % 60).padStart(2, "0")}`;
+        return {
           reportId: `FR-${(2025_0001 + i).toString()}`,
-          tanggal: `2025-${String(((i % 6) + 1)).padStart(2, "0")}-${String(((i % 27) + 1)).padStart(2, "0")}`,
+          tanggal,
           tipe: c.type,
-          pelaku: ["Eksternal — Nasabah", "Eksternal — Pihak Ke-3", "Internal — Karyawan"][i % 3],
-          pelakuNama: ["Tidak Diketahui", "Bambang H.", "Sinta W.", "Tidak Diketahui", "Rudi A."][i % 5],
-          jabatan: i % 3 === 2 ? "Staff Operasional" : "—",
+          pelaku: pelakuKategori,
+          pelakuNama: isInternal ? namaPelakuPool[(i % (namaPelakuPool.length - 1)) + 1] : namaPelakuPool[i % namaPelakuPool.length],
+          jabatan: isInternal ? ["Staff Operasional", "Customer Service", "Staff Settlement"][i % 3] : "—",
           userId: c.user,
           statusTL: ["Dalam Investigasi", "Dilaporkan ke OJK", "Selesai", "Eskalasi ke Aparat"][i % 4],
-          aktivitas: ["Cash out wallet", "Transfer P2P", "Pembayaran QRIS", "Top-up & burst"][i % 4],
-          deskripsi: "Pelaku melakukan pengambilalihan akun melalui SIM swap, kemudian melakukan cash out berulang dalam 30 menit.",
+          aktivitas: n.aktivitas,
+          deskripsi: n.deskripsi(c),
           lokasi: c.location,
           divisi: c.division,
-          pihakDirugikan: ["Nasabah", "Perusahaan", "Merchant"][i % 3],
-          waktu: `2025-${String(((i % 6) + 1)).padStart(2, "0")}-${String(((i % 27) + 1)).padStart(2, "0")} ${String(((i * 3) % 24)).padStart(2, "0")}:30`,
+          pihakDirugikan: n.pihak,
+          waktu: `${tanggal} ${jam} WIB`,
           kerugian: c.lossAmount,
           recovery: c.recoveredAmount,
-          penyebab: "Lemahnya verifikasi tambahan saat penggantian SIM oleh operator telco.",
-          penanganan: "Blokir wallet, freeze rekening tujuan, refund nasabah.",
-          perbaikan: "Tambah challenge OTP + device binding ulang setelah SIM swap event.",
-          dokumen: "https://dms.internal/fraud/" + `FR-${(2025_0001 + i).toString()}`,
+          penyebab: n.penyebab,
+          penanganan: n.penanganan,
+          perbaikan: n.perbaikan,
+          dokumen: `https://dms.internal/fraud/FR-${(2025_0001 + i).toString()}`,
           caseId: c.id,
-        })),
-    [],
-  );
+        };
+      });
+  }, []);
 
   const [open, setOpen] = useState<Report | null>(null);
 

@@ -11,6 +11,91 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cases, fmtIDR } from "@/lib/mock-data";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+type Report = {
+  reportId: string; tanggal: string; tipe: string; pelaku: string; pelakuNama: string;
+  jabatan: string; userId: string; statusTL: string; aktivitas: string; deskripsi: string;
+  lokasi: string; divisi: string; pihakDirugikan: string; waktu: string;
+  kerugian: number; recovery: number; penyebab: string; penanganan: string;
+  perbaikan: string; dokumen: string; caseId: string;
+};
+
+const FIELDS: { key: keyof Report; label: string }[] = [
+  { key: "reportId", label: "Report ID" },
+  { key: "tanggal", label: "Tanggal" },
+  { key: "pelakuNama", label: "Nama Pelaku" },
+  { key: "jabatan", label: "Jabatan" },
+  { key: "userId", label: "User ID" },
+  { key: "statusTL", label: "Status Tindak Lanjut" },
+  { key: "tipe", label: "Jenis Fraud" },
+  { key: "aktivitas", label: "Aktivitas Terkait" },
+  { key: "deskripsi", label: "Deskripsi & Modus" },
+  { key: "lokasi", label: "Lokasi" },
+  { key: "divisi", label: "Divisi" },
+  { key: "pihakDirugikan", label: "Pihak Dirugikan" },
+  { key: "waktu", label: "Waktu Kejadian" },
+  { key: "kerugian", label: "Kerugian (Rp)" },
+  { key: "recovery", label: "Recovery (Rp)" },
+  { key: "penyebab", label: "Penyebab" },
+  { key: "penanganan", label: "Penanganan" },
+  { key: "perbaikan", label: "Perbaikan" },
+  { key: "dokumen", label: "Dokumen Pendukung" },
+];
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportCSV(rows: Report[], filename: string) {
+  const header = FIELDS.map((f) => f.label).join(",");
+  const body = rows.map((r) =>
+    FIELDS.map((f) => {
+      const v = String(r[f.key] ?? "").replace(/"/g, '""');
+      return `"${v}"`;
+    }).join(","),
+  ).join("\n");
+  const csv = "\ufeff" + header + "\n" + body;
+  downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), filename);
+  toast.success("Laporan berhasil diunduh", { description: filename });
+}
+
+function exportPDF(rows: Report[], filename: string, title: string) {
+  const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+  doc.setFontSize(14);
+  doc.text(title, 40, 40);
+  doc.setFontSize(9);
+  doc.text(`Generated: ${new Date().toLocaleString("id-ID")} · ${rows.length} laporan`, 40, 56);
+
+  if (rows.length === 1) {
+    const r = rows[0];
+    autoTable(doc, {
+      startY: 72,
+      head: [["Field", "Value"]],
+      body: FIELDS.map((f) => [f.label, String(r[f.key] ?? "")]),
+      styles: { fontSize: 8, cellPadding: 4 },
+      headStyles: { fillColor: [30, 41, 59] },
+      columnStyles: { 0: { cellWidth: 160, fontStyle: "bold" }, 1: { cellWidth: "auto" } },
+    });
+  } else {
+    const cols = FIELDS.slice(0, 8);
+    autoTable(doc, {
+      startY: 72,
+      head: [cols.map((c) => c.label)],
+      body: rows.map((r) => cols.map((c) => String(r[c.key] ?? ""))),
+      styles: { fontSize: 7, cellPadding: 3, overflow: "linebreak" },
+      headStyles: { fillColor: [30, 41, 59] },
+    });
+  }
+  doc.save(filename);
+  toast.success("Laporan berhasil diunduh", { description: filename });
+}
 
 export const Route = createFileRoute("/fraud-register")({
   head: () => ({ meta: [{ title: "Confirmed Fraud Register — Sentinel EFRMP" }] }),
@@ -50,7 +135,7 @@ function FraudRegisterPage() {
     [],
   );
 
-  const [open, setOpen] = useState<typeof reports[number] | null>(null);
+  const [open, setOpen] = useState<Report | null>(null);
 
   return (
     <div className="space-y-5">
@@ -59,10 +144,10 @@ function FraudRegisterPage() {
         description="Register fraud terkonfirmasi — POJK 12/2024 (16 field, pelaporan semester). Sumber data: Case Management."
         actions={
           <>
-            <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export PDF sedang dalam pengembangan", { description: `${reports.length} laporan akan diekspor pada rilis berikutnya.` })}>
+            <Button size="sm" variant="outline" onClick={() => exportPDF(reports, `fraud-register-${new Date().toISOString().slice(0,10)}.pdf`, "Confirmed Fraud Register — POJK 12/2024")}>
               <Download className="mr-1.5 h-3.5 w-3.5" /> Export PDF
             </Button>
-            <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export Excel sedang dalam pengembangan", { description: `${reports.length} laporan akan diekspor pada rilis berikutnya.` })}>
+            <Button size="sm" variant="outline" onClick={() => exportCSV(reports, `fraud-register-${new Date().toISOString().slice(0,10)}.csv`)}>
               <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" /> Export Excel
             </Button>
           </>
@@ -114,8 +199,8 @@ function FraudRegisterPage() {
             <DialogTitle className="flex items-center justify-between gap-2">
               <span>Laporan Fraud · {open?.reportId}</span>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export PDF sedang dalam pengembangan")}><Download className="h-3 w-3" /> Export PDF</Button>
-                <Button size="sm" variant="outline" onClick={() => toast.info("Fitur Export Excel sedang dalam pengembangan")}><FileSpreadsheet className="h-3 w-3" /> Export Excel</Button>
+                <Button size="sm" variant="outline" onClick={() => open && exportPDF([open], `${open.reportId}.pdf`, `Laporan Fraud · ${open.reportId}`)}><Download className="h-3 w-3" /> Export PDF</Button>
+                <Button size="sm" variant="outline" onClick={() => open && exportCSV([open], `${open.reportId}.csv`)}><FileSpreadsheet className="h-3 w-3" /> Export Excel</Button>
               </div>
             </DialogTitle>
           </DialogHeader>

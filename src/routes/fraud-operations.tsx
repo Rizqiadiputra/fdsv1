@@ -119,6 +119,7 @@ function FraudOps() {
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead className="w-[140px]">Alert ID</TableHead>
+                  <TableHead className="w-[140px]">Transaction ID</TableHead>
                   <TableHead>Timestamp</TableHead>
                   <TableHead>User</TableHead>
                   <TableHead>Source</TableHead>
@@ -141,6 +142,7 @@ function FraudOps() {
                     onClick={() => setSelected(a)}
                   >
                     <TableCell className="font-mono text-xs">{a.id}</TableCell>
+                    <TableCell className="font-mono text-xs text-info">{a.txId}</TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">{a.ts}</TableCell>
                     <TableCell className="text-xs">
                       <div className="font-mono">{a.user}</div>

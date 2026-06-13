@@ -52,9 +52,11 @@ function FraudOps() {
     return () => clearInterval(t);
   }, []);
 
-  const filtered = alerts.filter((a) =>
-    tab === "all" ? true : a.severity.toLowerCase() === tab,
-  );
+  const filtered = alerts
+    .filter((a) => (tab === "all" ? true : a.severity.toLowerCase() === tab))
+    .slice()
+    .sort((a, b) => b.ts.localeCompare(a.ts));
+
 
   return (
     <div className="space-y-5">
@@ -119,6 +121,7 @@ function FraudOps() {
                   <TableHead className="w-[140px]">Alert ID</TableHead>
                   <TableHead>Timestamp</TableHead>
                   <TableHead>User</TableHead>
+                  <TableHead>Source</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead className="w-[120px]">Risk</TableHead>
                   <TableHead>Rules Triggered</TableHead>
@@ -129,6 +132,7 @@ function FraudOps() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
+
               <TableBody>
                 {filtered.map((a) => (
                   <TableRow
@@ -140,9 +144,16 @@ function FraudOps() {
                     <TableCell className="font-mono text-xs text-muted-foreground">{a.ts}</TableCell>
                     <TableCell className="text-xs">
                       <div className="font-mono">{a.user}</div>
-                      <div className="text-[10px] text-muted-foreground">{a.userName}</div>
+                      <div className="text-[10px] text-muted-foreground">— {a.userName}</div>
+                    </TableCell>
+                    <TableCell>
+                      <span className={cn(
+                        "inline-flex rounded border px-1.5 py-0.5 text-[10px]",
+                        a.source === "Sumsub" ? "border-info/40 bg-info/10 text-info" : "border-success/40 bg-success/10 text-success",
+                      )}>{a.source}</span>
                     </TableCell>
                     <TableCell className="text-right font-mono text-xs">{fmtIDR(a.amount)}</TableCell>
+
                     <TableCell>
                       <RiskBar score={a.score} />
                     </TableCell>

@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { alerts, fmtIDR, users, type Alert, type Source } from "@/lib/mock-data";
+import { useAppStore, applyAlertAction, type AlertOverride } from "@/lib/app-store";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/suspicious")({
   head: () => ({ meta: [{ title: "Suspicious Transactions — Sentinel EFRMP" }] }),
@@ -67,14 +69,21 @@ function SuspiciousPage() {
   }, []);
 
   const [open, setOpen] = useState<Row | null>(null);
-  const [acted, setActed] = useState<Record<string, "Approved" | "Rejected" | "Blacklisted">>({});
-  const [confirm, setConfirm] = useState<{ row: Row; action: "Approved" | "Rejected" | "Blacklisted" } | null>(null);
+  const acted = useAppStore((s) => s.alertOverrides);
+  const [confirm, setConfirm] = useState<{ row: Row; action: AlertOverride } | null>(null);
 
   function applyAction() {
     if (!confirm) return;
-    setActed((a) => ({ ...a, [confirm.row.id]: confirm.action }));
-    // simulate audit log entry
-    console.info(`[AUDIT] ${confirm.action} · ${confirm.row.id} · tx ${confirm.row.txId}`);
+    applyAlertAction({
+      alertId: confirm.row.id,
+      txId: confirm.row.txId,
+      userId: confirm.row.user,
+      action: confirm.action,
+      previousStatus: "Under Review",
+    });
+    toast.success(`Transaksi ${confirm.row.txId} ditandai ${confirm.action}`, {
+      description: "Tercatat di Audit Trail" + (confirm.action === "Blacklisted" ? " & Blacklist Management." : "."),
+    });
     setConfirm(null);
     setOpen(null);
   }

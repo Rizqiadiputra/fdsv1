@@ -65,6 +65,26 @@ export interface ExtraCase {
   sourceReportId?: string;
 }
 
+export interface AppUser {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  role: Role;
+  department: string;
+  employeeId: string;
+  phone: string;
+  office: string;
+  status: "Aktif" | "Nonaktif";
+  lastLogin: string | null;
+  createdAt: string;
+}
+
+export interface AuthSession {
+  userId: string;
+  loginAt: string;
+}
+
 interface AppState {
   alertOverrides: Record<string, AlertOverride>;
   extraAudit: AuditEntry[];
@@ -72,11 +92,86 @@ interface AppState {
   removedBlacklists: Record<BlacklistCategory, string[]>;
   csReports: CsReport[] | null; // null = use seed
   extraCases: ExtraCase[];
+  users: AppUser[];
+  session: AuthSession | null;
 }
 
 const STORAGE_KEY = "sentinel-efrmp-store-v1";
 export const CURRENT_USER = "Andini Putri";
 export const CURRENT_USER_HANDLE = "andini.p";
+
+const seedUsers: AppUser[] = [
+  {
+    id: "U-001",
+    name: "Andini Putri",
+    email: "andini.putri@sentinel.id",
+    username: "andini.p",
+    role: "manager",
+    department: "Fraud Risk Management",
+    employeeId: "EMP-10231",
+    phone: "+62 812-1100-0001",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-02-14",
+  },
+  {
+    id: "U-002",
+    name: "Bagas Wirawan",
+    email: "bagas.w@sentinel.id",
+    username: "bagas.w",
+    role: "analyst",
+    department: "Fraud Operations",
+    employeeId: "EMP-10455",
+    phone: "+62 812-1100-0002",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-05-02",
+  },
+  {
+    id: "U-003",
+    name: "Citra Larasati",
+    email: "citra.l@sentinel.id",
+    username: "citra.l",
+    role: "compliance",
+    department: "Compliance & Regulatory",
+    employeeId: "EMP-10612",
+    phone: "+62 812-1100-0003",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-06-19",
+  },
+  {
+    id: "U-004",
+    name: "Dimas Hidayat",
+    email: "dimas.h@sentinel.id",
+    username: "dimas.h",
+    role: "cs",
+    department: "Customer Service",
+    employeeId: "EMP-10788",
+    phone: "+62 812-1100-0004",
+    office: "Cabang Bandung",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-08-04",
+  },
+  {
+    id: "U-005",
+    name: "Erlina Suryani",
+    email: "erlina.s@sentinel.id",
+    username: "erlina.s",
+    role: "admin",
+    department: "IT Security",
+    employeeId: "EMP-10901",
+    phone: "+62 812-1100-0005",
+    office: "HQ Jakarta",
+    status: "Aktif",
+    lastLogin: null,
+    createdAt: "2024-09-21",
+  },
+];
 
 const defaultState: AppState = {
   alertOverrides: {},
@@ -85,7 +180,10 @@ const defaultState: AppState = {
   removedBlacklists: { user: [], device: [], merchant: [], account: [], ip: [] },
   csReports: null,
   extraCases: [],
+  users: seedUsers,
+  session: null,
 };
+
 
 let state: AppState = defaultState;
 const listeners = new Set<() => void>();

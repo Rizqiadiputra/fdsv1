@@ -1,11 +1,9 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   ShieldAlert,
   Folder,
   Users,
-  Smartphone,
-  Network,
   BarChart3,
   Activity,
   Lock,
@@ -16,20 +14,20 @@ import {
   Ban,
   FileText,
   ScrollText,
-  Brain,
   Settings,
   ShieldCheck,
   Zap,
-  Fingerprint,
   Store,
   UserCheck,
-  Radar,
   TrendingDown,
   MessageSquareWarning,
   ShieldQuestion,
   BookCheck,
   Megaphone,
   Siren,
+  LogOut,
+  User as UserIcon,
+  KeyRound,
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,6 +41,17 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
+import { logout, useAppStore } from "@/lib/app-store";
+import { canAccess, ROLE_LABEL } from "@/lib/rbac";
 
 const groups: {
   label: string;
@@ -81,12 +90,39 @@ const groups: {
       { title: "Risk Management", url: "/risk-management", icon: GaugeCircle },
       { title: "Complaint Ratio", url: "/complaint-ratio", icon: MessageSquareWarning },
       { title: "Administration", url: "/administration", icon: Settings },
+      { title: "Account Management", url: "/account-management", icon: KeyRound },
     ],
   },
 ];
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const navigate = useNavigate();
+  const session = useAppStore((s) => s.session);
+  const users = useAppStore((s) => s.users);
+  const currentUser = session ? users.find((u) => u.id === session.userId) ?? null : null;
+
+  const initials = currentUser?.name
+    .split(" ")
+    .map((s) => s[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase() ?? "?";
+
+  function handleLogout() {
+    logout();
+    toast.success("Anda telah keluar");
+    navigate({ to: "/login", replace: true });
+  }
+
+  const filteredGroups = currentUser
+    ? groups
+        .map((g) => ({
+          ...g,
+          items: g.items.filter((it) => canAccess(currentUser.role, it.url)),
+        }))
+        .filter((g) => g.items.length > 0)
+    : [];
 
   return (
     <Sidebar collapsible="icon">
@@ -106,7 +142,7 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent className="scrollbar-thin">
-        {groups.map((g, i) => (
+        {filteredGroups.map((g, i) => (
           <SidebarGroup key={g.label}>
             <SidebarGroupLabel
               className={
@@ -143,16 +179,43 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border p-3">
-        <div className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-accent text-xs font-semibold text-sidebar-accent-foreground">
-            AP
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-sidebar-foreground">Andini Putri</span>
-            <span className="text-[10px] text-sidebar-foreground/60">Fraud Manager · GMT+7</span>
-          </div>
-        </div>
+      <SidebarFooter className="border-t border-sidebar-border p-2">
+        {currentUser && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-left hover:bg-sidebar-accent">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-xs font-semibold text-sidebar-accent-foreground">
+                  {initials}
+                </div>
+                <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+                  <span className="text-xs font-medium text-sidebar-foreground">{currentUser.name}</span>
+                  <span className="text-[10px] text-sidebar-foreground/60">
+                    {ROLE_LABEL[currentUser.role]} · GMT+7
+                  </span>
+                </div>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="right" align="end" className="w-56">
+              <DropdownMenuLabel className="text-xs">
+                <div className="font-medium">{currentUser.name}</div>
+                <div className="text-[10px] text-muted-foreground">{currentUser.email}</div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
+                <UserIcon className="h-4 w-4" /> Profile
+              </DropdownMenuItem>
+              {canAccess(currentUser.role, "/account-management") && (
+                <DropdownMenuItem onClick={() => navigate({ to: "/account-management" })}>
+                  <KeyRound className="h-4 w-4" /> Account Management
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <LogOut className="h-4 w-4" /> Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

@@ -19,6 +19,7 @@ export const Route = createFileRoute("/ekyc")({
 });
 
 function EKyc() {
+  const navigate = useNavigate();
   return (
     <div className="space-y-5">
       <PageHeader

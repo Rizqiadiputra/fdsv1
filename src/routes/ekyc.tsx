@@ -23,6 +23,10 @@ export const Route = createFileRoute("/ekyc")({
 
 function EKyc() {
   const navigate = useNavigate();
+  const childMatches = useChildMatches();
+  if (childMatches.length > 0) {
+    return <Outlet />;
+  }
   return (
     <div className="space-y-5">
       <PageHeader

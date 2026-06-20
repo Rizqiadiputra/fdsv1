@@ -6,9 +6,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { liveTransactions, fmtIDR, type LiveTx } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
@@ -17,7 +15,10 @@ export const Route = createFileRoute("/transaction-monitoring")({
   head: () => ({
     meta: [
       { title: "Real-Time Transaction Monitoring — Sentinel EFRMP" },
-      { name: "description", content: "Live transaction stream for Indonesian e-wallet channels with risk scoring and decisioning." },
+      {
+        name: "description",
+        content: "Live transaction stream for Indonesian e-wallet channels with risk scoring and decisioning.",
+      },
     ],
   }),
   component: TxMonitoring,
@@ -60,7 +61,9 @@ function TxMonitoring() {
         actions={
           <>
             <Select defaultValue="all">
-              <SelectTrigger className="h-9 w-[140px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-9 w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Wallets</SelectItem>
                 <SelectItem value="gopay">GoPay</SelectItem>
@@ -70,17 +73,52 @@ function TxMonitoring() {
                 <SelectItem value="linkaja">LinkAja</SelectItem>
               </SelectContent>
             </Select>
-            <Button size="sm" variant="outline">Pause Stream</Button>
+            <Button size="sm" variant="outline">
+              Pause Stream
+            </Button>
           </>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-        <KpiCard label="Transactions / sec" value={tps.toString()} delta={3.2} icon={<Zap className="h-4 w-4" />} tone="info" />
-        <KpiCard label="Approved" value="98.42%" delta={0.18} icon={<CheckCircle2 className="h-4 w-4" />} tone="success" />
-        <KpiCard label="Hold / Review" value="1.34%" delta={-0.12} icon={<Clock className="h-4 w-4" />} tone="warning" invertDelta />
-        <KpiCard label="Rejected" value="0.24%" delta={-0.06} icon={<ShieldAlert className="h-4 w-4" />} tone="destructive" invertDelta />
-        <KpiCard label="Avg Decision Latency" value="42 ms" delta={-5.4} icon={<Activity className="h-4 w-4" />} tone="success" invertDelta />
+        <KpiCard
+          label="Transactions / sec"
+          value={tps.toString()}
+          delta={3.2}
+          icon={<Zap className="h-4 w-4" />}
+          tone="info"
+        />
+        <KpiCard
+          label="Approved"
+          value="98.42%"
+          delta={0.18}
+          icon={<CheckCircle2 className="h-4 w-4" />}
+          tone="success"
+        />
+        <KpiCard
+          label="Hold / Review"
+          value="1.34%"
+          delta={-0.12}
+          icon={<Clock className="h-4 w-4" />}
+          tone="warning"
+          invertDelta
+        />
+        <KpiCard
+          label="Rejected"
+          value="0.24%"
+          delta={-0.06}
+          icon={<ShieldAlert className="h-4 w-4" />}
+          tone="destructive"
+          invertDelta
+        />
+        <KpiCard
+          label="Avg Decision Latency"
+          value="42 ms"
+          delta={-5.4}
+          icon={<Activity className="h-4 w-4" />}
+          tone="success"
+          invertDelta
+        />
       </div>
 
       <Card>
@@ -106,6 +144,9 @@ function TxMonitoring() {
                   <TableHead>User ID</TableHead>
                   <TableHead>User Name</TableHead>
                   <TableHead>Channel</TableHead>
+                  <TableHead>Direction</TableHead>
+                  <TableHead>Assignee</TableHead>
+                  <TableHead>Tag</TableHead>
                   <TableHead>Merchant</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead>Mata Uang</TableHead>
@@ -117,47 +158,101 @@ function TxMonitoring() {
               </TableHeader>
 
               <TableBody>
-                {items.map((t) => (
-                  <TableRow key={t.id} className="hover:bg-muted/40">
-                    <TableCell className="font-mono text-xs text-muted-foreground">{t.ts}</TableCell>
-                    <TableCell className="font-mono text-xs">{t.id}</TableCell>
-                    <TableCell><Badge variant="outline" className="text-[10px]">{t.wallet}</Badge></TableCell>
-                    <TableCell className="font-mono text-xs">{t.user}</TableCell>
-                    <TableCell className="text-xs">{t.userName}</TableCell>
-                    <TableCell className="text-xs">{t.channel}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{t.merchant ?? "—"}</TableCell>
-                    <TableCell className="text-right font-mono text-xs">{fmtIDR(t.amount)}</TableCell>
-                    <TableCell className="font-mono text-xs text-muted-foreground">{t.currency}</TableCell>
-                    <TableCell>
-                      <span className={cn(
-                        "rounded px-1.5 py-0.5 font-mono text-xs",
-                        t.score >= 85 ? "bg-destructive/15 text-destructive" :
-                        t.score >= 70 ? "bg-warning/15 text-warning" :
-                        t.score >= 50 ? "bg-info/15 text-info" :
-                        "bg-success/15 text-success",
-                      )}>{t.score}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={cn(
-                        "text-[10px]",
-                        t.decision === "Approved" && "border-success/40 bg-success/10 text-success",
-                        t.decision === "Review" && "border-info/40 bg-info/10 text-info",
-                        t.decision === "Hold" && "border-warning/40 bg-warning/10 text-warning",
-                        t.decision === "Rejected" && "border-destructive/40 bg-destructive/10 text-destructive",
-                      )}>{t.decision}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={cn(
-                        "text-[10px]",
-                        t.source === "Sumsub" ? "border-info/40 bg-info/10 text-info" : "border-success/40 bg-success/10 text-success",
-                      )}>{t.source}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-xs text-muted-foreground">
-                      {t.heldAmount > 0 ? fmtIDR(t.heldAmount) : "—"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-
+                {items.map((t) => {
+                  const e = txExtra(t);
+                  return (
+                    <TableRow key={t.id} className="hover:bg-muted/40">
+                      <TableCell className="font-mono text-xs text-muted-foreground">{t.ts}</TableCell>
+                      <TableCell className="font-mono text-xs">{t.id}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-[10px]">
+                          {t.wallet}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">{t.user}</TableCell>
+                      <TableCell className="text-xs">{t.userName}</TableCell>
+                      <TableCell className="text-xs">{t.channel}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "text-[10px]",
+                            e.direction === "in"
+                              ? "border-success/40 bg-success/10 text-success"
+                              : "border-border text-muted-foreground",
+                          )}
+                        >
+                          {e.direction === "in" ? "In" : "Out"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        {e.assignee === "Unassigned" ? (
+                          <span className="text-muted-foreground">Unassigned</span>
+                        ) : (
+                          e.assignee
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {e.tags.map((tg) => (
+                            <Badge key={tg} variant="outline" className="text-[10px]">
+                              {tg}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{t.merchant ?? "—"}</TableCell>
+                      <TableCell className="text-right font-mono text-xs">{fmtIDR(t.amount)}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{t.currency}</TableCell>
+                      <TableCell>
+                        <span
+                          className={cn(
+                            "rounded px-1.5 py-0.5 font-mono text-xs",
+                            t.score >= 85
+                              ? "bg-destructive/15 text-destructive"
+                              : t.score >= 70
+                                ? "bg-warning/15 text-warning"
+                                : t.score >= 50
+                                  ? "bg-info/15 text-info"
+                                  : "bg-success/15 text-success",
+                          )}
+                        >
+                          {t.score}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "text-[10px]",
+                            t.decision === "Approved" && "border-success/40 bg-success/10 text-success",
+                            t.decision === "Review" && "border-info/40 bg-info/10 text-info",
+                            t.decision === "Hold" && "border-warning/40 bg-warning/10 text-warning",
+                            t.decision === "Rejected" && "border-destructive/40 bg-destructive/10 text-destructive",
+                          )}
+                        >
+                          {t.decision}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "text-[10px]",
+                            t.source === "Sumsub"
+                              ? "border-info/40 bg-info/10 text-info"
+                              : "border-success/40 bg-success/10 text-success",
+                          )}
+                        >
+                          {t.source}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-mono text-xs text-muted-foreground">
+                        {t.heldAmount > 0 ? fmtIDR(t.heldAmount) : "—"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
@@ -165,4 +260,23 @@ function TxMonitoring() {
       </Card>
     </div>
   );
+}
+
+function txMonHash(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+function txExtra(t: LiveTx) {
+  const h = txMonHash(t.id);
+  const direction = t.channel === "TopUp" ? "in" : "out";
+  const assignees = ["Andini P.", "Budi S.", "Citra L.", "Dharma W.", "Eka R."];
+  const assignee = t.decision === "Approved" ? "Unassigned" : assignees[h % assignees.length];
+  const tags: string[] = [];
+  if (t.score >= 85) tags.push("high-risk");
+  if (t.source === "Sumsub") tags.push("sumsub");
+  if (t.fraudType) tags.push(t.fraudType.toLowerCase().replace(/\s+/g, "-"));
+  if (tags.length === 0) tags.push("normal");
+  return { direction, assignee, tags: tags.slice(0, 2) };
 }

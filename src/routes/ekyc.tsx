@@ -21,6 +21,7 @@ import {
 import { SeverityBadge } from "@/components/severity-badge";
 import { toast } from "sonner";
 import { ekycCases } from "@/lib/mock-data";
+const SHOW_EXTRAS = false; // ekstra di luar Sumsub Dashboard spec v1 — di-disable (ubah ke true utk aktifkan)
 
 export const Route = createFileRoute("/ekyc")({
   head: () => ({
@@ -300,7 +301,7 @@ function EKycList({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
                 <TableHead>Reviewed</TableHead>
                 <TableHead>Reject Label</TableHead>
                 <TableHead>Risk</TableHead>
-                <TableHead>Tags</TableHead>
+                {SHOW_EXTRAS && <TableHead>Tags</TableHead>}
                 <TableHead className="w-8"></TableHead>
               </TableRow>
             </TableHeader>
@@ -345,15 +346,17 @@ function EKycList({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
                   <TableCell>
                     <SeverityBadge value={c.risk} />
                   </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {c.tags.map((t) => (
-                        <Badge key={t} variant="outline" className="text-[10px]">
-                          {t}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
+                  {SHOW_EXTRAS && (
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {c.tags.map((t) => (
+                          <Badge key={t} variant="outline" className="text-[10px]">
+                            {t}
+                          </Badge>
+                        ))}
+                      </div>
+                    </TableCell>
+                  )}
                   <TableCell>
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </TableCell>

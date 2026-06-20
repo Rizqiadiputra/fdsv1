@@ -82,7 +82,7 @@ function hash(s: string) {
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return h;
 }
-const pick = <T,>(seed: number, arr: T[]) => arr[seed % arr.length];
+const pick = <T,>(seed: number, arr: T[]) => arr[Math.abs(seed) % arr.length];
 
 function buildApplicant(id: string) {
   const base = ekycCases.find((c) => c.id === id);
@@ -196,7 +196,7 @@ function buildApplicant(id: string) {
         at: t(180),
         device: "Chrome 126 / Android 14",
         location: `${cities[cityIdx]}, ID`,
-        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        ip: `103.${h % 255}.${(h >>> 4) % 255}.${(h >>> 8) % 255}`,
         isp: "Telkomsel",
       },
       {
@@ -204,7 +204,7 @@ function buildApplicant(id: string) {
         at: t(170),
         device: "Chrome 126 / Android 14",
         location: `${cities[cityIdx]}, ID`,
-        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        ip: `103.${h % 255}.${(h >>> 4) % 255}.${(h >>> 8) % 255}`,
         isp: "Telkomsel",
       },
       {
@@ -212,7 +212,7 @@ function buildApplicant(id: string) {
         at: t(155),
         device: "Chrome 126 / Android 14",
         location: `${cities[cityIdx]}, ID`,
-        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        ip: `103.${h % 255}.${(h >>> 4) % 255}.${(h >>> 8) % 255}`,
         isp: "Telkomsel",
       },
       {
@@ -220,7 +220,7 @@ function buildApplicant(id: string) {
         at: t(150),
         device: "Chrome 126 / Android 14",
         location: `${cities[cityIdx]}, ID`,
-        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        ip: `103.${h % 255}.${(h >>> 4) % 255}.${(h >>> 8) % 255}`,
         isp: "Telkomsel",
       },
       { label: "Pending review", at: t(140), device: "—", location: "Server", ip: "—", isp: "—" },

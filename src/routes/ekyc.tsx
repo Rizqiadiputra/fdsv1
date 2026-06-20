@@ -69,11 +69,16 @@ function EKyc() {
                 <TableHead>Blacklist</TableHead>
                 <TableHead>Risk</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="w-8"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ekycCases.map((c) => (
-                <TableRow key={c.id} className="hover:bg-muted/40">
+                <TableRow
+                  key={c.id}
+                  className="hover:bg-muted/40 cursor-pointer"
+                  onClick={() => navigate({ to: "/ekyc/$id", params: { id: c.id } })}
+                >
                   <TableCell className="font-mono text-xs">{c.id}</TableCell>
                   <TableCell className="text-xs font-medium">{c.name}</TableCell>
                   <TableCell className="font-mono text-xs">{c.nik}</TableCell>

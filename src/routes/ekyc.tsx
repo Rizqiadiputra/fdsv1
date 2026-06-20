@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useChildMatches } from "@tanstack/react-router";
 import { UserCheck, ShieldAlert, Camera, Fingerprint, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { KpiCard } from "@/components/kpi-card";
@@ -12,7 +12,10 @@ export const Route = createFileRoute("/ekyc")({
   head: () => ({
     meta: [
       { title: "e-KYC Fraud Monitor — Sentinel EFRMP" },
-      { name: "description", content: "Onboarding fraud detection with Dukcapil match, liveness, and selfie biometrics." },
+      {
+        name: "description",
+        content: "Onboarding fraud detection with Dukcapil match, liveness, and selfie biometrics.",
+      },
     ],
   }),
   component: EKyc,
@@ -27,10 +30,37 @@ function EKyc() {
         description="Onboarding risk: Dukcapil NIK validation, liveness detection, face-match, and device reuse analysis."
       />
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <KpiCard label="Registrations (24h)" value="12,482" delta={5.4} icon={<UserCheck className="h-4 w-4" />} tone="info" />
-        <KpiCard label="Liveness Failures" value="312" delta={8.1} icon={<Camera className="h-4 w-4" />} tone="warning" invertDelta />
-        <KpiCard label="Dukcapil Mismatch" value="148" delta={-4.2} icon={<Fingerprint className="h-4 w-4" />} tone="success" invertDelta />
-        <KpiCard label="Synthetic ID Suspects" value="36" delta={12.0} icon={<ShieldAlert className="h-4 w-4" />} tone="destructive" invertDelta />
+        <KpiCard
+          label="Registrations (24h)"
+          value="12,482"
+          delta={5.4}
+          icon={<UserCheck className="h-4 w-4" />}
+          tone="info"
+        />
+        <KpiCard
+          label="Liveness Failures"
+          value="312"
+          delta={8.1}
+          icon={<Camera className="h-4 w-4" />}
+          tone="warning"
+          invertDelta
+        />
+        <KpiCard
+          label="Dukcapil Mismatch"
+          value="148"
+          delta={-4.2}
+          icon={<Fingerprint className="h-4 w-4" />}
+          tone="success"
+          invertDelta
+        />
+        <KpiCard
+          label="Synthetic ID Suspects"
+          value="36"
+          delta={12.0}
+          icon={<ShieldAlert className="h-4 w-4" />}
+          tone="destructive"
+          invertDelta
+        />
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -84,16 +114,48 @@ function EKyc() {
                   <TableCell className="font-mono text-xs">{c.nik}</TableCell>
                   <TableCell className="font-mono text-xs">{c.selfieMatch}%</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={c.liveness === "Pass" ? "border-success/40 bg-success/10 text-success text-[10px]" : "border-destructive/40 bg-destructive/10 text-destructive text-[10px]"}>{c.liveness}</Badge>
+                    <Badge
+                      variant="outline"
+                      className={
+                        c.liveness === "Pass"
+                          ? "border-success/40 bg-success/10 text-success text-[10px]"
+                          : "border-destructive/40 bg-destructive/10 text-destructive text-[10px]"
+                      }
+                    >
+                      {c.liveness}
+                    </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={c.dukcapil === "Matched" ? "border-success/40 bg-success/10 text-success text-[10px]" : "border-destructive/40 bg-destructive/10 text-destructive text-[10px]"}>{c.dukcapil}</Badge>
+                    <Badge
+                      variant="outline"
+                      className={
+                        c.dukcapil === "Matched"
+                          ? "border-success/40 bg-success/10 text-success text-[10px]"
+                          : "border-destructive/40 bg-destructive/10 text-destructive text-[10px]"
+                      }
+                    >
+                      {c.dukcapil}
+                    </Badge>
                   </TableCell>
                   <TableCell className="font-mono text-xs">{c.deviceReuse}</TableCell>
-                  <TableCell>{c.blacklistHit ? <Badge variant="destructive" className="text-[10px]">Hit</Badge> : <span className="text-xs text-muted-foreground">—</span>}</TableCell>
-                  <TableCell><SeverityBadge value={c.risk} /></TableCell>
-                  <TableCell><SeverityBadge value={c.status} /></TableCell>
-                  <TableCell><ChevronRight className="h-4 w-4 text-muted-foreground" /></TableCell>
+                  <TableCell>
+                    {c.blacklistHit ? (
+                      <Badge variant="destructive" className="text-[10px]">
+                        Hit
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <SeverityBadge value={c.risk} />
+                  </TableCell>
+                  <TableCell>
+                    <SeverityBadge value={c.status} />
+                  </TableCell>
+                  <TableCell>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

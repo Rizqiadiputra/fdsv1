@@ -93,6 +93,7 @@ function EKyc() {
                   <TableCell>{c.blacklistHit ? <Badge variant="destructive" className="text-[10px]">Hit</Badge> : <span className="text-xs text-muted-foreground">—</span>}</TableCell>
                   <TableCell><SeverityBadge value={c.risk} /></TableCell>
                   <TableCell><SeverityBadge value={c.status} /></TableCell>
+                  <TableCell><ChevronRight className="h-4 w-4 text-muted-foreground" /></TableCell>
                 </TableRow>
               ))}
             </TableBody>

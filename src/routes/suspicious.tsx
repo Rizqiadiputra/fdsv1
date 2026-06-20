@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ShieldQuestion, Clock, Ban, Check, X } from "lucide-react";
+import { ShieldQuestion, Clock, Ban, Check, X, FolderPlus, RefreshCw, FileDown } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { alerts, fmtIDR, users, type Alert, type Source } from "@/lib/mock-data";
 import { useAppStore, applyAlertAction, type AlertOverride } from "@/lib/app-store";
 import { toast } from "sonner";
+import { jsPDF } from "jspdf";
+const SHOW_EXTRAS = false; // ekstra di luar Sumsub Dashboard spec v1 — di-disable (ubah ke true utk aktifkan)
 
 export const Route = createFileRoute("/suspicious")({
   head: () => ({ meta: [{ title: "Suspicious Transactions — Sentinel EFRMP" }] }),
@@ -230,37 +232,64 @@ function SuspiciousPage() {
               <TxDetailExtras row={open} />
 
               <Separator />
-              <div>
-                <div className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
-                  Rules Dievaluasi ({open.evaluatedRules.length})
-                </div>
-                <div className="space-y-1">
-                  {open.evaluatedRules.map((r) => (
-                    <div key={r.name} className="flex items-center justify-between rounded border px-2 py-1.5">
-                      <span className="font-mono text-xs">{r.name}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] text-muted-foreground">+{r.score} pts</span>
-                        <Badge variant={r.result === "Hit" ? "destructive" : "secondary"} className="text-[10px]">
-                          {r.result}
-                        </Badge>
+              {SHOW_EXTRAS && (
+                <div>
+                  <div className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
+                    Rules Dievaluasi ({open.evaluatedRules.length})
+                  </div>
+                  <div className="space-y-1">
+                    {open.evaluatedRules.map((r) => (
+                      <div key={r.name} className="flex items-center justify-between rounded border px-2 py-1.5">
+                        <span className="font-mono text-xs">{r.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[10px] text-muted-foreground">+{r.score} pts</span>
+                          <Badge variant={r.result === "Hit" ? "destructive" : "secondary"} className="text-[10px]">
+                            {r.result}
+                          </Badge>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
           <DialogFooter>
             {open && (
               <div className="flex flex-wrap items-center justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => setConfirm({ row: open, action: "Approved" })}>
-                  <Check className="h-3 w-3" /> Approve
-                </Button>
+                {SHOW_EXTRAS && (
+                  <Button variant="outline" size="sm" onClick={() => setConfirm({ row: open, action: "Approved" })}>
+                    <Check className="h-3 w-3" /> Approve
+                  </Button>
+                )}
                 <Button variant="destructive" size="sm" onClick={() => setConfirm({ row: open, action: "Rejected" })}>
                   <X className="h-3 w-3" /> Reject
                 </Button>
-                <Button size="sm" onClick={() => setConfirm({ row: open, action: "Blacklisted" })}>
-                  <Ban className="h-3 w-3" /> Blacklist
+                {SHOW_EXTRAS && (
+                  <Button size="sm" onClick={() => setConfirm({ row: open, action: "Blacklisted" })}>
+                    <Ban className="h-3 w-3" /> Blacklist
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={() => toast.success(`Transaction ${open.txId} confirmed`)}>
+                  <Check className="h-3 w-3" /> Confirm
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => toast(`Transaction ${open.txId} set to Pending`)}>
+                  <Clock className="h-3 w-3" /> Pending
+                </Button>
+                {SHOW_EXTRAS && (
+                  <Button variant="outline" size="sm" onClick={() => toast.success(`${open.txId} added to case`)}>
+                    <FolderPlus className="h-3 w-3" /> Add to case
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toast(`Rescored: new score ${10 + (hashStr(open.txId + Date.now()) % 90)}`)}
+                >
+                  <RefreshCw className="h-3 w-3" /> Rescore
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => genTxReport(open)}>
+                  <FileDown className="h-3 w-3" /> Report (PDF)
                 </Button>
               </div>
             )}
@@ -554,4 +583,60 @@ function TxDetailExtras({ row }: { row: Row }) {
       </div>
     </>
   );
+}
+
+function genTxReport(row: Row) {
+  const d = buildTxDetail(row);
+  const doc = new jsPDF();
+  const left = 14;
+  let y = 18;
+  const line = (l: string, v: string) => {
+    doc.setFont("helvetica", "bold");
+    doc.text(l, left, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(String(v), left + 55, y);
+    y += 7;
+  };
+  const head = (t: string) => {
+    y += 4;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(t, left, y);
+    y += 6;
+    doc.setFontSize(10);
+  };
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("Transaction Report", left, y);
+  y += 8;
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Generated: ${new Date().toLocaleString("id-ID")}`, left, y);
+  y += 4;
+  doc.setDrawColor(200);
+  doc.line(left, y, 196, y);
+  head("Transaction");
+  line("Tx ID", row.txId);
+  line("Alert ID", row.id);
+  line("Amount", fmtIDR(row.amount));
+  line("Time", row.ts);
+  line("Direction", d.direction);
+  line("Type", d.type);
+  line("MCC", d.mcc);
+  head("Remitter (applicant)");
+  line("Name", d.remitter.fullName);
+  line("Address", d.remitter.address);
+  line("Payment", d.remitter.paymentMethod);
+  line("Institution", d.remitter.institution);
+  head("Beneficiary (counterparty)");
+  line("Name", d.beneficiary.fullName);
+  line("Address", d.beneficiary.address);
+  line("Payment", d.beneficiary.paymentMethod);
+  line("Institution", d.beneficiary.institution);
+  head("AML");
+  line("Status", d.aml.status);
+  line("Provider", d.aml.provider);
+  line("Matches", String(d.aml.matches));
+  doc.save(`${row.txId}-tx-report.pdf`);
+  toast.success("Report (PDF) downloaded");
 }

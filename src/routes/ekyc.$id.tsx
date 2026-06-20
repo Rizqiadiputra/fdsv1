@@ -58,6 +58,7 @@ import { toast } from "sonner";
 import { jsPDF } from "jspdf";
 import { SeverityBadge } from "@/components/severity-badge";
 import { ekycCases } from "@/lib/mock-data";
+const SHOW_EXTRAS = false; // ekstra di luar Sumsub Dashboard spec v1 — di-disable (ubah ke true utk aktifkan)
 
 export const Route = createFileRoute("/ekyc/$id")({
   head: ({ params }) => ({
@@ -471,9 +472,11 @@ function ApplicantDetail() {
               <DropdownMenuItem onClick={doRecheck}>
                 <RefreshCw className="mr-2 h-4 w-4" /> Request recheck
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCaseOpen(true)}>
-                <FolderPlus className="mr-2 h-4 w-4" /> Create case
-              </DropdownMenuItem>
+              {SHOW_EXTRAS && (
+                <DropdownMenuItem onClick={() => setCaseOpen(true)}>
+                  <FolderPlus className="mr-2 h-4 w-4" /> Create case
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => setEmailOpen(true)}>
                 <Mail className="mr-2 h-4 w-4" /> Email to applicant
               </DropdownMenuItem>
@@ -487,9 +490,11 @@ function ApplicantDetail() {
               <DropdownMenuItem onClick={doBlocklist} className="text-destructive focus:text-destructive">
                 <Ban className="mr-2 h-4 w-4" /> Blocklist applicant
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={doInactive}>
-                <UserX className="mr-2 h-4 w-4" /> Mark as inactive
-              </DropdownMenuItem>
+              {SHOW_EXTRAS && (
+                <DropdownMenuItem onClick={doInactive}>
+                  <UserX className="mr-2 h-4 w-4" /> Mark as inactive
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -511,44 +516,48 @@ function ApplicantDetail() {
                 <Field label="Full Name" value={a!.fullName} />
                 <Field label="Verification Level" value={a!.verificationLevel} />
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Tags:</span>
-                {tags.map((t) => (
-                  <Badge key={t} variant="outline" className="text-[10px]">
-                    {t}
-                  </Badge>
-                ))}
-                <div className="flex gap-1">
-                  <Input
-                    value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    placeholder="Add tag"
-                    className="h-7 w-32 text-xs"
-                  />
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7"
-                    onClick={() => {
-                      if (tagInput.trim()) {
-                        setTags([...tags, tagInput.trim()]);
-                        setTagInput("");
-                      }
-                    }}
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
+              {SHOW_EXTRAS && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Tags:</span>
+                  {tags.map((t) => (
+                    <Badge key={t} variant="outline" className="text-[10px]">
+                      {t}
+                    </Badge>
+                  ))}
+                  <div className="flex gap-1">
+                    <Input
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      placeholder="Add tag"
+                      className="h-7 w-32 text-xs"
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7"
+                      onClick={() => {
+                        if (tagInput.trim()) {
+                          setTags([...tags, tagInput.trim()]);
+                          setTagInput("");
+                        }
+                      }}
+                    >
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="space-y-2 text-right">
               <p className="text-[10px] uppercase text-muted-foreground">Review Status</p>
               <Badge variant="outline" className={`${statusTone(reviewStatus)} text-xs`}>
                 {reviewStatus}
               </Badge>
-              <div className="flex items-center gap-2 justify-end">
-                <SeverityBadge value={a!.risk.level} />
-              </div>
+              {SHOW_EXTRAS && (
+                <div className="flex items-center gap-2 justify-end">
+                  <SeverityBadge value={a!.risk.level} />
+                </div>
+              )}
             </div>
           </div>
         </CardContent>
@@ -600,36 +609,38 @@ function ApplicantDetail() {
           </CardContent>
         </Card>
 
-        {/* Risk Labels */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4" /> Risk
-            </CardTitle>
-            <CardDescription>Risk level & labels</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div>
-              <p className="text-[10px] uppercase text-muted-foreground mb-1">Level</p>
-              <SeverityBadge value={a!.risk.level} />
-            </div>
-            <div>
-              <p className="text-[10px] uppercase text-muted-foreground mb-1">Labels</p>
-              <div className="flex flex-wrap gap-1">
-                {a!.risk.labels.length === 0 && <span className="text-xs text-muted-foreground">No labels</span>}
-                {a!.risk.labels.map((l) => (
-                  <Badge
-                    key={l}
-                    variant="outline"
-                    className="border-destructive/40 bg-destructive/10 text-destructive text-[10px]"
-                  >
-                    {l}
-                  </Badge>
-                ))}
+        {/* Risk Labels — disabled (out of scope v1) */}
+        {SHOW_EXTRAS && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" /> Risk
+              </CardTitle>
+              <CardDescription>Risk level & labels</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <p className="text-[10px] uppercase text-muted-foreground mb-1">Level</p>
+                <SeverityBadge value={a!.risk.level} />
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              <div>
+                <p className="text-[10px] uppercase text-muted-foreground mb-1">Labels</p>
+                <div className="flex flex-wrap gap-1">
+                  {a!.risk.labels.length === 0 && <span className="text-xs text-muted-foreground">No labels</span>}
+                  {a!.risk.labels.map((l) => (
+                    <Badge
+                      key={l}
+                      variant="outline"
+                      className="border-destructive/40 bg-destructive/10 text-destructive text-[10px]"
+                    >
+                      {l}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Personal Info + Address */}
@@ -731,113 +742,117 @@ function ApplicantDetail() {
         </Card>
       </div>
 
-      {/* AML Screening */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Shield className="h-4 w-4" /> Checks — AML Screening
-          </CardTitle>
-          <CardDescription>Provider: {a!.aml.provider}</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-4">
-          <Field label="Search Term" value={a!.aml.searchTerm} />
-          <Field label="Search Type" value={a!.aml.searchType} />
-          <Field label="Case ID" value={<span className="font-mono text-xs">{a!.aml.caseId}</span>} />
-          <Field label="Created At" value={fmt(a!.aml.createdAt)} />
-          <Field
-            label="Matches"
-            value={
-              <span className={a!.aml.matchesCount > 0 ? "text-destructive font-semibold" : ""}>
-                {a!.aml.matchesCount}
-              </span>
-            }
-          />
-          <Field
-            label="Ongoing Monitoring"
-            value={
-              <Badge
-                variant="outline"
-                className={
-                  a!.aml.ongoingMonitoring === "On"
-                    ? "border-success/40 bg-success/10 text-success text-[10px]"
-                    : "text-[10px]"
-                }
-              >
-                {a!.aml.ongoingMonitoring}
-              </Badge>
-            }
-          />
-          <div className="md:col-span-2 flex items-end">
-            <Button variant="outline" size="sm">
-              <ExternalLink className="mr-1 h-3 w-3" /> View report
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* AML Screening — disabled */}
+      {SHOW_EXTRAS && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Shield className="h-4 w-4" /> Checks — AML Screening
+            </CardTitle>
+            <CardDescription>Provider: {a!.aml.provider}</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-4">
+            <Field label="Search Term" value={a!.aml.searchTerm} />
+            <Field label="Search Type" value={a!.aml.searchType} />
+            <Field label="Case ID" value={<span className="font-mono text-xs">{a!.aml.caseId}</span>} />
+            <Field label="Created At" value={fmt(a!.aml.createdAt)} />
+            <Field
+              label="Matches"
+              value={
+                <span className={a!.aml.matchesCount > 0 ? "text-destructive font-semibold" : ""}>
+                  {a!.aml.matchesCount}
+                </span>
+              }
+            />
+            <Field
+              label="Ongoing Monitoring"
+              value={
+                <Badge
+                  variant="outline"
+                  className={
+                    a!.aml.ongoingMonitoring === "On"
+                      ? "border-success/40 bg-success/10 text-success text-[10px]"
+                      : "text-[10px]"
+                  }
+                >
+                  {a!.aml.ongoingMonitoring}
+                </Badge>
+              }
+            />
+            <div className="md:col-span-2 flex items-end">
+              <Button variant="outline" size="sm">
+                <ExternalLink className="mr-1 h-3 w-3" /> View report
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Duplicates */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Fingerprint className="h-4 w-4" /> Duplicates
-          </CardTitle>
-          <CardDescription>
-            Total: {a!.duplicates.blocklisted + a!.duplicates.exact + a!.duplicates.face + a!.duplicates.similar}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="blocklisted">
-            <TabsList>
-              <TabsTrigger value="blocklisted">Blocklisted ({a!.duplicates.blocklisted})</TabsTrigger>
-              <TabsTrigger value="exact">Exact ({a!.duplicates.exact})</TabsTrigger>
-              <TabsTrigger value="face">Face ({a!.duplicates.face})</TabsTrigger>
-              <TabsTrigger value="similar">Similar ({a!.duplicates.similar})</TabsTrigger>
-            </TabsList>
-            {(["blocklisted", "exact", "face", "similar"] as const).map((tab) => {
-              const items = a!.duplicates.items.filter((it) =>
-                tab === "blocklisted"
-                  ? it.label === "Blocklisted"
-                  : tab === "face"
-                    ? it.label === "Face match"
-                    : tab === "similar"
-                      ? it.label === "Similar"
-                      : it.label === "Exact",
-              );
-              return (
-                <TabsContent key={tab} value={tab} className="mt-3">
-                  {items.length === 0 ? (
-                    <p className="text-xs text-muted-foreground">No {tab} duplicates.</p>
-                  ) : (
-                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                      {items.map((it, i) => (
-                        <div key={i} className="rounded-md border border-border bg-muted/30 p-3">
-                          <div className="flex gap-3">
-                            <div className="h-14 w-14 rounded bg-muted flex items-center justify-center">
-                              <User className="h-6 w-6 text-muted-foreground" />
-                            </div>
-                            <div className="flex-1 space-y-0.5 text-xs">
-                              <p className="font-medium text-sm">{it.fullName}</p>
-                              <p className="font-mono text-muted-foreground">{it.applicantId}</p>
-                              <p className="font-mono text-muted-foreground">{it.externalId}</p>
-                              <p className="text-muted-foreground">
-                                YOB: {it.yearOfBirth} • {it.country}
-                              </p>
-                              <p className="font-mono text-[10px] text-muted-foreground">ID: {it.idCard}</p>
-                              <Badge variant="outline" className="text-[10px] mt-1">
-                                {it.label}
-                              </Badge>
+      {/* Duplicates — disabled */}
+      {SHOW_EXTRAS && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Fingerprint className="h-4 w-4" /> Duplicates
+            </CardTitle>
+            <CardDescription>
+              Total: {a!.duplicates.blocklisted + a!.duplicates.exact + a!.duplicates.face + a!.duplicates.similar}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="blocklisted">
+              <TabsList>
+                <TabsTrigger value="blocklisted">Blocklisted ({a!.duplicates.blocklisted})</TabsTrigger>
+                <TabsTrigger value="exact">Exact ({a!.duplicates.exact})</TabsTrigger>
+                <TabsTrigger value="face">Face ({a!.duplicates.face})</TabsTrigger>
+                <TabsTrigger value="similar">Similar ({a!.duplicates.similar})</TabsTrigger>
+              </TabsList>
+              {(["blocklisted", "exact", "face", "similar"] as const).map((tab) => {
+                const items = a!.duplicates.items.filter((it) =>
+                  tab === "blocklisted"
+                    ? it.label === "Blocklisted"
+                    : tab === "face"
+                      ? it.label === "Face match"
+                      : tab === "similar"
+                        ? it.label === "Similar"
+                        : it.label === "Exact",
+                );
+                return (
+                  <TabsContent key={tab} value={tab} className="mt-3">
+                    {items.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">No {tab} duplicates.</p>
+                    ) : (
+                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                        {items.map((it, i) => (
+                          <div key={i} className="rounded-md border border-border bg-muted/30 p-3">
+                            <div className="flex gap-3">
+                              <div className="h-14 w-14 rounded bg-muted flex items-center justify-center">
+                                <User className="h-6 w-6 text-muted-foreground" />
+                              </div>
+                              <div className="flex-1 space-y-0.5 text-xs">
+                                <p className="font-medium text-sm">{it.fullName}</p>
+                                <p className="font-mono text-muted-foreground">{it.applicantId}</p>
+                                <p className="font-mono text-muted-foreground">{it.externalId}</p>
+                                <p className="text-muted-foreground">
+                                  YOB: {it.yearOfBirth} • {it.country}
+                                </p>
+                                <p className="font-mono text-[10px] text-muted-foreground">ID: {it.idCard}</p>
+                                <Badge variant="outline" className="text-[10px] mt-1">
+                                  {it.label}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </TabsContent>
-              );
-            })}
-          </Tabs>
-        </CardContent>
-      </Card>
+                        ))}
+                      </div>
+                    )}
+                  </TabsContent>
+                );
+              })}
+            </Tabs>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Timeline + Notes */}
       <div className="grid gap-4 lg:grid-cols-2">
@@ -901,39 +916,41 @@ function ApplicantDetail() {
         </Card>
       </div>
 
-      {/* Profile Info */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Profile Info</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-4">
-          <Field
-            label="Email"
-            value={
-              <span className="inline-flex items-center gap-1">
-                <Mail className="h-3 w-3" /> {a!.profile.email}
-              </span>
-            }
-          />
-          <Field
-            label="Phone"
-            value={
-              <span className="inline-flex items-center gap-1">
-                <Phone className="h-3 w-3" /> {a!.profile.phone}
-              </span>
-            }
-          />
-          <Field
-            label="Applicant Language"
-            value={
-              <span className="inline-flex items-center gap-1">
-                <Globe className="h-3 w-3" /> {a!.profile.applicantLanguage}
-              </span>
-            }
-          />
-          <Field label="Source Key" value={<span className="font-mono text-xs">{a!.profile.sourceKey}</span>} />
-        </CardContent>
-      </Card>
+      {/* Profile Info — disabled */}
+      {SHOW_EXTRAS && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Profile Info</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-4">
+            <Field
+              label="Email"
+              value={
+                <span className="inline-flex items-center gap-1">
+                  <Mail className="h-3 w-3" /> {a!.profile.email}
+                </span>
+              }
+            />
+            <Field
+              label="Phone"
+              value={
+                <span className="inline-flex items-center gap-1">
+                  <Phone className="h-3 w-3" /> {a!.profile.phone}
+                </span>
+              }
+            />
+            <Field
+              label="Applicant Language"
+              value={
+                <span className="inline-flex items-center gap-1">
+                  <Globe className="h-3 w-3" /> {a!.profile.applicantLanguage}
+                </span>
+              }
+            />
+            <Field label="Source Key" value={<span className="font-mono text-xs">{a!.profile.sourceKey}</span>} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* ===== Action Dialogs ===== */}
       <Dialog open={approveOpen} onOpenChange={setApproveOpen}>
@@ -1011,28 +1028,30 @@ function ApplicantDetail() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={caseOpen} onOpenChange={setCaseOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create case</DialogTitle>
-            <DialogDescription>
-              Open an investigation case for {a!.fullName} ({a!.applicantId}).
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            placeholder="Reason / summary"
-            value={caseReason}
-            onChange={(e) => setCaseReason(e.target.value)}
-            rows={3}
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setCaseOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={doCreateCase}>Create case</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {SHOW_EXTRAS && (
+        <Dialog open={caseOpen} onOpenChange={setCaseOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create case</DialogTitle>
+              <DialogDescription>
+                Open an investigation case for {a!.fullName} ({a!.applicantId}).
+              </DialogDescription>
+            </DialogHeader>
+            <Textarea
+              placeholder="Reason / summary"
+              value={caseReason}
+              onChange={(e) => setCaseReason(e.target.value)}
+              rows={3}
+            />
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setCaseOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={doCreateCase}>Create case</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

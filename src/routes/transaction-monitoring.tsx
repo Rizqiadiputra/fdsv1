@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { liveTransactions, fmtIDR, type LiveTx } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+const SHOW_EXTRAS = false; // ekstra di luar Sumsub Dashboard spec v1 — di-disable (ubah ke true utk aktifkan)
 
 export const Route = createFileRoute("/transaction-monitoring")({
   head: () => ({
@@ -145,8 +146,8 @@ function TxMonitoring() {
                   <TableHead>User Name</TableHead>
                   <TableHead>Channel</TableHead>
                   <TableHead>Direction</TableHead>
-                  <TableHead>Assignee</TableHead>
-                  <TableHead>Tag</TableHead>
+                  {SHOW_EXTRAS && <TableHead>Assignee</TableHead>}
+                  {SHOW_EXTRAS && <TableHead>Tag</TableHead>}
                   <TableHead>Merchant</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead>Mata Uang</TableHead>
@@ -185,22 +186,26 @@ function TxMonitoring() {
                           {e.direction === "in" ? "In" : "Out"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs">
-                        {e.assignee === "Unassigned" ? (
-                          <span className="text-muted-foreground">Unassigned</span>
-                        ) : (
-                          e.assignee
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {e.tags.map((tg) => (
-                            <Badge key={tg} variant="outline" className="text-[10px]">
-                              {tg}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
+                      {SHOW_EXTRAS && (
+                        <TableCell className="text-xs">
+                          {e.assignee === "Unassigned" ? (
+                            <span className="text-muted-foreground">Unassigned</span>
+                          ) : (
+                            e.assignee
+                          )}
+                        </TableCell>
+                      )}
+                      {SHOW_EXTRAS && (
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {e.tags.map((tg) => (
+                              <Badge key={tg} variant="outline" className="text-[10px]">
+                                {tg}
+                              </Badge>
+                            ))}
+                          </div>
+                        </TableCell>
+                      )}
                       <TableCell className="text-xs text-muted-foreground">{t.merchant ?? "—"}</TableCell>
                       <TableCell className="text-right font-mono text-xs">{fmtIDR(t.amount)}</TableCell>
                       <TableCell className="font-mono text-xs text-muted-foreground">{t.currency}</TableCell>

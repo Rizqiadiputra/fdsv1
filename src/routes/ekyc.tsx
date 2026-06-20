@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { UserCheck, ShieldAlert, Camera, Fingerprint } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { UserCheck, ShieldAlert, Camera, Fingerprint, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/ekyc")({
 });
 
 function EKyc() {
+  const navigate = useNavigate();
   return (
     <div className="space-y-5">
       <PageHeader
@@ -68,11 +69,16 @@ function EKyc() {
                 <TableHead>Blacklist</TableHead>
                 <TableHead>Risk</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="w-8"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ekycCases.map((c) => (
-                <TableRow key={c.id} className="hover:bg-muted/40">
+                <TableRow
+                  key={c.id}
+                  className="hover:bg-muted/40 cursor-pointer"
+                  onClick={() => navigate({ to: "/ekyc/$id", params: { id: c.id } })}
+                >
                   <TableCell className="font-mono text-xs">{c.id}</TableCell>
                   <TableCell className="text-xs font-medium">{c.name}</TableCell>
                   <TableCell className="font-mono text-xs">{c.nik}</TableCell>
@@ -87,6 +93,7 @@ function EKyc() {
                   <TableCell>{c.blacklistHit ? <Badge variant="destructive" className="text-[10px]">Hit</Badge> : <span className="text-xs text-muted-foreground">—</span>}</TableCell>
                   <TableCell><SeverityBadge value={c.risk} /></TableCell>
                   <TableCell><SeverityBadge value={c.status} /></TableCell>
+                  <TableCell><ChevronRight className="h-4 w-4 text-muted-foreground" /></TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -18,6 +18,15 @@ import {
   AlertTriangle,
   Fingerprint,
   Image as ImageIcon,
+  MoreHorizontal,
+  FileDown,
+  RefreshCw,
+  FolderPlus,
+  ScanLine,
+  RotateCcw,
+  Ban,
+  UserX,
+  Send,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -27,6 +36,25 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { SeverityBadge } from "@/components/severity-badge";
 import { ekycCases } from "@/lib/mock-data";
 
@@ -37,7 +65,10 @@ export const Route = createFileRoute("/ekyc/$id")({
   component: ApplicantDetail,
   notFoundComponent: () => (
     <div className="p-8 text-sm">
-      Applicant not found. <Link to="/ekyc" className="text-primary underline">Back to queue</Link>
+      Applicant not found.{" "}
+      <Link to="/ekyc" className="text-primary underline">
+        Back to queue
+      </Link>
     </div>
   ),
 });
@@ -59,7 +90,13 @@ function buildApplicant(id: string) {
   const lastNames = ["Wijaya", "Rahmawati", "Santoso", "Lestari", "Pratama", "Hidayat"];
   const cities = ["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Medan", "Semarang"];
   const provinces = ["DKI Jakarta", "Jawa Barat", "Jawa Timur", "DI Yogyakarta", "Sumatera Utara", "Jawa Tengah"];
-  const streets = ["Jl. Sudirman No. 21", "Jl. Merdeka 14", "Jl. Diponegoro 9", "Jl. Gatot Subroto 88", "Jl. Asia Afrika 5"];
+  const streets = [
+    "Jl. Sudirman No. 21",
+    "Jl. Merdeka 14",
+    "Jl. Diponegoro 9",
+    "Jl. Gatot Subroto 88",
+    "Jl. Asia Afrika 5",
+  ];
   const nameParts = base.name.split(" ");
   const firstName = pick(h, firstNames);
   const lastName = pick(h >> 3, lastNames);
@@ -152,16 +189,44 @@ function buildApplicant(id: string) {
     },
 
     timeline: [
-      { label: "Documents requested", at: t(180), device: "Chrome 126 / Android 14", location: `${cities[cityIdx]}, ID`, ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`, isp: "Telkomsel" },
-      { label: "Consent accepted", at: t(170), device: "Chrome 126 / Android 14", location: `${cities[cityIdx]}, ID`, ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`, isp: "Telkomsel" },
-      { label: "Selfie added", at: t(155), device: "Chrome 126 / Android 14", location: `${cities[cityIdx]}, ID`, ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`, isp: "Telkomsel" },
-      { label: "ID card added", at: t(150), device: "Chrome 126 / Android 14", location: `${cities[cityIdx]}, ID`, ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`, isp: "Telkomsel" },
+      {
+        label: "Documents requested",
+        at: t(180),
+        device: "Chrome 126 / Android 14",
+        location: `${cities[cityIdx]}, ID`,
+        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        isp: "Telkomsel",
+      },
+      {
+        label: "Consent accepted",
+        at: t(170),
+        device: "Chrome 126 / Android 14",
+        location: `${cities[cityIdx]}, ID`,
+        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        isp: "Telkomsel",
+      },
+      {
+        label: "Selfie added",
+        at: t(155),
+        device: "Chrome 126 / Android 14",
+        location: `${cities[cityIdx]}, ID`,
+        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        isp: "Telkomsel",
+      },
+      {
+        label: "ID card added",
+        at: t(150),
+        device: "Chrome 126 / Android 14",
+        location: `${cities[cityIdx]}, ID`,
+        ip: `103.${h % 255}.${(h >> 4) % 255}.${(h >> 8) % 255}`,
+        isp: "Telkomsel",
+      },
       { label: "Pending review", at: t(140), device: "—", location: "Server", ip: "—", isp: "—" },
       ...(base.status === "Approved"
         ? [{ label: "Approved", at: t(30), device: "—", location: "Reviewer", ip: "—", isp: "—" }]
         : base.status === "Rejected"
-        ? [{ label: "Rejected", at: t(30), device: "—", location: "Reviewer", ip: "—", isp: "—" }]
-        : []),
+          ? [{ label: "Rejected", at: t(30), device: "—", location: "Reviewer", ip: "—", isp: "—" }]
+          : []),
     ],
 
     notes: [
@@ -194,10 +259,10 @@ const statusTone = (s: string) =>
   s === "Approved"
     ? "border-success/40 bg-success/10 text-success"
     : s === "Rejected"
-    ? "border-destructive/40 bg-destructive/10 text-destructive"
-    : s === "Pending"
-    ? "border-warning/40 bg-warning/10 text-warning"
-    : "border-primary/40 bg-primary/10 text-primary";
+      ? "border-destructive/40 bg-destructive/10 text-destructive"
+      : s === "Pending"
+        ? "border-warning/40 bg-warning/10 text-warning"
+        : "border-primary/40 bg-primary/10 text-primary";
 
 function StatusIcon({ s }: { s: string }) {
   if (s === "Approved" || s === "Pass") return <CheckCircle2 className="h-4 w-4 text-success" />;
@@ -222,12 +287,26 @@ function ApplicantDetail() {
   const [tagInput, setTagInput] = useState("");
   const [notes, setNotes] = useState(applicant?.notes ?? []);
   const [noteInput, setNoteInput] = useState("");
+  const [reviewStatus, setReviewStatus] = useState<string>(applicant?.reviewStatus ?? "");
+  const [timeline, setTimeline] = useState(applicant?.timeline ?? []);
+  const [approveOpen, setApproveOpen] = useState(false);
+  const [approveNote, setApproveNote] = useState("");
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectType, setRejectType] = useState("resubmission");
+  const [rejectNote, setRejectNote] = useState("");
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [caseOpen, setCaseOpen] = useState(false);
+  const [caseReason, setCaseReason] = useState("");
 
   if (!applicant) {
     return (
       <div className="p-8 text-sm">
         Applicant <span className="font-mono">{id}</span> not found.{" "}
-        <Link to="/ekyc" className="text-primary underline">Back to queue</Link>
+        <Link to="/ekyc" className="text-primary underline">
+          Back to queue
+        </Link>
       </div>
     );
   }
@@ -235,22 +314,121 @@ function ApplicantDetail() {
   const a = applicant as Applicant;
   const fmt = (iso: string) => new Date(iso).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
 
+  const logEvent = (label: string) =>
+    setTimeline((prev) => [
+      ...prev,
+      { label, at: new Date().toISOString(), device: "—", location: "Operator", ip: "—", isp: "—" },
+    ]);
+  const doApprove = () => {
+    setReviewStatus("Approved");
+    logEvent(`Approved by operator${approveNote ? ` — ${approveNote}` : ""}`);
+    toast.success("Applicant approved");
+    setApproveOpen(false);
+    setApproveNote("");
+  };
+  const doReject = () => {
+    if (!rejectNote.trim()) {
+      toast.error("A note is required to reject");
+      return;
+    }
+    setReviewStatus("Rejected");
+    logEvent(`Rejected (${rejectType === "final" ? "Final reject" : "Resubmission request"}) — ${rejectNote}`);
+    toast.success("Applicant rejected");
+    setRejectOpen(false);
+    setRejectNote("");
+  };
+  const doEmail = () => {
+    logEvent(`Email sent to applicant — ${emailSubject || "(no subject)"}`);
+    toast.success("Email queued to applicant");
+    setEmailOpen(false);
+    setEmailSubject("");
+    setEmailBody("");
+  };
+  const doCreateCase = () => {
+    logEvent(`Case created — ${caseReason || "manual review"}`);
+    toast.success("Case created");
+    setCaseOpen(false);
+    setCaseReason("");
+  };
+  const doRecheck = () => {
+    setReviewStatus("Pending");
+    logEvent("Recheck requested");
+    toast("Recheck requested");
+  };
+  const doReOcr = () => {
+    logEvent("Document re-OCR triggered");
+    toast("Re-OCR triggered");
+  };
+  const doReset = () => {
+    setReviewStatus("Pending");
+    logEvent("Applicant reset");
+    toast("Applicant reset");
+  };
+  const doBlocklist = () => {
+    logEvent("Applicant blocklisted");
+    toast.success("Applicant added to blocklist");
+  };
+  const doInactive = () => {
+    logEvent("Applicant marked inactive");
+    toast("Applicant marked inactive");
+  };
+  const doReport = () => {
+    logEvent("PDF report generated");
+    toast.success("Report (PDF) generated");
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/ekyc" })}>
           <ArrowLeft className="mr-1 h-4 w-4" /> Back to queue
         </Button>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">Reject</Button>
-          <Button size="sm">Approve</Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => setRejectOpen(true)}>
+            <XCircle className="mr-1 h-4 w-4" /> Reject
+          </Button>
+          <Button size="sm" onClick={() => setApproveOpen(true)}>
+            <CheckCircle2 className="mr-1 h-4 w-4" /> Approve
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={doReport}>
+                <FileDown className="mr-2 h-4 w-4" /> Generate report (PDF)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={doRecheck}>
+                <RefreshCw className="mr-2 h-4 w-4" /> Request recheck
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setCaseOpen(true)}>
+                <FolderPlus className="mr-2 h-4 w-4" /> Create case
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setEmailOpen(true)}>
+                <Mail className="mr-2 h-4 w-4" /> Email to applicant
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={doReOcr}>
+                <ScanLine className="mr-2 h-4 w-4" /> Re-OCR document
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={doReset}>
+                <RotateCcw className="mr-2 h-4 w-4" /> Reset applicant
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={doBlocklist} className="text-destructive focus:text-destructive">
+                <Ban className="mr-2 h-4 w-4" /> Blocklist applicant
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={doInactive}>
+                <UserX className="mr-2 h-4 w-4" /> Mark as inactive
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
-      <PageHeader
-        title={`${a!.fullName}`}
-        description={`${a!.applicantId} • ${a!.verificationLevel}`}
-      />
+      <PageHeader title={`${a!.fullName}`} description={`${a!.applicantId} • ${a!.verificationLevel}`} />
 
       {/* Header / Identity */}
       <Card>
@@ -269,7 +447,9 @@ function ApplicantDetail() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Tags:</span>
                 {tags.map((t) => (
-                  <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>
+                  <Badge key={t} variant="outline" className="text-[10px]">
+                    {t}
+                  </Badge>
                 ))}
                 <div className="flex gap-1">
                   <Input
@@ -296,7 +476,9 @@ function ApplicantDetail() {
             </div>
             <div className="space-y-2 text-right">
               <p className="text-[10px] uppercase text-muted-foreground">Review Status</p>
-              <Badge variant="outline" className={`${statusTone(a!.reviewStatus)} text-xs`}>{a!.reviewStatus}</Badge>
+              <Badge variant="outline" className={`${statusTone(reviewStatus)} text-xs`}>
+                {reviewStatus}
+              </Badge>
               <div className="flex items-center gap-2 justify-end">
                 <SeverityBadge value={a!.risk.level} />
               </div>
@@ -316,10 +498,23 @@ function ApplicantDetail() {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { icon: <Camera className="h-4 w-4" />, label: "Selfie", sub: "Advanced liveness check", status: a!.selfie.livenessResult },
-              { icon: <FileText className="h-4 w-4" />, label: "Identity Document", sub: `${a!.document.type} card`, status: a!.document.status },
+              {
+                icon: <Camera className="h-4 w-4" />,
+                label: "Selfie",
+                sub: "Advanced liveness check",
+                status: a!.selfie.livenessResult,
+              },
+              {
+                icon: <FileText className="h-4 w-4" />,
+                label: "Identity Document",
+                sub: `${a!.document.type} card`,
+                status: a!.document.status,
+              },
             ].map((s) => (
-              <div key={s.label} className="flex items-center justify-between rounded-md border border-border/60 bg-muted/30 px-3 py-2">
+              <div
+                key={s.label}
+                className="flex items-center justify-between rounded-md border border-border/60 bg-muted/30 px-3 py-2"
+              >
                 <div className="flex items-center gap-3">
                   <div className="text-muted-foreground">{s.icon}</div>
                   <div>
@@ -329,7 +524,9 @@ function ApplicantDetail() {
                 </div>
                 <div className="flex items-center gap-2">
                   <StatusIcon s={s.status} />
-                  <Badge variant="outline" className={`${statusTone(s.status)} text-[10px]`}>{s.status}</Badge>
+                  <Badge variant="outline" className={`${statusTone(s.status)} text-[10px]`}>
+                    {s.status}
+                  </Badge>
                 </div>
               </div>
             ))}
@@ -339,7 +536,9 @@ function ApplicantDetail() {
         {/* Risk Labels */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="h-4 w-4" /> Risk</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" /> Risk
+            </CardTitle>
             <CardDescription>Risk level & labels</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -352,7 +551,13 @@ function ApplicantDetail() {
               <div className="flex flex-wrap gap-1">
                 {a!.risk.labels.length === 0 && <span className="text-xs text-muted-foreground">No labels</span>}
                 {a!.risk.labels.map((l) => (
-                  <Badge key={l} variant="outline" className="border-destructive/40 bg-destructive/10 text-destructive text-[10px]">{l}</Badge>
+                  <Badge
+                    key={l}
+                    variant="outline"
+                    className="border-destructive/40 bg-destructive/10 text-destructive text-[10px]"
+                  >
+                    {l}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -377,7 +582,9 @@ function ApplicantDetail() {
 
           <div className="md:col-span-4">
             <Separator className="my-2" />
-            <p className="text-xs font-medium mb-3 flex items-center gap-1"><MapPin className="h-3 w-3" /> Address</p>
+            <p className="text-xs font-medium mb-3 flex items-center gap-1">
+              <MapPin className="h-3 w-3" /> Address
+            </p>
             <div className="grid gap-4 md:grid-cols-4">
               <Field label="Street" value={a!.address.street} />
               <Field label="City" value={a!.address.city} />
@@ -392,10 +599,14 @@ function ApplicantDetail() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2"><FileText className="h-4 w-4" /> Document (KYC)</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <FileText className="h-4 w-4" /> Document (KYC)
+            </CardTitle>
             <CardDescription>
               {a!.document.type}
-              <Badge variant="outline" className={`${statusTone(a!.document.status)} ml-2 text-[10px]`}>{a!.document.status}</Badge>
+              <Badge variant="outline" className={`${statusTone(a!.document.status)} ml-2 text-[10px]`}>
+                {a!.document.status}
+              </Badge>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -413,18 +624,27 @@ function ApplicantDetail() {
               <Field label="Nationality" value={a!.document.ocr.nationality} />
               <Field label="Place of Birth" value={a!.document.ocr.placeOfBirth} />
               <Field label="Number (NIK)" value={<span className="font-mono text-xs">{a!.document.ocr.number}</span>} />
-              <Field label="Additional Number" value={<span className="font-mono text-xs">{a!.document.ocr.additionalNumber}</span>} />
-              <div className="md:col-span-2"><Field label="Address" value={a!.document.ocr.address} /></div>
+              <Field
+                label="Additional Number"
+                value={<span className="font-mono text-xs">{a!.document.ocr.additionalNumber}</span>}
+              />
+              <div className="md:col-span-2">
+                <Field label="Address" value={a!.document.ocr.address} />
+              </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2"><Camera className="h-4 w-4" /> Selfie / Liveness</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Camera className="h-4 w-4" /> Selfie / Liveness
+            </CardTitle>
             <CardDescription>
               Liveness:
-              <Badge variant="outline" className={`${statusTone(a!.selfie.livenessResult)} ml-2 text-[10px]`}>{a!.selfie.livenessResult}</Badge>
+              <Badge variant="outline" className={`${statusTone(a!.selfie.livenessResult)} ml-2 text-[10px]`}>
+                {a!.selfie.livenessResult}
+              </Badge>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -447,7 +667,9 @@ function ApplicantDetail() {
       {/* AML Screening */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2"><Shield className="h-4 w-4" /> Checks — AML Screening</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Shield className="h-4 w-4" /> Checks — AML Screening
+          </CardTitle>
           <CardDescription>Provider: {a!.aml.provider}</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-4">
@@ -455,12 +677,29 @@ function ApplicantDetail() {
           <Field label="Search Type" value={a!.aml.searchType} />
           <Field label="Case ID" value={<span className="font-mono text-xs">{a!.aml.caseId}</span>} />
           <Field label="Created At" value={fmt(a!.aml.createdAt)} />
-          <Field label="Matches" value={<span className={a!.aml.matchesCount > 0 ? "text-destructive font-semibold" : ""}>{a!.aml.matchesCount}</span>} />
-          <Field label="Ongoing Monitoring" value={
-            <Badge variant="outline" className={a!.aml.ongoingMonitoring === "On" ? "border-success/40 bg-success/10 text-success text-[10px]" : "text-[10px]"}>
-              {a!.aml.ongoingMonitoring}
-            </Badge>
-          } />
+          <Field
+            label="Matches"
+            value={
+              <span className={a!.aml.matchesCount > 0 ? "text-destructive font-semibold" : ""}>
+                {a!.aml.matchesCount}
+              </span>
+            }
+          />
+          <Field
+            label="Ongoing Monitoring"
+            value={
+              <Badge
+                variant="outline"
+                className={
+                  a!.aml.ongoingMonitoring === "On"
+                    ? "border-success/40 bg-success/10 text-success text-[10px]"
+                    : "text-[10px]"
+                }
+              >
+                {a!.aml.ongoingMonitoring}
+              </Badge>
+            }
+          />
           <div className="md:col-span-2 flex items-end">
             <Button variant="outline" size="sm">
               <ExternalLink className="mr-1 h-3 w-3" /> View report
@@ -472,7 +711,9 @@ function ApplicantDetail() {
       {/* Duplicates */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2"><Fingerprint className="h-4 w-4" /> Duplicates</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Fingerprint className="h-4 w-4" /> Duplicates
+          </CardTitle>
           <CardDescription>
             Total: {a!.duplicates.blocklisted + a!.duplicates.exact + a!.duplicates.face + a!.duplicates.similar}
           </CardDescription>
@@ -487,9 +728,13 @@ function ApplicantDetail() {
             </TabsList>
             {(["blocklisted", "exact", "face", "similar"] as const).map((tab) => {
               const items = a!.duplicates.items.filter((it) =>
-                tab === "blocklisted" ? it.label === "Blocklisted" :
-                tab === "face" ? it.label === "Face match" :
-                tab === "similar" ? it.label === "Similar" : it.label === "Exact"
+                tab === "blocklisted"
+                  ? it.label === "Blocklisted"
+                  : tab === "face"
+                    ? it.label === "Face match"
+                    : tab === "similar"
+                      ? it.label === "Similar"
+                      : it.label === "Exact",
               );
               return (
                 <TabsContent key={tab} value={tab} className="mt-3">
@@ -507,9 +752,13 @@ function ApplicantDetail() {
                               <p className="font-medium text-sm">{it.fullName}</p>
                               <p className="font-mono text-muted-foreground">{it.applicantId}</p>
                               <p className="font-mono text-muted-foreground">{it.externalId}</p>
-                              <p className="text-muted-foreground">YOB: {it.yearOfBirth} • {it.country}</p>
+                              <p className="text-muted-foreground">
+                                YOB: {it.yearOfBirth} • {it.country}
+                              </p>
                               <p className="font-mono text-[10px] text-muted-foreground">ID: {it.idCard}</p>
-                              <Badge variant="outline" className="text-[10px] mt-1">{it.label}</Badge>
+                              <Badge variant="outline" className="text-[10px] mt-1">
+                                {it.label}
+                              </Badge>
                             </div>
                           </div>
                         </div>
@@ -531,7 +780,7 @@ function ApplicantDetail() {
           </CardHeader>
           <CardContent>
             <ol className="relative border-l border-border/80 ml-2 space-y-4">
-              {a!.timeline.map((ev, i) => (
+              {timeline.map((ev, i) => (
                 <li key={i} className="ml-4">
                   <span className="absolute -left-1.5 mt-1 h-3 w-3 rounded-full bg-primary border border-background" />
                   <p className="text-sm font-medium">{ev.label}</p>
@@ -591,12 +840,132 @@ function ApplicantDetail() {
           <CardTitle className="text-base">Profile Info</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-4">
-          <Field label="Email" value={<span className="inline-flex items-center gap-1"><Mail className="h-3 w-3" /> {a!.profile.email}</span>} />
-          <Field label="Phone" value={<span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" /> {a!.profile.phone}</span>} />
-          <Field label="Applicant Language" value={<span className="inline-flex items-center gap-1"><Globe className="h-3 w-3" /> {a!.profile.applicantLanguage}</span>} />
+          <Field
+            label="Email"
+            value={
+              <span className="inline-flex items-center gap-1">
+                <Mail className="h-3 w-3" /> {a!.profile.email}
+              </span>
+            }
+          />
+          <Field
+            label="Phone"
+            value={
+              <span className="inline-flex items-center gap-1">
+                <Phone className="h-3 w-3" /> {a!.profile.phone}
+              </span>
+            }
+          />
+          <Field
+            label="Applicant Language"
+            value={
+              <span className="inline-flex items-center gap-1">
+                <Globe className="h-3 w-3" /> {a!.profile.applicantLanguage}
+              </span>
+            }
+          />
           <Field label="Source Key" value={<span className="font-mono text-xs">{a!.profile.sourceKey}</span>} />
         </CardContent>
       </Card>
+
+      {/* ===== Action Dialogs ===== */}
+      <Dialog open={approveOpen} onOpenChange={setApproveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve applicant</DialogTitle>
+            <DialogDescription>
+              Confirm approval for {a!.fullName} ({a!.applicantId}).
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            placeholder="Optional note"
+            value={approveNote}
+            onChange={(e) => setApproveNote(e.target.value)}
+            rows={3}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setApproveOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={doApprove}>Approve</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject applicant</DialogTitle>
+            <DialogDescription>Choose rejection type and add a note (required).</DialogDescription>
+          </DialogHeader>
+          <RadioGroup value={rejectType} onValueChange={setRejectType} className="space-y-1">
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="resubmission" id="rt-resub" />
+              <Label htmlFor="rt-resub">Resubmission request</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="final" id="rt-final" />
+              <Label htmlFor="rt-final">Final reject</Label>
+            </div>
+          </RadioGroup>
+          <Textarea
+            placeholder="Reason / note (required)"
+            value={rejectNote}
+            onChange={(e) => setRejectNote(e.target.value)}
+            rows={3}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRejectOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={doReject}>
+              Reject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={emailOpen} onOpenChange={setEmailOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Email to applicant</DialogTitle>
+            <DialogDescription>Send a message to {a!.profile.email}.</DialogDescription>
+          </DialogHeader>
+          <Input placeholder="Subject" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} />
+          <Textarea placeholder="Message" value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={4} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={doEmail}>
+              <Send className="mr-1 h-4 w-4" /> Send
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={caseOpen} onOpenChange={setCaseOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create case</DialogTitle>
+            <DialogDescription>
+              Open an investigation case for {a!.fullName} ({a!.applicantId}).
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            placeholder="Reason / summary"
+            value={caseReason}
+            onChange={(e) => setCaseReason(e.target.value)}
+            rows={3}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCaseOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={doCreateCase}>Create case</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -55,6 +55,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { jsPDF } from "jspdf";
 import { SeverityBadge } from "@/components/severity-badge";
 import { ekycCases } from "@/lib/mock-data";
 
@@ -373,8 +374,74 @@ function ApplicantDetail() {
     toast("Applicant marked inactive");
   };
   const doReport = () => {
+    const doc = new jsPDF();
+    const left = 14;
+    let y = 18;
+    const heading = (t: string) => {
+      y += 4;
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text(t, left, y);
+      y += 6;
+      doc.setFontSize(10);
+    };
+    const line = (label: string, value: string) => {
+      doc.setFont("helvetica", "bold");
+      doc.text(label, left, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(String(value ?? "—"), left + 55, y);
+      y += 7;
+    };
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("e-KYC Applicant Report", left, y);
+    y += 8;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated: ${new Date().toLocaleString("id-ID")}`, left, y);
+    y += 4;
+    doc.setDrawColor(200);
+    doc.line(left, y, 196, y);
+
+    heading("Identity");
+    line("Applicant ID", a!.applicantId);
+    line("External ID", a!.externalId);
+    line("Full Name", a!.fullName);
+    line("Verification Level", a!.verificationLevel);
+    line("Review Status", reviewStatus);
+    line("Risk Level", a!.risk.level);
+
+    heading("Verification");
+    line("Selfie / Liveness", a!.selfie.livenessResult);
+    line("Document", `${a!.document.type} — ${a!.document.status}`);
+    line("AML Matches", String(a!.aml.matchesCount));
+    line("AML Provider", a!.aml.provider);
+    line(
+      "Duplicates",
+      String(a!.duplicates.blocklisted + a!.duplicates.exact + a!.duplicates.face + a!.duplicates.similar),
+    );
+
+    heading("Personal Info");
+    line("First Name", a!.personal.firstName);
+    line("Last Name", a!.personal.lastName);
+    line("Date of Birth", `${a!.personal.dob} (${a!.personal.age}y)`);
+    line("Gender", a!.personal.gender);
+    line("NIK", a!.personal.nik);
+    line("Nationality", a!.personal.nationality);
+    line("Place of Birth", a!.personal.placeOfBirth);
+    line("Address", `${a!.address.street}, ${a!.address.city}, ${a!.address.state}`);
+
+    heading("Risk Labels");
+    doc.setFont("helvetica", "normal");
+    doc.text(a!.risk.labels.length ? a!.risk.labels.join(", ") : "None", left, y);
+    y += 10;
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Sentinel EFRMP — confidential. Generated for internal review.", left, 287);
+
+    doc.save(`${a!.applicantId}-ekyc-report.pdf`);
     logEvent("PDF report generated");
-    toast.success("Report (PDF) generated");
+    toast.success("Report (PDF) downloaded");
   };
 
   return (

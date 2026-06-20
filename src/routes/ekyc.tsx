@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { UserCheck, ShieldAlert, Camera, Fingerprint } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { UserCheck, ShieldAlert, Camera, Fingerprint, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

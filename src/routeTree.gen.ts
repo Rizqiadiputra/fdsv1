@@ -42,6 +42,7 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as AccountManagementRouteImport } from './routes/account-management'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EkycIdRouteImport } from './routes/ekyc.$id'
 
 const WhistleblowingRoute = WhistleblowingRouteImport.update({
   id: '/whistleblowing',
@@ -208,6 +209,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EkycIdRoute = EkycIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => EkycRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -223,7 +229,7 @@ export interface FileRoutesByFullPath {
   '/cs-intake': typeof CsIntakeRoute
   '/cyber-security': typeof CyberSecurityRoute
   '/devices': typeof DevicesRoute
-  '/ekyc': typeof EkycRoute
+  '/ekyc': typeof EkycRouteWithChildren
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
   '/login': typeof LoginRoute
@@ -243,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/transaction-monitoring': typeof TransactionMonitoringRoute
   '/users': typeof UsersRoute
   '/whistleblowing': typeof WhistleblowingRoute
+  '/ekyc/$id': typeof EkycIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -258,7 +265,7 @@ export interface FileRoutesByTo {
   '/cs-intake': typeof CsIntakeRoute
   '/cyber-security': typeof CyberSecurityRoute
   '/devices': typeof DevicesRoute
-  '/ekyc': typeof EkycRoute
+  '/ekyc': typeof EkycRouteWithChildren
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
   '/login': typeof LoginRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/transaction-monitoring': typeof TransactionMonitoringRoute
   '/users': typeof UsersRoute
   '/whistleblowing': typeof WhistleblowingRoute
+  '/ekyc/$id': typeof EkycIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -294,7 +302,7 @@ export interface FileRoutesById {
   '/cs-intake': typeof CsIntakeRoute
   '/cyber-security': typeof CyberSecurityRoute
   '/devices': typeof DevicesRoute
-  '/ekyc': typeof EkycRoute
+  '/ekyc': typeof EkycRouteWithChildren
   '/fraud-operations': typeof FraudOperationsRoute
   '/fraud-register': typeof FraudRegisterRoute
   '/login': typeof LoginRoute
@@ -314,6 +322,7 @@ export interface FileRoutesById {
   '/transaction-monitoring': typeof TransactionMonitoringRoute
   '/users': typeof UsersRoute
   '/whistleblowing': typeof WhistleblowingRoute
+  '/ekyc/$id': typeof EkycIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -351,6 +360,7 @@ export interface FileRouteTypes {
     | '/transaction-monitoring'
     | '/users'
     | '/whistleblowing'
+    | '/ekyc/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/transaction-monitoring'
     | '/users'
     | '/whistleblowing'
+    | '/ekyc/$id'
   id:
     | '__root__'
     | '/'
@@ -421,6 +432,7 @@ export interface FileRouteTypes {
     | '/transaction-monitoring'
     | '/users'
     | '/whistleblowing'
+    | '/ekyc/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -437,7 +449,7 @@ export interface RootRouteChildren {
   CsIntakeRoute: typeof CsIntakeRoute
   CyberSecurityRoute: typeof CyberSecurityRoute
   DevicesRoute: typeof DevicesRoute
-  EkycRoute: typeof EkycRoute
+  EkycRoute: typeof EkycRouteWithChildren
   FraudOperationsRoute: typeof FraudOperationsRoute
   FraudRegisterRoute: typeof FraudRegisterRoute
   LoginRoute: typeof LoginRoute
@@ -692,8 +704,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ekyc/$id': {
+      id: '/ekyc/$id'
+      path: '/$id'
+      fullPath: '/ekyc/$id'
+      preLoaderRoute: typeof EkycIdRouteImport
+      parentRoute: typeof EkycRoute
+    }
   }
 }
+
+interface EkycRouteChildren {
+  EkycIdRoute: typeof EkycIdRoute
+}
+
+const EkycRouteChildren: EkycRouteChildren = {
+  EkycIdRoute: EkycIdRoute,
+}
+
+const EkycRouteWithChildren = EkycRoute._addFileChildren(EkycRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -709,7 +738,7 @@ const rootRouteChildren: RootRouteChildren = {
   CsIntakeRoute: CsIntakeRoute,
   CyberSecurityRoute: CyberSecurityRoute,
   DevicesRoute: DevicesRoute,
-  EkycRoute: EkycRoute,
+  EkycRoute: EkycRouteWithChildren,
   FraudOperationsRoute: FraudOperationsRoute,
   FraudRegisterRoute: FraudRegisterRoute,
   LoginRoute: LoginRoute,
@@ -733,13 +762,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
